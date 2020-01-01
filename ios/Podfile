@@ -8,6 +8,8 @@ target 'alypay_ecommerce' do
 
   use_react_native!(:path => config["reactNativePath"])
 
+
+
   target 'alypay_ecommerceTests' do
     inherit! :complete
     # Pods for testing
