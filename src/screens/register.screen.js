@@ -1,84 +1,168 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   TouchableOpacity,
   TextInput,
   StyleSheet,
   View,
-  Image,
+  ScrollView,
 } from 'react-native';
-import Lottie from 'lottie-react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Colors} from '../utils/constants.util';
 import {GlobalStyles} from '../styles/global.style';
-import WhatsAppIconAnimation from './../animations/whatsapp.animation.json';
+import {RFValue} from 'react-native-responsive-fontsize';
+import LogoHeaderComponent from '../components/logoheader.component';
+import FooterComponent from '../components/footer.component';
+import ButtonWithIcon from '../components/button-with-icon.component';
+import IconButton from '../components/icon-button';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import ButtonSupport from '../components/buttonsupport.component';
 
 const RegisterScreen = ({navigation}) => {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
-    <SafeAreaView style={registerStyles.container}>
-      <View>
-        <Image
-          style={registerStyles.logo}
-          source={require('./../assets/img/logo.png')}
-        />
-      </View>
-      <View style={registerStyles.titleContainer}>
-        <Text style={registerStyles.textTitle}>Registro de compañía</Text>
-      </View>
-      <View style={registerStyles.spacing}>
-        <Text style={registerStyles.inputLabel}>Nombre</Text>
-        <TextInput style={GlobalStyles.textInput} />
-      </View>
-      <View style={registerStyles.spacing}>
-        <Text style={registerStyles.inputLabel}>Correo Electrónico</Text>
-        <TextInput style={GlobalStyles.textInput} />
-      </View>
-      <View style={registerStyles.phoneRow}>
-        <View style={registerStyles.countryField}>
-          <Text style={registerStyles.inputLabel}>País</Text>
-          <TextInput style={GlobalStyles.textInput} />
-        </View>
-        <View style={registerStyles.phoneField}>
-          <Text style={registerStyles.inputLabel}>Número de Teléfono</Text>
-          <TextInput style={GlobalStyles.textInput} />
-        </View>
-      </View>
-      <View style={registerStyles.spacing}>
-        <Text style={registerStyles.inputLabel}>
-          Código de Identificación de Empresa
-        </Text>
-        <TextInput style={GlobalStyles.textInput} />
-      </View>
-      <View style={registerStyles.largeSpacing}>
-        <View style={registerStyles.row}>
-          <View style={registerStyles.column}>
-            <TouchableOpacity onPress={() => navigation.navigate('Login')} style={GlobalStyles.buttonNoBorder}>
-              <Text style={{...GlobalStyles.textButtonPrimaryLine, textTransform: 'capitalize'}}>Volver</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={registerStyles.column}>
-            <TouchableOpacity style={GlobalStyles.buttonPrimaryLine}>
-              <Text style={GlobalStyles.textButtonPrimaryLine}>siguiente</Text>
-            </TouchableOpacity>
+    <SafeAreaView style={GlobalStyles.superContainer}>
+      <ScrollView>
+        <LogoHeaderComponent title="Registro de compañía" />
+        <View style={registerStyles.spacing}>
+          <Text style={registerStyles.inputLabel}>Nombre</Text>
+          <View style={registerStyles.textInputWithImage}>
+            <Icon name="person" color={Colors.$colorGray} size={18} />
+            <TextInput
+              placeholderTextColor={Colors.$colorGray}
+              placeholder="Nombre completo"
+              style={registerStyles.textInputCol}
+            />
+            <View style={registerStyles.touchableCol} />
           </View>
         </View>
-      </View>
-      <View style={registerStyles.supportContainer} >
-        <TouchableOpacity>
-          <Lottie style={registerStyles.whatsappOpacity} source={WhatsAppIconAnimation} resizeMode='cover' autoPlay loop={false}/>
-        </TouchableOpacity>
-      </View>
-      <View style={{alignItems: 'center'}}>
-        <Image
-          source={require('../assets/img/logo-aly.png')}
-          style={registerStyles.logoAly}
-        />
-        <TouchableOpacity onPress={contactSupport()} style={GlobalStyles.buttonNoBorder}>
-          <Text style={registerStyles.termsAndConditions}>
-            Términos y condiciones
+        <View style={registerStyles.spacing}>
+          <Text style={registerStyles.inputLabel}>Correo Electrónico</Text>
+          <View style={registerStyles.textInputWithImage}>
+            <Icon name="email" size={18} color={Colors.$colorGray} />
+            <TextInput
+              placeholderTextColor={Colors.$colorGray}
+              placeholder="Correo electrónico"
+              style={registerStyles.textInputCol}
+            />
+            <View style={registerStyles.touchableCol} />
+          </View>
+        </View>
+        <View style={registerStyles.spacing}>
+          <Text style={registerStyles.inputLabel}>Contraseña</Text>
+          <View style={registerStyles.textInputWithImage}>
+            <Icon color={Colors.$colorGray} size={18} name="lock" />
+            <TextInput
+              placeholder="Contraseña"
+              placeholderTextColor={Colors.$colorGray}
+              secureTextEntry={!showPassword}
+              style={registerStyles.textInputCol}
+            />
+            <TouchableOpacity
+              onPress={(e) => setShowPassword(!showPassword)}
+              style={registerStyles.touchableCol}>
+              <Icon
+                name={showPassword ? 'visibility-off' : 'visibility'}
+                color={Colors.$colorYellow}
+                size={18}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={registerStyles.spacing}>
+          <Text style={registerStyles.inputLabel}>Verificar contraseña</Text>
+          <View style={registerStyles.textInputWithImage}>
+            <Icon color={Colors.$colorGray} size={18} name="lock" />
+            <TextInput
+              placeholder="Repita su contraseña"
+              placeholderTextColor={Colors.$colorGray}
+              secureTextEntry={!showPassword}
+              style={registerStyles.textInputCol}
+            />
+            <TouchableOpacity
+              onPress={(e) => setShowPassword(!showPassword)}
+              style={registerStyles.touchableCol}>
+              <Icon
+                name={showPassword ? 'visibility-off' : 'visibility'}
+                color={Colors.$colorYellow}
+                size={18}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={registerStyles.phoneRow}>
+          <View style={registerStyles.countryField}>
+            <Text style={registerStyles.inputLabel}>País</Text>
+            <View style={registerStyles.textInputWithImage}>
+              <Icon size={18} color={Colors.$colorGray} name="location-on" />
+              <TextInput
+                placeholderTextColor={Colors.$colorGray}
+                placeholder="País"
+                style={registerStyles.textInputCol}
+              />
+              <TouchableOpacity style={registerStyles.touchableCol}>
+                <Icon
+                  color={Colors.$colorYellow}
+                  size={18}
+                  name="unfold-more"
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={registerStyles.phoneField}>
+            <Text style={registerStyles.inputLabel}>Número de Teléfono</Text>
+            <View style={registerStyles.textInputWithImage}>
+              <Icon name="phone" size={18} color={Colors.$colorGray} />
+              <TextInput
+                placeholderTextColor={Colors.$colorGray}
+                placeholder="Teléfono"
+                style={registerStyles.textInputCol}
+              />
+            </View>
+          </View>
+        </View>
+        <View style={registerStyles.spacing}>
+          <Text style={registerStyles.inputLabel}>
+            Código de Identificación de Empresa
           </Text>
-        </TouchableOpacity>
-      </View>
+          <View style={registerStyles.textInputWithImage}>
+            <Icon name="location-city" color={Colors.$colorGray} size={18} />
+            <TextInput
+              placeholderTextColor={Colors.$colorGray}
+              placeholder="Código de empresa"
+              style={registerStyles.textInputCol}
+            />
+            <View style={registerStyles.touchableCol} />
+          </View>
+        </View>
+        <View style={registerStyles.largeSpacing}>
+          <View style={registerStyles.row}>
+            <View
+              style={{
+                ...registerStyles.column,
+                alignItems: 'flex-end',
+                marginRight: 20,
+              }}>
+              <IconButton
+                onPress={() => navigation.navigate('Login')}
+                icon="arrow-left"
+                type="filled"
+              />
+            </View>
+            <View style={registerStyles.column}>
+              <ButtonWithIcon
+                onPress={() => navigation.navigate('LegalData')}
+                text="Siguiente"
+                icon="arrow-right"
+                type="filled"
+              />
+            </View>
+          </View>
+        </View>
+        <FooterComponent />
+      </ScrollView>
+      <ButtonSupport />
     </SafeAreaView>
   );
 };
@@ -108,6 +192,7 @@ const registerStyles = StyleSheet.create({
   },
   inputLabel: {
     fontSize: 15,
+    paddingBottom: 5,
     color: Colors.$colorYellow,
   },
   phoneRow: {
@@ -116,11 +201,11 @@ const registerStyles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   countryField: {
-    flex: 0.2,
+    flex: 0.5,
     marginRight: 10,
   },
   phoneField: {
-    flex: 0.8,
+    flex: 0.5,
   },
   spacing: {
     paddingHorizontal: 20,
@@ -151,15 +236,33 @@ const registerStyles = StyleSheet.create({
     paddingTop: 30,
   },
   supportContainer: {
-    alignItems: 'center',
-    padding: 10,
-    height: 50,
-    width: 50,
-    alignSelf: 'flex-end',
+    position: 'absolute',
+    bottom: '0%',
+    right: '0%',
   },
   whatsappOpacity: {
-    height: 100,
+    width: RFValue(128),
+  },
+  textInputWithImage: {
+    ...GlobalStyles.textInput,
+    flexDirection: 'row',
+  },
+  textInputCol: {
+    flex: 0.9,
+    color: 'white',
+    paddingLeft: 5,
+  },
+  touchableCol: {
+    flex: 0.1,
+    alignItems: 'flex-end',
+  },
+  markerImage: {
+    width: 18,
+    height: 18,
+    resizeMode: 'contain',
   },
 });
+
+export {registerStyles};
 
 export default RegisterScreen;
