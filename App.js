@@ -15,6 +15,7 @@ import LegalDataScreen from './src/screens/legaldata.screen';
 import LegalImagesScreen from './src/screens/legalimages.screen';
 import WelcomeScreen from './src/screens/welcome.screen';
 import RegisterCommerceScreen from './src/screens/registercommerce.screen';
+import CommerceList from './src/screens/commerce-list.screen';
 
 const Stack = createStackNavigator();
 
@@ -52,6 +53,7 @@ const App: () => React$Node = () => {
           component={RegisterCommerceScreen}
           options={{headerShown: false}}
         />
+        <Stack.Screen name="CommerceList" component={CommerceList} options={{headerShown: false}} />
       </Stack.Navigator>
     </NavigationContainer>
   );

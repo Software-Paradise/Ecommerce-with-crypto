@@ -97,6 +97,7 @@ const loginStyles = StyleSheet.create({
   inputLabel: {
     color: Colors.$colorYellow,
     paddingBottom: 5,
+    paddingLeft: 15,
   },
   forgotPasswordLabel: {
     color: Colors.$colorGray,
@@ -154,6 +155,7 @@ const loginStyles = StyleSheet.create({
     ...GlobalStyles.textInput,
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   textInputCol: {
     flex: 0.9,

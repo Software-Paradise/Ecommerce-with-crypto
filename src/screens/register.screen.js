@@ -193,6 +193,7 @@ const registerStyles = StyleSheet.create({
   inputLabel: {
     fontSize: 15,
     paddingBottom: 5,
+    paddingLeft: 15,
     color: Colors.$colorYellow,
   },
   phoneRow: {
@@ -246,6 +247,7 @@ const registerStyles = StyleSheet.create({
   textInputWithImage: {
     ...GlobalStyles.textInput,
     flexDirection: 'row',
+    alignItems: 'center',
   },
   textInputCol: {
     flex: 0.9,

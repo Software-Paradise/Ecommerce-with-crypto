@@ -81,9 +81,8 @@ const RegisterCommerceScreen = ({navigation}) => {
           <LogoHeaderComponent title="Registro de comercio" />
           <View style={RegisterCommerceStyles.form}>
             <View style={RegisterCommerceStyles.formControl}>
-              <View style={GlobalStyles.row}>
-                <View style={GlobalStyles.dotSevenColumn}>
-                  <Text style={registerStyles.inputLabel}>
+              
+                                <Text style={registerStyles.inputLabel}>
                     Nombre de comercio
                   </Text>
                   <View style={registerStyles.textInputWithImage} >
@@ -97,19 +96,16 @@ const RegisterCommerceScreen = ({navigation}) => {
                     />
                     <View style={registerStyles.touchableCol}/>
                   </View>
-
-                </View>
-                <View style={{...GlobalStyles.dotThreeColumn, marginLeft: 10}}>
-                  <Text style={registerStyles.inputLabel}>
+            </View>
+            <View style={RegisterCommerceStyles.formControl}>
+                <Text style={registerStyles.inputLabel}>
                     Código postal
                   </Text>
                   <View style={registerStyles.textInputWithImage}>
                     <Icon name='location-on' color={Colors.$colorGray} size={18}/>
-                    <TextInput placeholder='ZIP' placeholderTextColor={Colors.$colorGray} style={registerStyles.textInputCol} />
+                    <TextInput placeholder='Código postal' placeholderTextColor={Colors.$colorGray} style={registerStyles.textInputCol} />
                     <View style={registerStyles.touchableCol}/>
                   </View>
-                </View>
-              </View>
             </View>
             <View style={RegisterCommerceStyles.formControl}>
               <Text style={registerStyles.inputLabel}>
@@ -247,7 +243,7 @@ const RegisterCommerceScreen = ({navigation}) => {
                 ...RegisterCommerceStyles.row,
                 ...RegisterCommerceStyles.spacing,
               }}>
-              <ButtonWithIcon text='REGISTRAR' icon='store' type='filled'/>
+              <ButtonWithIcon onPress={() => navigation.navigate('CommerceList')} text='REGISTRAR' icon='store' type='filled'/>
             </View>
             <FooterComponent />
           </View>

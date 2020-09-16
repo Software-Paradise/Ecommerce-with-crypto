@@ -18,6 +18,7 @@ import {registerStyles} from './register.screen';
 import IconButton from '../components/icon-button';
 import ButtonWithIcon from '../components/button-with-icon.component';
 import ButtonSupport from '../components/buttonsupport.component';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 // Options for React-Image-Picker
 const RIPOptions = {
@@ -58,6 +59,7 @@ const LegalImagesScreen = ({navigation}) => {
               alignItems: 'center',
               justifyContent: 'center',
               flexDirection: 'row',
+              paddingVertical: RFValue(10),
             }}>
             <Icon name="upload" size={18} color={Colors.$colorYellow} />
           </TouchableOpacity>
@@ -73,6 +75,7 @@ const LegalImagesScreen = ({navigation}) => {
               alignItems: 'center',
               justifyContent: 'center',
               flexDirection: 'row',
+              paddingVertical: RFValue(10),
             }}>
             <Icon name="upload" size={18} color={Colors.$colorYellow} />
           </TouchableOpacity>
@@ -86,6 +89,7 @@ const LegalImagesScreen = ({navigation}) => {
               alignItems: 'center',
               justifyContent: 'center',
               flexDirection: 'row',
+              paddingVertical: RFValue(10),
             }}>
             <Icon name="upload" size={18} color={Colors.$colorYellow} />
           </TouchableOpacity>
