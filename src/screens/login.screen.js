@@ -68,7 +68,7 @@ const LoginScreen = ({navigation}) => {
           <ButtonWithIcon text='Registrar' onPress={() => navigation.navigate('Register')} icon='store' type='filled'/>
         </View>
         <View style={{...loginStyles.horizontalChild, marginLeft: 10}}>
-          <ButtonWithIcon text='Ingresar' icon='login' type='filled' />
+          <ButtonWithIcon onPress={() => navigation.navigate('ProductList')} text='Ingresar' icon='login' type='filled' />
         </View>
       </View>
       <ButtonSupport />

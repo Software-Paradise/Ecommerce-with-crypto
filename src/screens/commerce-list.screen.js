@@ -1,5 +1,5 @@
-import React from 'react';
-import { ScrollView } from 'react-native-gesture-handler';
+import React, { useState } from 'react';
+import { FlatList, ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
     StyleSheet,
@@ -9,34 +9,64 @@ import {
 import { Colors } from '../utils/constants.util';
 import { GlobalStyles } from '../styles/global.style';
 import { RFValue } from 'react-native-responsive-fontsize';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import Menu, { MenuItem } from 'react-native-material-menu';
+import CommerceItem from './../components/commerce-item.component';
 
 const CommerceList = ({navigation}) => {
+    const [showMenu, setShowMenu] = useState(false)
+
+    const data = [
+        {
+            id: '1',
+            name: 'Comercio 1'
+        },
+        {
+            id: '2',
+            name: 'Comercio 2'
+        },
+        {
+            id: '3',
+            name: 'Comercio 3'
+        }
+    ]
+
     return (
         <SafeAreaView style={GlobalStyles.superContainer}>
-            <ScrollView>
-                <View style={CommerceListStyles.commerceRow}>
-                    <Text style={CommerceListStyles.commerceRowTitle}>Comercio 1</Text>
-                </View>
-            </ScrollView>
+            <Text style={CommerceListStyles.viewTitle}>
+                Listado de comercios
+            </Text>
+            
+                <FlatList data={data} renderItem={ ({item}) => <CommerceItem id={item.id} name={item.name} />} />
+            
+            <View style={CommerceListStyles.buttonFixed}>
+                <TouchableOpacity style={CommerceListStyles.addButtonStyle}>
+                    <Icon name="add" size={RFValue(50)} color={Colors.$colorBlack}/>
+                </TouchableOpacity>
+            </View>
         </SafeAreaView>
     );
 }
 
 const CommerceListStyles = StyleSheet.create({
-    commerceRow: {
-        backgroundColor: Colors.$colorBlack,
+    viewTitle: {
         color: Colors.$colorYellow,
-        margin: RFValue(20),
-        padding: RFValue(20),
-        borderRadius: RFValue(10),
+        fontSize: RFValue(30),
+        marginHorizontal: RFValue(20),
+        marginVertical: RFValue(10)
     },
-    commerceRowTitle: {
-        color: Colors.$colorGray,
-        fontSize: RFValue(18),
+    buttonFixed: {
+        position: 'absolute',
+        bottom: '5%',
+        right: '5%',
     },
-    commerceRowBody: {
-        fontSize: 10,
-        color: Colors.$colorYellow,
+    addButtonStyle: {
+        backgroundColor: Colors.$colorYellow,
+        borderRadius: 50,
+        height: RFValue(60),
+        width: RFValue(60),
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });
 

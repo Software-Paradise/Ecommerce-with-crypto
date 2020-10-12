@@ -91,37 +91,6 @@ const RegisterScreen = ({navigation}) => {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={registerStyles.phoneRow}>
-          <View style={registerStyles.countryField}>
-            <Text style={registerStyles.inputLabel}>País</Text>
-            <View style={registerStyles.textInputWithImage}>
-              <Icon size={18} color={Colors.$colorGray} name="location-on" />
-              <TextInput
-                placeholderTextColor={Colors.$colorGray}
-                placeholder="País"
-                style={registerStyles.textInputCol}
-              />
-              <TouchableOpacity style={registerStyles.touchableCol}>
-                <Icon
-                  color={Colors.$colorYellow}
-                  size={18}
-                  name="unfold-more"
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={registerStyles.phoneField}>
-            <Text style={registerStyles.inputLabel}>Número de Teléfono</Text>
-            <View style={registerStyles.textInputWithImage}>
-              <Icon name="phone" size={18} color={Colors.$colorGray} />
-              <TextInput
-                placeholderTextColor={Colors.$colorGray}
-                placeholder="Teléfono"
-                style={registerStyles.textInputCol}
-              />
-            </View>
-          </View>
-        </View>
         <View style={registerStyles.spacing}>
           <Text style={registerStyles.inputLabel}>
             Código de Identificación de Empresa

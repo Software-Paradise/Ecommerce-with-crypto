@@ -24,6 +24,7 @@ const FooterStyles = StyleSheet.create({
   container: {
     alignItems: 'center',
     paddingTop: RFValue(52),
+    paddingBottom: RFValue(15),
   },
   logoAly: {
     width: RFValue(150),

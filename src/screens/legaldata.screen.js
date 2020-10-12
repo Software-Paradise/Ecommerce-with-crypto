@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   StyleSheet,
@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Picker,
 } from 'react-native';
 import {Colors} from '../utils/constants.util';
 import {GlobalStyles} from '../styles/global.style';
@@ -18,118 +19,151 @@ import IconButton from '../components/icon-button';
 import ButtonWithIcon from '../components/button-with-icon.component';
 import ButtonSupport from '../components/buttonsupport.component';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {PickerItem} from 'react-native/Libraries/Components/Picker/Picker';
+
+
 
 const LegalDataScreen = ({navigation}) => {
+  const [currency, setCurrency] = useState('btc');
+  const CURRENCIES = [
+    {
+      name: 'Bitcoin',
+      value: 'btc',
+    },
+    {
+      name: 'Etherum',
+      value: 'eth',
+    },
+  ];
   return (
-      <SafeAreaView style={GlobalStyles.superContainer}>
-
-    <ScrollView>
-      <LogoHeaderComponent title="Representante legal" />
-      <View style={legalDataStyles.spacing}>
-        <Text style={legalDataStyles.inputLabel}>Nombre</Text>
-        <View style={registerStyles.textInputWithImage}>
-          <Icon name="person" size={18} color={Colors.$colorGray} />
-          <TextInput
-            placeholder="Nombre"
-            placeholderTextColor={Colors.$colorGray}
-            style={registerStyles.textInputCol}
-          />
-          <View style={registerStyles.touchableCol} />
-        </View>
-      </View>
-      <View style={legalDataStyles.spacing}>
-        <Text style={legalDataStyles.inputLabel}>Apellido</Text>
-        <View style={registerStyles.textInputWithImage}>
-          <Icon name="person" size={18} color={Colors.$colorGray} />
-          <TextInput
-            placeholder="Apellido"
-            placeholderTextColor={Colors.$colorGray}
-            style={registerStyles.textInputCol}
-          />
-          <View style={registerStyles.touchableCol} />
-        </View>
-      </View>
-      <View style={legalDataStyles.spacing}>
-        <Text style={legalDataStyles.inputLabel}>Correo electrónico</Text>
-        <View style={registerStyles.textInputWithImage}>
-          <Icon name="email" color={Colors.$colorGray} size={18} />
-          <TextInput
-            placeholder="Correo electrónico"
-            placeholderTextColor={Colors.$colorGray}
-            style={registerStyles.textInputCol}
-          />
-          <View style={registerStyles.touchableCol} />
-        </View>
-      </View>
-      <View style={registerStyles.phoneRow}>
-        <View style={registerStyles.countryField}>
-          <Text style={registerStyles.inputLabel}>País</Text>
+    <SafeAreaView style={GlobalStyles.superContainer}>
+      <ScrollView>
+        <LogoHeaderComponent title="Representante legal" />
+        <View style={legalDataStyles.spacing}>
+          <Text style={legalDataStyles.inputLabel}>Nombre</Text>
           <View style={registerStyles.textInputWithImage}>
-            <Icon name="location-on" size={18} color={Colors.$colorGray} />
+            <Icon name="person" size={18} color={Colors.$colorGray} />
             <TextInput
-              placeholder="País"
+              placeholder="Nombre"
               placeholderTextColor={Colors.$colorGray}
               style={registerStyles.textInputCol}
             />
+            <View style={registerStyles.touchableCol} />
+          </View>
+        </View>
+        <View style={legalDataStyles.spacing}>
+          <Text style={legalDataStyles.inputLabel}>Apellido</Text>
+          <View style={registerStyles.textInputWithImage}>
+            <Icon name="person" size={18} color={Colors.$colorGray} />
+            <TextInput
+              placeholder="Apellido"
+              placeholderTextColor={Colors.$colorGray}
+              style={registerStyles.textInputCol}
+            />
+            <View style={registerStyles.touchableCol} />
+          </View>
+        </View>
+        <View style={legalDataStyles.spacing}>
+          <Text style={legalDataStyles.inputLabel}>Correo electrónico</Text>
+          <View style={registerStyles.textInputWithImage}>
+            <Icon name="email" color={Colors.$colorGray} size={18} />
+            <TextInput
+              placeholder="Correo electrónico"
+              placeholderTextColor={Colors.$colorGray}
+              style={registerStyles.textInputCol}
+            />
+            <View style={registerStyles.touchableCol} />
+          </View>
+        </View>
+        <View style={registerStyles.phoneRow}>
+          <View style={registerStyles.countryField}>
+            <Text style={registerStyles.inputLabel}>País</Text>
+            <View style={registerStyles.textInputWithImage}>
+              <Icon name="location-on" size={18} color={Colors.$colorGray} />
+              <TextInput
+                placeholder="País"
+                placeholderTextColor={Colors.$colorGray}
+                style={registerStyles.textInputCol}
+              />
+              <TouchableOpacity style={registerStyles.touchableCol}>
+                <Icon
+                  color={Colors.$colorYellow}
+                  size={18}
+                  name="unfold-more"
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={registerStyles.phoneField}>
+            <Text style={legalDataStyles.inputLabel}>Número de Teléfono</Text>
+            <View style={registerStyles.textInputWithImage}>
+              <Icon name="phone" size={18} color={Colors.$colorGray} />
+              <TextInput
+                style={registerStyles.textInputCol}
+                placeholder="Teléfono"
+                placeholderTextColor={Colors.$colorGray}
+              />
+            </View>
+          </View>
+        </View>
+        <View style={registerStyles.spacing}>
+          <Text style={registerStyles.inputLabel}>Tipo de identificación</Text>
+          <View style={registerStyles.textInputWithImage}>
+            <Icon name="portrait" color={Colors.$colorGray} size={18} />
+            <TextInput
+              style={registerStyles.textInputCol}
+              placeholder="Tipo de identificación"
+              placeholderTextColor={Colors.$colorGray}
+            />
             <TouchableOpacity style={registerStyles.touchableCol}>
-              <Icon color={Colors.$colorYellow} size={18} name="unfold-more" />
+              <Icon name="unfold-more" size={18} color={Colors.$colorYellow} />
             </TouchableOpacity>
           </View>
         </View>
-        <View style={registerStyles.phoneField}>
-          <Text style={legalDataStyles.inputLabel}>Número de Teléfono</Text>
+        <View style={legalDataStyles.spacing}>
+          <Text style={registerStyles.inputLabel}>
+            Número de Identificación
+          </Text>
           <View style={registerStyles.textInputWithImage}>
-            <Icon name="phone" size={18} color={Colors.$colorGray} />
-            <TextInput
+            <Icon name="portrait" color={Colors.$colorGray} size={18} />
+            <Picker
+              selectedValue={currency}
+              onValueChange={(itemValue, itemIndex) => setCurrency(itemValue)}
               style={registerStyles.textInputCol}
-              placeholder="Teléfono"
-              placeholderTextColor={Colors.$colorGray}
-            />
+            >
+              { CURRENCIES.map((item) => <PickerItem label={item.name} value={item.value}/> )}
+            </Picker>
+            <View style={registerStyles.touchableCol} />
           </View>
         </View>
-      </View>
-      <View style={registerStyles.spacing}>
-        <Text style={registerStyles.inputLabel}>Tipo de identificación</Text>
-        <View style={registerStyles.textInputWithImage}>
-          <Icon name="portrait" color={Colors.$colorGray} size={18} />
-          <TextInput
-            style={registerStyles.textInputCol}
-            placeholder="Tipo de identificación"
-            placeholderTextColor={Colors.$colorGray}
-          />
-          <TouchableOpacity style={registerStyles.touchableCol}>
-            <Icon name="unfold-more" size={18} color={Colors.$colorYellow} />
-          </TouchableOpacity>
-        </View>
-      </View>
-      <View style={legalDataStyles.spacing}>
-        <Text style={registerStyles.inputLabel}>Número de Identificación</Text>
-        <View style={registerStyles.textInputWithImage}>
-          <Icon name="portrait" color={Colors.$colorGray} size={18} />
-          <TextInput
-            placeholder="Número de identificación"
-            placeholderTextColor={Colors.$colorGray}
-            style={registerStyles.textInputCol}
-          />
-          <View style={registerStyles.touchableCol} />
-        </View>
-      </View>
-      <View style={registerStyles.largeSpacing}>
-        <View style={registerStyles.row}>
-          <View style={{...registerStyles.column, alignItems: 'flex-end', marginRight: 20}}>
-            <IconButton onPress={() => navigation.navigate('Register')} icon='arrow-left' type='filled'/>
-          </View>
-          <View style={registerStyles.column}>
-            <ButtonWithIcon onPress={() => navigation.navigate('LegalImages')} text="Siguiente" icon="arrow-right" type="filled" />
+        <View style={registerStyles.largeSpacing}>
+          <View style={registerStyles.row}>
+            <View
+              style={{
+                ...registerStyles.column,
+                alignItems: 'flex-end',
+                marginRight: 20,
+              }}>
+              <IconButton
+                onPress={() => navigation.navigate('Register')}
+                icon="arrow-left"
+                type="filled"
+              />
+            </View>
+            <View style={registerStyles.column}>
+              <ButtonWithIcon
+                onPress={() => navigation.navigate('LegalImages')}
+                text="Siguiente"
+                icon="arrow-right"
+                type="filled"
+              />
+            </View>
           </View>
         </View>
-      </View>
-      <FooterComponent />
-    </ScrollView>
-        <ButtonSupport/>
-
-      </SafeAreaView>
-
+        <FooterComponent />
+      </ScrollView>
+      <ButtonSupport />
+    </SafeAreaView>
   );
 };
 

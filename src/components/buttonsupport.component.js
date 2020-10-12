@@ -9,7 +9,7 @@ const ButtonSupport = () => {
     <TouchableOpacity
       onPress={OpenSupport}
       style={ButtonSupportStyles.buttonSupport}>
-      <Icon name="whatsapp" size={50} color={Colors.$colorBlack} />
+      <Icon name="whatsapp" size={30} color={Colors.$colorBlack} />
     </TouchableOpacity>
   );
 };
@@ -17,7 +17,7 @@ const ButtonSupport = () => {
 const ButtonSupportStyles = StyleSheet.create({
   buttonSupport: {
     position: 'absolute',
-    left: '5%',
+    left: '10%',
     bottom: '5%',
     padding: 10,
     borderRadius: RFValue(50),

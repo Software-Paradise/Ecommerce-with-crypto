@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Text,
   StyleSheet,
@@ -45,6 +45,23 @@ RNLocation.configure({
   showsBackgroundLocationIndicator: false,
 });
 
+const {width, height} = Dimensions.get('window');
+
+const ASPECT_RATIO = width / height;
+const LATITUDE_DELTA = 0.0922;
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+
+const RegisterCommerceScreen = ({navigation}) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [commerceName, setCommerceName] = useState('');
+  const [showFullScreen, setShowFullScreen] = useState(false);
+  const [location, setLocation] = useState({
+    latitude: CURRENT_LOCATION.latitude || 0.0,
+    longitude: CURRENT_LOCATION.longitude || 0.0,
+  });
+
+  useEffect(() => {
+    
 RNLocation.requestPermission({
   ios: 'whenInUse',
   android: {
@@ -58,21 +75,7 @@ RNLocation.requestPermission({
     },
   );
 });
-
-const {width, height} = Dimensions.get('window');
-
-const ASPECT_RATIO = width / height;
-const LATITUDE_DELTA = 0.0922;
-const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-
-const RegisterCommerceScreen = ({navigation}) => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [commerceName, setCommerceName] = useState('');
-  const [showFullScreen, setShowFullScreen] = useState(false);
-  const [location, setLocation] = useState({
-    latitude: CURRENT_LOCATION.latitude,
-    longitude: CURRENT_LOCATION.longitude,
-  });
+  })
 
   return (
     <SafeAreaView style={GlobalStyles.superContainer}>

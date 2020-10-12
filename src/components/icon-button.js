@@ -21,8 +21,8 @@ const IconButton = (props) => {
 const IconButtonStyle = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    width: RFValue(45),
-    padding: 15,
+    width: RFValue(50),
+    padding: 12,
     backgroundColor: Colors.$colorYellow,
     borderRadius: 50,
     alignItems: 'center',
