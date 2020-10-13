@@ -17,6 +17,7 @@ import WelcomeScreen from './src/screens/welcome.screen';
 import RegisterCommerceScreen from './src/screens/registercommerce.screen';
 import CommerceList from './src/screens/commerce-list.screen';
 import ProductList from './src/screens/product-list.screen';
+import MainScreen from './src/screens/main.screen';
 
 const Stack = createStackNavigator();
 
@@ -54,16 +55,17 @@ const App: () => React$Node = () => {
           component={RegisterCommerceScreen}
           options={{headerShown: false}}
         />
-        <Stack.Screen 
-          name="CommerceList" 
-          component={CommerceList} 
-          options={{headerShown: false}} 
+        <Stack.Screen
+          name="CommerceList"
+          component={CommerceList}
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name="ProductList"
           component={ProductList}
           options={{headerShown: false}}
         />
+        <Stack.Screen name="Main" component={MainScreen} options={{headerShown: false}} />
       </Stack.Navigator>
     </NavigationContainer>
   );

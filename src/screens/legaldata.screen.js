@@ -21,18 +21,16 @@ import ButtonSupport from '../components/buttonsupport.component';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {PickerItem} from 'react-native/Libraries/Components/Picker/Picker';
 
-
-
 const LegalDataScreen = ({navigation}) => {
   const [currency, setCurrency] = useState('btc');
-  const CURRENCIES = [
+  const DOCUMENT_TYPE = [
     {
-      name: 'Bitcoin',
-      value: 'btc',
+      name: "Cedula",
+      value: 1,
     },
     {
-      name: 'Etherum',
-      value: 'eth',
+      name: "Pasaporte",
+      value: 2,
     },
   ];
   return (
@@ -110,11 +108,14 @@ const LegalDataScreen = ({navigation}) => {
           <Text style={registerStyles.inputLabel}>Tipo de identificación</Text>
           <View style={registerStyles.textInputWithImage}>
             <Icon name="portrait" color={Colors.$colorGray} size={18} />
-            <TextInput
-              style={registerStyles.textInputCol}
-              placeholder="Tipo de identificación"
-              placeholderTextColor={Colors.$colorGray}
-            />
+            <Picker
+                selectedValue={currency}
+                onValueChange={(itemValue) => setCurrency(itemValue)}
+                style={registerStyles.textInputCol}>
+              {DOCUMENT_TYPE.map((item, index) => (
+                  <PickerItem key={index} label={item.name} value={item.value} />
+              ))}
+            </Picker>
             <TouchableOpacity style={registerStyles.touchableCol}>
               <Icon name="unfold-more" size={18} color={Colors.$colorYellow} />
             </TouchableOpacity>
@@ -126,13 +127,11 @@ const LegalDataScreen = ({navigation}) => {
           </Text>
           <View style={registerStyles.textInputWithImage}>
             <Icon name="portrait" color={Colors.$colorGray} size={18} />
-            <Picker
-              selectedValue={currency}
-              onValueChange={(itemValue, itemIndex) => setCurrency(itemValue)}
-              style={registerStyles.textInputCol}
-            >
-              { CURRENCIES.map((item) => <PickerItem label={item.name} value={item.value}/> )}
-            </Picker>
+            <TextInput
+                style={registerStyles.textInputCol}
+                placeholder="Numero de identificacion"
+                placeholderTextColor={Colors.$colorGray}
+            />
             <View style={registerStyles.touchableCol} />
           </View>
         </View>

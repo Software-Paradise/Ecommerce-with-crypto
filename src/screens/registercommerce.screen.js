@@ -61,21 +61,20 @@ const RegisterCommerceScreen = ({navigation}) => {
   });
 
   useEffect(() => {
-    
-RNLocation.requestPermission({
-  ios: 'whenInUse',
-  android: {
-    detail: 'coarse',
-  },
-}).then((granted) => {
-  // eslint-disable-next-line no-unused-vars
-  const locationSubscription = RNLocation.subscribeToLocationUpdates(
-    (locations) => {
-      CURRENT_LOCATION = locations[locations.length - 1];
-    },
-  );
-});
-  })
+    RNLocation.requestPermission({
+      ios: 'whenInUse',
+      android: {
+        detail: 'coarse',
+      },
+    }).then((granted) => {
+      // eslint-disable-next-line no-unused-vars
+      const locationSubscription = RNLocation.subscribeToLocationUpdates(
+        (locations) => {
+          CURRENT_LOCATION = locations[locations.length - 1];
+        },
+      );
+    });
+  });
 
   return (
     <SafeAreaView style={GlobalStyles.superContainer}>
@@ -84,49 +83,50 @@ RNLocation.requestPermission({
           <LogoHeaderComponent title="Registro de comercio" />
           <View style={RegisterCommerceStyles.form}>
             <View style={RegisterCommerceStyles.formControl}>
-              
-                                <Text style={registerStyles.inputLabel}>
-                    Nombre de comercio
-                  </Text>
-                  <View style={registerStyles.textInputWithImage} >
-                    <Icon name='store' size={18} color={Colors.$colorGray} />
-                    <TextInput
-                        placeholder='Nombre de comercio'
-                        placeholderTextColor={Colors.$colorGray}
-                        value={commerceName}
-                        onChange={($event) => setCommerceName($event.target.value)}
-                        style={registerStyles.textInputCol}
-                    />
-                    <View style={registerStyles.touchableCol}/>
-                  </View>
-            </View>
-            <View style={RegisterCommerceStyles.formControl}>
-                <Text style={registerStyles.inputLabel}>
-                    Código postal
-                  </Text>
-                  <View style={registerStyles.textInputWithImage}>
-                    <Icon name='location-on' color={Colors.$colorGray} size={18}/>
-                    <TextInput placeholder='Código postal' placeholderTextColor={Colors.$colorGray} style={registerStyles.textInputCol} />
-                    <View style={registerStyles.touchableCol}/>
-                  </View>
-            </View>
-            <View style={RegisterCommerceStyles.formControl}>
-              <Text style={registerStyles.inputLabel}>
-                Correo electrónico
-              </Text>
+              <Text style={registerStyles.inputLabel}>Nombre de comercio</Text>
               <View style={registerStyles.textInputWithImage}>
-                <Icon name='email' size={18} color={Colors.$colorGray}/>
-                <TextInput placeholder='Correo electrónico' placeholderTextColor={Colors.$colorGray} style={registerStyles.textInputCol} />
-                <View style={registerStyles.touchableCol}/>
+                <Icon name="store" size={18} color={Colors.$colorGray} />
+                <TextInput
+                  placeholder="Nombre de comercio"
+                  placeholderTextColor={Colors.$colorGray}
+                  value={commerceName}
+                  onChange={($event) => setCommerceName($event.target.value)}
+                  style={registerStyles.textInputCol}
+                />
+                <View style={registerStyles.touchableCol} />
+              </View>
+            </View>
+            <View style={RegisterCommerceStyles.formControl}>
+              <Text style={registerStyles.inputLabel}>Código postal</Text>
+              <View style={registerStyles.textInputWithImage}>
+                <Icon name="location-on" color={Colors.$colorGray} size={18} />
+                <TextInput
+                  placeholder="Código postal"
+                  placeholderTextColor={Colors.$colorGray}
+                  style={registerStyles.textInputCol}
+                />
+                <View style={registerStyles.touchableCol} />
+              </View>
+            </View>
+            <View style={RegisterCommerceStyles.formControl}>
+              <Text style={registerStyles.inputLabel}>Correo electrónico</Text>
+              <View style={registerStyles.textInputWithImage}>
+                <Icon name="email" size={18} color={Colors.$colorGray} />
+                <TextInput
+                  placeholder="Correo electrónico"
+                  placeholderTextColor={Colors.$colorGray}
+                  style={registerStyles.textInputCol}
+                />
+                <View style={registerStyles.touchableCol} />
               </View>
             </View>
             <View style={RegisterCommerceStyles.formControl}>
               <Text style={registerStyles.inputLabel}>Contraseña</Text>
               <View style={registerStyles.textInputWithImage}>
-                <Icon name='lock' color={Colors.$colorGray} size={18}/>
+                <Icon name="lock" color={Colors.$colorGray} size={18} />
                 <TextInput
                   secureTextEntry={!showPassword}
-                  placeholder='Contraseña'
+                  placeholder="Contraseña"
                   placeholderTextColor={Colors.$colorGray}
                   style={registerStyles.textInputCol}
                 />
@@ -142,12 +142,14 @@ RNLocation.requestPermission({
               </View>
             </View>
             <View style={RegisterCommerceStyles.formControl}>
-              <Text style={registerStyles.inputLabel}>Verificar contraseña</Text>
+              <Text style={registerStyles.inputLabel}>
+                Verificar contraseña
+              </Text>
               <View style={registerStyles.textInputWithImage}>
-                <Icon name='lock' color={Colors.$colorGray} size={18}/>
+                <Icon name="lock" color={Colors.$colorGray} size={18} />
                 <TextInput
                   secureTextEntry={!showPassword}
-                  placeholder='Repita su contraseña'
+                  placeholder="Repita su contraseña"
                   placeholderTextColor={Colors.$colorGray}
                   style={registerStyles.textInputCol}
                 />
@@ -163,9 +165,7 @@ RNLocation.requestPermission({
               </View>
             </View>
             <View style={RegisterCommerceStyles.smallSpacing}>
-              <Text style={registerStyles.inputLabel}>
-                Dirección Física
-              </Text>
+              <Text style={registerStyles.inputLabel}>Dirección Física</Text>
             </View>
             <Modal isVisible={showFullScreen}>
               <View style={RegisterCommerceStyles.mapFullScreen}>
@@ -246,13 +246,18 @@ RNLocation.requestPermission({
                 ...RegisterCommerceStyles.row,
                 ...RegisterCommerceStyles.spacing,
               }}>
-              <ButtonWithIcon onPress={() => navigation.navigate('CommerceList')} text='REGISTRAR' icon='store' type='filled'/>
+              <ButtonWithIcon
+                onPress={() => navigation.navigate('Main')}
+                text="REGISTRAR"
+                icon="store"
+                type="filled"
+              />
             </View>
             <FooterComponent />
           </View>
         </View>
       </ScrollView>
-      <ButtonSupport/>
+      <ButtonSupport />
     </SafeAreaView>
   );
 };

@@ -41,6 +41,7 @@ const buttonStyle = StyleSheet.create({
     padding: 12,
     alignItems: 'center',
     justifyContent: 'center',
+    textAlign: 'center',
   },
   containerOutline: {
     flexDirection: 'row',
@@ -54,6 +55,7 @@ const buttonStyle = StyleSheet.create({
     color: Colors.$colorBlack,
     fontWeight: 'bold',
     paddingRight: 10,
+    textAlign: 'center',
   },
   textButtonOutlined: {
     fontSize: RFValue(20),
