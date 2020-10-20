@@ -3,7 +3,7 @@ import {View, Text, Image, Dimensions, StyleSheet, TouchableOpacity} from 'react
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {GlobalStyles} from '../styles/global.style';
-import {Colors, getStorage} from '../utils/constants.util';
+import {Colors, serverAddress, socketAddress} from '../utils/constants.util';
 import {RFValue} from 'react-native-responsive-fontsize';
 import QRCode from 'react-native-qrcode-svg';
 import * as CryptoJS from 'react-native-crypto-js';
@@ -23,6 +23,29 @@ const TransactionScreen = () => {
   const testData = JSON.stringify({
     id: global.id_commerce,
     amount: route.params.amount,
+  });
+
+  useEffect(() => {
+    const ws = new WebSocket(socketAddress);
+
+    ws.onopen = () => {
+      ws.send('Connected from app');
+    };
+
+    ws.onmessage = (e) => {
+      // a message was received
+      console.log(e.data);
+    };
+    
+    ws.onerror = (e) => {
+      // an error occurred
+      console.log(e.message);
+    };
+    
+    ws.onclose = (e) => {
+      // connection closed
+      console.log(e.code, e.reason);
+    };
   });
 
   return (
@@ -56,7 +79,7 @@ const TransactionScreen = () => {
         </View>
         <View style={TransactionStyles.cancelContainer}>
           <TouchableOpacity style={TransactionStyles.cancelButton}>
-            <Text style={TransactionStyles.cancelText}>Cancelar transaccion</Text>
+            <Text onPress={() => navigation.navigate('Payment')} style={TransactionStyles.cancelText}>Cancelar transaccion</Text>
           </TouchableOpacity>
         </View>
       </View>

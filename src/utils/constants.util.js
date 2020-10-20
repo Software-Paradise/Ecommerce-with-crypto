@@ -184,6 +184,9 @@ export const serverAddress =
     ? `http://localhost:${PORT}`
     : `http://192.168.1.224:${PORT}`;
 
+
+export const socketAddress = `http://192.168.1.224:${PORT}/`;
+
 export const http = axios.create({
   baseURL: serverAddress,
   validateStatus: (status) => {
