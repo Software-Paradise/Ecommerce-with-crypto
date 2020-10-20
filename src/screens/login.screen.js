@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useReducer, useState} from 'react';
 import {
   Text,
   SafeAreaView,
@@ -7,7 +7,14 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import {Colors} from '../utils/constants.util';
+import {
+  Colors,
+  errorMessage,
+  reducer,
+  setStorage,
+  http,
+} from '../utils/constants.util';
+import validator from 'validator';
 import {GlobalStyles} from '../styles/global.style';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {RFValue} from 'react-native-responsive-fontsize';
@@ -15,9 +22,104 @@ import LogoHeaderComponent from '../components/logoheader.component';
 import FooterComponent from '../components/footer.component';
 import ButtonSupport from '../components/buttonsupport.component';
 import ButtonWithIcon from '../components/button-with-icon.component';
+import {SETNAVIGATION, SETSTORAGE} from '../store/actionTypes';
+import {showMessage} from 'react-native-flash-message';
+import {getIP} from 'react-native-public-ip';
+import store from '../store';
+import {
+  getBrand,
+  getDeviceId,
+  getMacAddress,
+  getSystemName,
+} from 'react-native-device-info';
+
+const initialState = {
+  email: '',
+  password: '',
+
+  // Device info
+  ipAddress: '',
+  device: '',
+  macAddress: '',
+  systemName: '',
+};
 
 const LoginScreen = ({navigation}) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  /**
+   * Metodo que se ejecuta cuando el usuario hace login
+   */
+  const onSubmit = async () => {
+    try {
+      if (!validator.isEmail(state.email.trim())) {
+        throw 'Correo electronico no es valido';
+      }
+
+      if (state.password.length === 0) {
+        throw 'Ingrese una contraseña';
+      }
+
+      const variables = {
+        email: state.email,
+        password: state.password,
+        public_ip: state.ipAddress,
+        device: state.device,
+        mac_address: state.macAddress,
+        system_name: state.systemName,
+      };
+
+      await http.post('/ecommerce/login', variables).then((response) => {
+        const {data} = response;
+
+        if (data.error) {
+          throw String(data.message);
+        } else {
+          if (Object.values(data).length > 0) {
+            store.dispatch({type: SETSTORAGE, payload: data});
+
+            setStorage(data);
+          }
+        }
+      });
+    } catch (error) {
+      showMessage({
+        message: error.toString(),
+        description: 'Error al autenticar',
+        color: '#FFF',
+        backgroundColor: Colors.$colorRed,
+        icon: 'warning',
+      });
+    }
+  };
+
+  const getDeviceInfo = async () => {
+    try {
+      getIP().then((payload) => dispatch({type: 'ipAddress', payload}));
+
+      const device = await getBrand();
+      const deviceId = await getDeviceId();
+
+      dispatch({type: 'device', payload: `${device} - ${deviceId}`});
+
+      await getMacAddress().then((payload) =>
+        dispatch({type: 'macAddress', payload}),
+      );
+
+      const systemVersion = await getSystemName();
+
+      dispatch({type: 'systemName', payload: systemVersion});
+    } catch (error) {
+      errorMessage(error.toString());
+    }
+  };
+
+  useEffect(() => {
+    store.dispatch({type: SETNAVIGATION, payload: navigation})
+
+    getDeviceInfo();
+  }, [navigation]);
 
   return (
     <SafeAreaView style={GlobalStyles.superContainer}>
@@ -25,17 +127,26 @@ const LoginScreen = ({navigation}) => {
       <View style={{paddingTop: 20, paddingHorizontal: 20}}>
         <Text style={loginStyles.inputLabel}>Correo electrónico</Text>
         <View style={loginStyles.textInputWithImage}>
-          <Icon size={20} name='email' color={Colors.$colorGray}/>
-          <TextInput placeholderTextColor={Colors.$colorGray} placeholder="Correo electrónico" style={loginStyles.textInputCol} />
+          <Icon size={20} name="email" color={Colors.$colorGray} />
+          <TextInput
+            value={state.email}
+            keyboardType="email-address"
+            onChangeText={(payload) => dispatch({type: 'email', payload})}
+            placeholderTextColor={Colors.$colorGray}
+            placeholder="Correo electrónico"
+            style={loginStyles.textInputCol}
+          />
           <View style={GlobalStyles.touchableCol} />
         </View>
       </View>
       <View style={{paddingTop: 20, paddingHorizontal: 20}}>
         <Text style={loginStyles.inputLabel}>Contraseña</Text>
         <View style={loginStyles.textInputWithImage}>
-          <Icon color={Colors.$colorGray} size={18} name='lock' />
+          <Icon color={Colors.$colorGray} size={18} name="lock" />
           <TextInput
             secureTextEntry={!showPassword}
+            value={state.password}
+            onChangeText={(payload) => dispatch({type: 'password', payload})}
             placeholder="Contraseña"
             placeholderTextColor={Colors.$colorGray}
             style={loginStyles.textInputCol}
@@ -52,11 +163,11 @@ const LoginScreen = ({navigation}) => {
         </View>
       </View>
       <View
-          style={{
-            paddingVertical: 10,
-            paddingHorizontal: 20,
-            textAlign: 'right',
-          }}>
+        style={{
+          paddingVertical: 10,
+          paddingHorizontal: 20,
+          textAlign: 'right',
+        }}>
         <TouchableOpacity>
           <Text style={loginStyles.forgotPasswordLabel}>
             ¿Ha olvidado su contraseña?
@@ -65,10 +176,20 @@ const LoginScreen = ({navigation}) => {
       </View>
       <View style={loginStyles.horizontalContainer}>
         <View style={{...loginStyles.horizontalChild, marginRight: 10}}>
-          <ButtonWithIcon text='Registrar' onPress={() => navigation.navigate('Register')} icon='store' type='filled'/>
+          <ButtonWithIcon
+            text="Registrar"
+            onPress={() => navigation.navigate('Register')}
+            icon="store"
+            type="filled"
+          />
         </View>
         <View style={{...loginStyles.horizontalChild, marginLeft: 10}}>
-          <ButtonWithIcon onPress={() => navigation.navigate('Main')} text='Ingresar' icon='login' type='filled' />
+          <ButtonWithIcon
+            onPress={onSubmit}
+            text="Ingresar"
+            icon="login"
+            type="filled"
+          />
         </View>
       </View>
       <ButtonSupport />

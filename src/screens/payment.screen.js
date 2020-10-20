@@ -10,6 +10,7 @@ import {useNavigation} from '@react-navigation/native';
 
 const PaymentScreen = () => {
     const navigation = useNavigation();
+    const [amount, setAmount] = useState("0.00");
     return (
         <SafeAreaView style={GlobalStyles.superContainer}>
            <View style={PaymentStyles.mainContainer}>
@@ -23,13 +24,16 @@ const PaymentScreen = () => {
                             style={registerStyles.textInputCol}
                             placeholder="Monto"
                             placeholderTextColor={Colors.$colorGray}
+                            value={amount}
+                            keyboardType="numeric"
+                            onChangeText={(value) => setAmount(value)}
                         />
                     </View>
 
                 </View>
                <View style={PaymentStyles.buttonSpacing}>
                    <TouchableOpacity style={PaymentStyles.buttonFill} onPress={() => navigation.navigate('Transaction', {
-                       amount: '150.00'
+                       amount,
                    })}>
                        <Text style={PaymentStyles.buttonText}>
                            Procesar transaccion

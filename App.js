@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, {useReducer, useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import LoginScreen from './src/screens/login.screen';
@@ -19,53 +19,123 @@ import CommerceList from './src/screens/commerce-list.screen';
 import ProductList from './src/screens/product-list.screen';
 import MainScreen from './src/screens/main.screen';
 
+// Import functions and constants from utils
+import {getStorage, reducer} from './src/utils/constants.util';
+import store from './src/store/index';
+import {SETSTORAGE, DELETESTORAGE} from './src/store/actionTypes';
+import NetInfo from '@react-native-community/netinfo';
+
 const Stack = createStackNavigator();
 
+const initialState = {
+  loged: false,
+  splash: true,
+  loader: false,
+
+  internet: true,
+};
+
 const App: () => React$Node = () => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const ConfigurateComponent = async () => {
+    const payload = await getStorage();
+
+    // disabled all yellow message
+    console.disableYellowBox = true;
+
+    if (Object.keys(payload).length > 0) {
+      // Creamos el dispatch para el redux
+      await store.dispatch({
+        type: SETSTORAGE,
+        payload,
+      });
+      // Le decimos que el user esta logeado
+      dispatch({type: 'loged', payload: true});
+    } else {
+      dispatch({type: 'loged', payload: false});
+
+      // Destruimos storage
+      await store.dispatch({type: DELETESTORAGE});
+    }
+
+    setTimeout(() => dispatch({type: 'splash', payload: false}), 1000);
+  };
+
+  useEffect(() => {
+    ConfigurateComponent();
+
+    store.subscribe(async (_) => {
+      const {global} = store.getState();
+
+      if (Object.keys(global).length > 0) {
+        dispatch({type: 'loged', payload: true});
+      } else {
+        dispatch({type: 'loged', payload: false});
+      }
+    });
+
+    NetInfo.addEventListener(({isConnected: payload}) =>
+      dispatch({type: 'internet', payload}),
+    );
+  }, []);
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Register"
-          component={RegisterScreen}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="LegalData"
-          component={LegalDataScreen}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="LegalImages"
-          component={LegalImagesScreen}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Welcome"
-          component={WelcomeScreen}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="RegisterCommerce"
-          component={RegisterCommerceScreen}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="CommerceList"
-          component={CommerceList}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="ProductList"
-          component={ProductList}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen name="Main" component={MainScreen} options={{headerShown: false}} />
+        {state.loged && (
+          <>
+            <Stack.Screen
+              name="Main"
+              component={MainScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="CommerceList"
+              component={CommerceList}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="ProductList"
+              component={ProductList}
+              options={{headerShown: false}}
+            />
+          </>
+        )}
+
+        {!state.loged && (
+          <>
+            <Stack.Screen
+              name="Login"
+              component={LoginScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Register"
+              component={RegisterScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="LegalData"
+              component={LegalDataScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="LegalImages"
+              component={LegalImagesScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Welcome"
+              component={WelcomeScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="RegisterCommerce"
+              component={RegisterCommerceScreen}
+              options={{headerShown: false}}
+            />
+          </>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );
