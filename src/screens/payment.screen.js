@@ -16,7 +16,7 @@ const PaymentScreen = () => {
            <View style={PaymentStyles.mainContainer}>
                 <View style={PaymentStyles.inputContainer}>
                     <Text style={PaymentStyles.titleLabel}>
-                        Ingrese el monto (NIO)
+                        Ingrese el monto (USD)
                     </Text>
                     <View style={registerStyles.textInputWithImage}>
                         <MaterialIcons name='attach-money' size={16} color={Colors.$colorGray}/>

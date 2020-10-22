@@ -69,6 +69,7 @@ const LoginScreen = ({navigation}) => {
         mac_address: state.macAddress,
         system_name: state.systemName,
       };
+      console.log(variables);
 
       await http.post('/ecommerce/login', variables).then((response) => {
         const {data} = response;
@@ -76,6 +77,7 @@ const LoginScreen = ({navigation}) => {
         if (data.error) {
           throw String(data.message);
         } else {
+          console.log('success');
           if (Object.values(data).length > 0) {
             store.dispatch({type: SETSTORAGE, payload: data});
 
@@ -84,6 +86,7 @@ const LoginScreen = ({navigation}) => {
         }
       });
     } catch (error) {
+      console.log(error);
       showMessage({
         message: error.toString(),
         description: 'Error al autenticar',
