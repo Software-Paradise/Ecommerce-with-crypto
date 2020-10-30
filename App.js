@@ -24,6 +24,7 @@ import {getStorage, reducer} from './src/utils/constants.util';
 import store from './src/store/index';
 import {SETSTORAGE, DELETESTORAGE} from './src/store/actionTypes';
 import NetInfo from '@react-native-community/netinfo';
+import FlashMessage from 'react-native-flash-message';
 
 const Stack = createStackNavigator();
 
@@ -80,64 +81,68 @@ const App: () => React$Node = () => {
     );
   }, []);
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        {state.loged && (
-          <>
-            <Stack.Screen
-              name="Main"
-              component={MainScreen}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="CommerceList"
-              component={CommerceList}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="ProductList"
-              component={ProductList}
-              options={{headerShown: false}}
-            />
-          </>
-        )}
+    <>
+      <NavigationContainer>
+        <Stack.Navigator>
+          {state.loged && (
+            <>
+              <Stack.Screen
+                name="Main"
+                component={MainScreen}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="CommerceList"
+                component={CommerceList}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="ProductList"
+                component={ProductList}
+                options={{headerShown: false}}
+              />
+            </>
+          )}
 
-        {!state.loged && (
-          <>
-            <Stack.Screen
-              name="Login"
-              component={LoginScreen}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="Register"
-              component={RegisterScreen}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="LegalData"
-              component={LegalDataScreen}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="LegalImages"
-              component={LegalImagesScreen}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="Welcome"
-              component={WelcomeScreen}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="RegisterCommerce"
-              component={RegisterCommerceScreen}
-              options={{headerShown: false}}
-            />
-          </>
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+          {!state.loged && (
+            <>
+              <Stack.Screen
+                name="Login"
+                component={LoginScreen}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="Register"
+                component={RegisterScreen}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="LegalData"
+                component={LegalDataScreen}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="LegalImages"
+                component={LegalImagesScreen}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="Welcome"
+                component={WelcomeScreen}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="RegisterCommerce"
+                component={RegisterCommerceScreen}
+                options={{headerShown: false}}
+              />
+            </>
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+
+      <FlashMessage floating={true} position='top' />
+    </>
   );
 };
 

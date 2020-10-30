@@ -64,27 +64,29 @@ const LoginScreen = ({navigation}) => {
       const variables = {
         email: state.email,
         password: state.password,
-        public_ip: state.ipAddress,
-        device: state.device,
-        mac_address: state.macAddress,
-        system_name: state.systemName,
+        public_ip: state.ipAddress || '',
+        device: state.device || '',
+        mac_address: state.macAddress || '',
+        system_name: state.systemName || '',
       };
       console.log(variables);
 
-      await http.post('/ecommerce/login', variables).then((response) => {
-        const {data} = response;
+      const response = await http.post('/ecommerce/login', variables);
 
-        if (data.error) {
-          throw String(data.message);
-        } else {
-          console.log('success');
-          if (Object.values(data).length > 0) {
-            store.dispatch({type: SETSTORAGE, payload: data});
+      const {data} = response;
 
-            setStorage(data);
-          }
+      if (data.error) {
+        throw String(data.message);
+      } else {
+        console.log('Success');
+        if (Object.values(data).length > 0) {
+          store.dispatch({type: SETSTORAGE, payload: data});
+
+          setStorage(data);
         }
-      });
+      }
+
+
     } catch (error) {
       console.log(error);
       showMessage({

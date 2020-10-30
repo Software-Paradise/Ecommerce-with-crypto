@@ -2,15 +2,14 @@ import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, TextInput, Dimensions} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {GlobalStyles} from '../styles/global.style';
-import {Colors} from '../utils/constants.util';
+import {Colors, logOutApp} from '../utils/constants.util';
 import {registerStyles} from './register.screen';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
 
-const PaymentScreen = () => {
-    const navigation = useNavigation();
-    const [amount, setAmount] = useState("0.00");
+const PaymentScreen = ({navigation}) => {
+    const [amount, setAmount] = useState('');
     return (
         <SafeAreaView style={GlobalStyles.superContainer}>
            <View style={PaymentStyles.mainContainer}>
@@ -22,7 +21,7 @@ const PaymentScreen = () => {
                         <MaterialIcons name='attach-money' size={16} color={Colors.$colorGray}/>
                         <TextInput
                             style={registerStyles.textInputCol}
-                            placeholder="Monto"
+                            placeholder="0.00"
                             placeholderTextColor={Colors.$colorGray}
                             value={amount}
                             keyboardType="numeric"
@@ -39,6 +38,13 @@ const PaymentScreen = () => {
                            Procesar transaccion
                        </Text>
                        <MaterialCommunityIcons name='qrcode-scan' size={24} color={Colors.$colorBlack}/>
+                   </TouchableOpacity>
+                   
+                   <TouchableOpacity style={PaymentStyles.buttonFill} onPress={logOutApp}>
+                        <Text style={PaymentStyles.buttonText}>
+                            Salir
+                        </Text>
+                        <MaterialCommunityIcons name='logout-variant' size={24} color={Colors.$colorBlack} />
                    </TouchableOpacity>
                </View>
            </View>

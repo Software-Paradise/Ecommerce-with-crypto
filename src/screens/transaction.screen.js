@@ -11,29 +11,32 @@ import LottieAnimationView from 'lottie-react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {GlobalStyles} from '../styles/global.style';
-import {Colors, socketAddress} from '../utils/constants.util';
+import {Colors, logOutApp, socketAddress} from '../utils/constants.util';
 import {RFValue} from 'react-native-responsive-fontsize';
 import QRCode from 'react-native-qrcode-svg';
 import * as CryptoJS from 'react-native-crypto-js';
 import store from '../store';
 import socketIO from 'socket.io-client';
 
-const TransactionScreen = () => {
-  const navigation = useNavigation();
+const TransactionScreen = ({navigation}) => {
   const {global} = store.getState();
   const [keySecret, setKeySecret] = useState('');
   const route = useRoute();
-  const [transaction, setTransaction] = useState({});
+  const [transaction, setTransaction] = useState('');
+  const [amount, setAmount] = useState('');
   const [roomId, setRoomId] = useState('');
   const [currency, setCurrency] = useState('(USD)');
   const [showModal, setShowModal] = useState(false);
   const [onSuccess, setOnSuccess] = useState(false);
-  const [onSuccessMessage, setOnSuccessMessage] = useState('El pago se ha realizado con exito.');
+  const [onSuccessMessage, setOnSuccessMessage] = useState(
+    'El pago se ha realizado con exito.',
+  );
   const [status, setStatus] = useState('Esperando pago');
-  console.log(roomId);
+  const [connectionSocket, setConnectionSocket] = useState();
   const cypherdata = CryptoJS.AES.encrypt(
     JSON.stringify({
       id: roomId,
+      orderId: transaction,
       wallet_commerce: global.wallet_commerce,
       description: global.description,
       amount: route.params.amount,
@@ -43,29 +46,60 @@ const TransactionScreen = () => {
 
   const handleSuccess = () => {
     setShowModal(!showModal);
-    navigation.navigate.pop();
   };
 
   const handleFail = () => {
     setShowModal(!showModal);
-  }
+  };
+
+  const cancelButton = () => {
+    navigation.navigate('Payment');
+    // connectionSocket.emit('disconnect', 'cancel_transaction');
+    connectionSocket.disconnect(true);
+  };
 
   useEffect(() => {
-    connection();
-  }, []);
-
-  const connection = useCallback(() => {
-    const socket = socketIO(socketAddress, {
-      query: {
-        'token': global.token,
-      },
+    const _unsubscribe = navigation.addListener('focus', () => {  
+      connection();
     });
 
-    socket.connect();
+    setAmount(route.params.amount);
+
+    return _unsubscribe;
+  }, [connection, navigation, route.params.amount]);
+
+  const connection = useCallback(() => {
+    console.log(
+      transaction,
+      global.wallet_commerce,
+      global.description,
+      amount,
+    );
+    const socket = socketIO(socketAddress, {
+      query: {
+        token: global.token,
+        data: JSON.stringify({
+          id: roomId,
+          orderId: transaction,
+          wallet: global.wallet_commerce,
+          description: global.description,
+          amount: Number(route.params.amount),
+        }),
+      },
+      forceNew: true,
+      transports: ['websocket'],
+    });
+    // socket.connect();
+    setConnectionSocket(socket);
 
     socket.on('connect', () => {
-      const {commerceId} = global.id_commerce;
       console.log('connected');
+      socket.send('Im in');
+    });
+
+    socket.on('reconnect_attempt', (event) => {
+      socket.io.opts.transports = ['websocket'];
+      console.log('Reconnect attempt', event);
     });
 
     socket.on('disconnect', () => {
@@ -73,14 +107,21 @@ const TransactionScreen = () => {
     });
 
     socket.on('message', (message) => {
-      console.log(message);
+      console.log('Message', message);
       setKeySecret(message.keysecret);
       setRoomId(message.id);
-      // store.dispatch({type: 'SETSTATUS', payload: message});
+      setTransaction(message.order);
+
+      console.log('On message',
+        transaction,
+        global.wallet_commerce,
+        global.description,
+        amount,
+      );
     });
 
     socket.on('status', (response) => {
-      console.log(response);
+      console.log('Status', response);
       if (response.error) {
         setShowModal(true);
         setOnSuccess(false);
@@ -92,15 +133,20 @@ const TransactionScreen = () => {
         setOnSuccess(true);
         setOnSuccessMessage(response.message);
         socket.disconnect();
-        
       }
     });
 
     socket.on('error', (error) => {
       console.log('Error', error);
     });
-
-  }, [global.id_commerce, global.token]);
+  }, [
+    global.description,
+    global.token,
+    global.wallet_commerce,
+    roomId,
+    route.params.amount,
+    transaction,
+  ]);
 
   return (
     <SafeAreaView
@@ -110,38 +156,51 @@ const TransactionScreen = () => {
       ]}>
       <Modal animationType="slide" transparent={true} visible={showModal}>
         <View style={TransactionStyles.modalView}>
-          <LottieAnimationView
-            source={
-              onSuccess
-                ? require('./../animations/success_animation.json.json')
-                : require('./../animations/error_animation.json.json')
-            }
-            autoPlay
-          />
+          <View style={TransactionStyles.animationContainer}>
+            <LottieAnimationView
+              source={
+                onSuccess
+                  ? require('./../animations/success_animation.json.json')
+                  : require('./../animations/error_animation.json.json')
+              }
+              autoPlay
+              autoSize
+              loop={false}
+            />
+          </View>
+          <Text
+            style={[
+              TransactionStyles.textAlertStyle,
+              {color: onSuccess ? Colors.$colorGreen : Colors.$colorRed},
+            ]}>
+            {onSuccessMessage}
+          </Text>
 
-          <Text>{onSuccessMessage}</Text>
-
-            { onSuccess ? <TouchableOpacity onPress={handleSuccess} style={TransactionStyles.handleButton}>
-            <Text>Confirmar</Text>
-          </TouchableOpacity> : <TouchableOpacity onPress={handleFail} style={TransactionStyles.handleButton}>
-            <Text>Confirmar</Text>
-          </TouchableOpacity>  }
-          
-
+          {onSuccess ? (
+            <TouchableOpacity
+              onPress={handleSuccess}
+              style={TransactionStyles.handleButton}>
+              <Text>Confirmar</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={handleFail}
+              style={TransactionStyles.handleButton}>
+              <Text>Confirmar</Text>
+            </TouchableOpacity>
+          )}
         </View>
-        
-      </Modal>  
+      </Modal>
       <Text style={TransactionStyles.mainTitle}>Procesar transaccion</Text>
       <View style={TransactionStyles.mainContainer}>
         <View style={TransactionStyles.transactionData}>
           <Text style={TransactionStyles.mediumText}>
-            ID: {showModal ? 'true' : 'false'}
+            Numero de orden: {transaction}
           </Text>
           <Text style={TransactionStyles.currencyText}>{currency}</Text>
           <Text style={TransactionStyles.amountText}>
             {parseFloat(route.params.amount).toFixed(2) || 0.0}
           </Text>
-
         </View>
         <View style={TransactionStyles.qrCodeContainer}>
           <QRCode
@@ -157,7 +216,9 @@ const TransactionScreen = () => {
         </View>
         <View style={TransactionStyles.cancelContainer}>
           <TouchableOpacity style={TransactionStyles.cancelButton}>
-            <Text onPress={navigation.navigate.pop} style={TransactionStyles.cancelText}>Cancelar transaccion</Text>
+            <Text onPress={cancelButton} style={TransactionStyles.cancelText}>
+              Cancelar transaccion
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -230,11 +291,12 @@ const TransactionStyles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 20,
     padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -245,8 +307,18 @@ const TransactionStyles = StyleSheet.create({
   },
   handleButton: {
     backgroundColor: Colors.$colorYellow,
-    borderRadius: 50, 
+    borderRadius: 50,
     padding: 10,
+  },
+  animationContainer: {
+    height: RFValue(150),
+    width: RFValue(150),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  textAlertStyle: {
+    fontSize: RFValue(24),
+    fontWeight: 'bold',
   },
 });
 

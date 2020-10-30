@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {Colors} from '../utils/constants.util';
+import {Colors, errorMessage} from '../utils/constants.util';
 import {GlobalStyles} from '../styles/global.style';
 import {RFValue} from 'react-native-responsive-fontsize';
 import LogoHeaderComponent from '../components/logoheader.component';
@@ -17,9 +17,45 @@ import ButtonWithIcon from '../components/button-with-icon.component';
 import IconButton from '../components/icon-button';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ButtonSupport from '../components/buttonsupport.component';
+import {showMessage} from 'react-native-flash-message';
 
 const RegisterScreen = ({navigation}) => {
   const [showPassword, setShowPassword] = useState(false);
+  // Fields of form
+  const [companyName, setCompanyName] = useState('');
+  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [companyRUC, setCompanyRUC] = useState('');
+
+  // Handling data
+  const _handleData = async () => {
+    if (password !== confirmPassword) {
+      console.log('Password does not match');
+      errorMessage('La contraseña no coincide');
+      showMessage({
+        message: 'La contraseña no coincide',
+        type: 'danger',
+        position: 'top',
+      });
+    } else if (email === '') {
+      console.log('Email is required');
+      showMessage({
+        message: 'Correo electronico requerido',
+        autoHide: false,
+        type: 'danger',
+        position: 'top',
+      });
+    } else if (companyRUC === '') {
+      console.log('Email is required');
+      errorMessage('El codigo de la empresa es requerido');
+    } else {
+      navigation.navigate('LegalData', {
+        commerceData: {companyName, email, username, password, companyRUC},
+      });
+    }
+  }
 
   return (
     <SafeAreaView style={GlobalStyles.superContainer}>
@@ -30,8 +66,10 @@ const RegisterScreen = ({navigation}) => {
           <View style={registerStyles.textInputWithImage}>
             <Icon name="person" color={Colors.$colorGray} size={18} />
             <TextInput
+              value={companyName}
+              onChangeText={value => setCompanyName(value)}
               placeholderTextColor={Colors.$colorGray}
-              placeholder="Nombre completo"
+              placeholder="Nombre de la compañia"
               style={registerStyles.textInputCol}
             />
             <View style={registerStyles.touchableCol} />
@@ -43,7 +81,24 @@ const RegisterScreen = ({navigation}) => {
             <Icon name="email" size={18} color={Colors.$colorGray} />
             <TextInput
               placeholderTextColor={Colors.$colorGray}
+              value={email}
+              onChangeText={value => setEmail(value)}
+              keyboardType='email-address'
               placeholder="Correo electrónico"
+              style={registerStyles.textInputCol}
+            />
+            <View style={registerStyles.touchableCol} />
+          </View>
+        </View>
+        <View style={registerStyles.spacing}>
+          <Text style={registerStyles.inputLabel}>Nombre de usuario</Text>
+          <View style={registerStyles.textInputWithImage}>
+            <Icon name="person" size={18} color={Colors.$colorGray} />
+            <TextInput
+              placeholderTextColor={Colors.$colorGray}
+              value={username}
+              onChangeText={value => setUsername(value)}
+              placeholder="Nombre de usuario"
               style={registerStyles.textInputCol}
             />
             <View style={registerStyles.touchableCol} />
@@ -55,6 +110,8 @@ const RegisterScreen = ({navigation}) => {
             <Icon color={Colors.$colorGray} size={18} name="lock" />
             <TextInput
               placeholder="Contraseña"
+              value={password}
+              onChangeText={value => setPassword(value)}
               placeholderTextColor={Colors.$colorGray}
               secureTextEntry={!showPassword}
               style={registerStyles.textInputCol}
@@ -76,6 +133,8 @@ const RegisterScreen = ({navigation}) => {
             <Icon color={Colors.$colorGray} size={18} name="lock" />
             <TextInput
               placeholder="Repita su contraseña"
+              value={confirmPassword}
+              onChangeText={value => setConfirmPassword(value)}
               placeholderTextColor={Colors.$colorGray}
               secureTextEntry={!showPassword}
               style={registerStyles.textInputCol}
@@ -99,6 +158,8 @@ const RegisterScreen = ({navigation}) => {
             <Icon name="location-city" color={Colors.$colorGray} size={18} />
             <TextInput
               placeholderTextColor={Colors.$colorGray}
+              value={companyRUC}
+              onChangeText={value => setCompanyRUC(value)}
               placeholder="Código de empresa"
               style={registerStyles.textInputCol}
             />
@@ -121,7 +182,7 @@ const RegisterScreen = ({navigation}) => {
             </View>
             <View style={registerStyles.column}>
               <ButtonWithIcon
-                onPress={() => navigation.navigate('LegalData')}
+                onPress={() => _handleData()}
                 text="Siguiente"
                 icon="arrow-right"
                 type="filled"

@@ -7,7 +7,6 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  Picker,
 } from 'react-native';
 import {Colors} from '../utils/constants.util';
 import {GlobalStyles} from '../styles/global.style';
@@ -19,20 +18,82 @@ import IconButton from '../components/icon-button';
 import ButtonWithIcon from '../components/button-with-icon.component';
 import ButtonSupport from '../components/buttonsupport.component';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {PickerItem} from 'react-native/Libraries/Components/Picker/Picker';
+import {Picker} from '@react-native-community/picker';
+import * as CoreService from './../services/core.services';
+import { showMessage } from 'react-native-flash-message';
+import {useRoute} from '@react-navigation/native';
 
 const LegalDataScreen = ({navigation}) => {
   const [currency, setCurrency] = useState('btc');
+  const route = useRoute();
   const DOCUMENT_TYPE = [
     {
-      name: "Cedula",
+      name: 'Cedula',
       value: 1,
     },
     {
-      name: "Pasaporte",
+      name: 'Pasaporte',
       value: 2,
     },
   ];
+  const [repFirstName, setFirstname] = useState('');
+  const [repLastName, setLastname] = useState('');
+  const [repEmail, setEmail] = useState('');
+  const [countryOptions, setCountryOptions] = useState([]);
+  const [country, setCountry] = useState('');
+  const [repPhone, setPhone] = useState('');
+  const [repIDType, setDoctype] = useState(1);
+  const [repIdNumber, setIdNumber] = useState('');
+
+  const getOptions = async () => {
+    const countries = await CoreService.getCountries();
+  }
+
+  const _handleSubmit = async () => {
+    if (repFirstName === '') {
+      showMessage({
+        message: 'Nombre requerido',
+        type: 'danger',
+      })
+    } else if (repLastName === '') {
+      showMessage({
+        message: 'Apellido requerido',
+        type: 'danger',
+      });
+    } else if (repEmail === '') {
+      showMessage({
+        message: 'Correo electronico requerido',
+        type: 'danger'
+      });
+    } else if (repPhone === '') {
+      showMessage({
+        message: 'Telefono requerido',
+        type: 'danger'
+      });
+    } else if (repIdNumber === '') {
+      showMessage({
+        message: 'Identificacion requerida',
+        type: 'danger'
+      });
+    } else {
+
+      const legalData = {
+        repFirstName,
+        repLastName,
+        repEmail,
+        country,
+        repPhone,
+        repIDType,
+        repIdNumber,
+        phoneCode: '',
+      };
+      const data = {
+        ...route.params.commerceData,
+        ...legalData,
+      };
+      navigation.navigate('LegalImages', {companyData: data});
+    }
+  }
   return (
     <SafeAreaView style={GlobalStyles.superContainer}>
       <ScrollView>
@@ -43,6 +104,8 @@ const LegalDataScreen = ({navigation}) => {
             <Icon name="person" size={18} color={Colors.$colorGray} />
             <TextInput
               placeholder="Nombre"
+              value={repFirstName}
+              onChangeText={(value) => setFirstname(value)}
               placeholderTextColor={Colors.$colorGray}
               style={registerStyles.textInputCol}
             />
@@ -54,6 +117,8 @@ const LegalDataScreen = ({navigation}) => {
           <View style={registerStyles.textInputWithImage}>
             <Icon name="person" size={18} color={Colors.$colorGray} />
             <TextInput
+              value={repLastName}
+              onChangeText={(value) => setLastname(value)}
               placeholder="Apellido"
               placeholderTextColor={Colors.$colorGray}
               style={registerStyles.textInputCol}
@@ -67,6 +132,8 @@ const LegalDataScreen = ({navigation}) => {
             <Icon name="email" color={Colors.$colorGray} size={18} />
             <TextInput
               placeholder="Correo electrónico"
+              value={repEmail}
+              onChangeText={(value) => setEmail(value)}
               placeholderTextColor={Colors.$colorGray}
               style={registerStyles.textInputCol}
             />
@@ -80,6 +147,8 @@ const LegalDataScreen = ({navigation}) => {
               <Icon name="location-on" size={18} color={Colors.$colorGray} />
               <TextInput
                 placeholder="País"
+                value={country}
+                onChangeText={(value) => setCountry(value)}
                 placeholderTextColor={Colors.$colorGray}
                 style={registerStyles.textInputCol}
               />
@@ -98,6 +167,8 @@ const LegalDataScreen = ({navigation}) => {
               <Icon name="phone" size={18} color={Colors.$colorGray} />
               <TextInput
                 style={registerStyles.textInputCol}
+                value={repPhone}
+                onChangeText={(value) => setPhone(value)}
                 placeholder="Teléfono"
                 placeholderTextColor={Colors.$colorGray}
               />
@@ -109,11 +180,11 @@ const LegalDataScreen = ({navigation}) => {
           <View style={registerStyles.textInputWithImage}>
             <Icon name="portrait" color={Colors.$colorGray} size={18} />
             <Picker
-                selectedValue={currency}
-                onValueChange={(itemValue) => setCurrency(itemValue)}
-                style={registerStyles.textInputCol}>
+              selectedValue={repIDType}
+              onValueChange={(itemValue) => setDoctype(itemValue)}
+              style={registerStyles.textInputCol}>
               {DOCUMENT_TYPE.map((item, index) => (
-                  <PickerItem key={index} label={item.name} value={item.value} />
+                <Picker.Item key={index} label={item.name} value={item.value} />
               ))}
             </Picker>
             <TouchableOpacity style={registerStyles.touchableCol}>
@@ -128,9 +199,11 @@ const LegalDataScreen = ({navigation}) => {
           <View style={registerStyles.textInputWithImage}>
             <Icon name="portrait" color={Colors.$colorGray} size={18} />
             <TextInput
-                style={registerStyles.textInputCol}
-                placeholder="Numero de identificacion"
-                placeholderTextColor={Colors.$colorGray}
+              style={registerStyles.textInputCol}
+              value={repIdNumber}
+              onChangeText={(value) => setIdNumber(value)}
+              placeholder="Numero de identificacion"
+              placeholderTextColor={Colors.$colorGray}
             />
             <View style={registerStyles.touchableCol} />
           </View>
@@ -151,7 +224,7 @@ const LegalDataScreen = ({navigation}) => {
             </View>
             <View style={registerStyles.column}>
               <ButtonWithIcon
-                onPress={() => navigation.navigate('LegalImages')}
+                onPress={_handleSubmit}
                 text="Siguiente"
                 icon="arrow-right"
                 type="filled"
