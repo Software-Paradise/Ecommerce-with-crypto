@@ -119,7 +119,7 @@ const RegisterCommerceScreen = ({ navigation }) => {
   /**
    * funcion que alerta al usuario de los permisos de ubicacions
    */
-  const aletPermissionsDecline = () => {
+  const aletPermissionsDecline = useCallback(() => {
     Alert.alert(
       "Permisos de ubicación",
       "AlyPay no ha podido procesar tu ubicación",
@@ -127,7 +127,13 @@ const RegisterCommerceScreen = ({ navigation }) => {
         {
           text: "Cancelar",
           style: "cancel",
-          onPress: () => { }
+          onPress: () => showMessage({
+            icon: "warning",
+            backgroundColor: Colors.$colorRed,
+            message: "Error en ubicacion",
+            description: "Para continuar deberá de activar su ubicación",
+            onLongPress: () => Linking.openSettings()
+          })
         },
         {
           text: "Abir Preferencias",
@@ -138,7 +144,7 @@ const RegisterCommerceScreen = ({ navigation }) => {
         }
       ]
     )
-  }
+  }, [])
 
   const GetGPSLocation = useCallback(async () => {
     await GeoLocation.configure({
@@ -161,10 +167,12 @@ const RegisterCommerceScreen = ({ navigation }) => {
 
       // Verifica si no hay permisos
       if (!checkPerm) {
-
         // pedir permisos
         const permGranted = await GeoLocation.requestPermission({
           ios: 'whenInUse',
+          android: {
+            detail: "coarse"
+          }
         });
 
 
