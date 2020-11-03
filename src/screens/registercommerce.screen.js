@@ -25,6 +25,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { http } from './../utils/constants.util';
 import { useRoute } from '@react-navigation/native';
 import { showMessage } from 'react-native-flash-message';
+import { PERMISSIONS, request } from 'react-native-permissions';
 
 let CURRENT_LOCATION = {};
 
@@ -135,22 +136,21 @@ const RegisterCommerceScreen = ({ navigation }) => {
       if (!checkPerm) {
         const permGranted = await GeoLocation.requestPermission({
           ios: 'whenInUse',
+          android: {
+            detail: 'coarse',
+          },
         });
 
         if (!permGranted) {
           console.log('Permission not granted');
+
+          request(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION).then(e => console.log(e));
         }
       }
 
-<<<<<<< HEAD
-      GeoLocation.getLatestLocation({timeout: 1000}).then((current) => {
-        setLocation(current);
-      });
-=======
-      GeoLocation.getLatestLocation({ timeout: 1000 }).then(e => console.log(e));
+      GeoLocation.getLatestLocation({ timeout: 70000 }).then(setLocation);
 
 
->>>>>>> d9da65c1306b43d7ea45b6ee733418ae096aa08c
     } catch (error) {
       errorMessage(error.toString());
     }
