@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Text,
   StyleSheet,
@@ -9,32 +9,32 @@ import {
   ScrollView,
   KeyboardAvoidingView,
 } from 'react-native';
-import {GlobalStyles} from '../styles/global.style';
+import { GlobalStyles } from '../styles/global.style';
 import LogoHeaderComponent from '../components/logoheader.component';
-import {Colors, errorMessage} from '../utils/constants.util';
+import { Colors, errorMessage } from '../utils/constants.util';
 import FooterComponent from '../components/footer.component';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {registerStyles} from './register.screen';
-import MapView, {Marker} from 'react-native-maps';
+import { registerStyles } from './register.screen';
+import MapView, { Marker } from 'react-native-maps';
 import GeoLocation from 'react-native-location';
 import Modal from 'react-native-modal';
 import IconButton from '../components/icon-button';
 import ButtonWithIcon from '../components/button-with-icon.component';
 import ButtonSupport from '../components/buttonsupport.component';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {http} from './../utils/constants.util';
-import {useRoute} from '@react-navigation/native';
-import {showMessage} from 'react-native-flash-message';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { http } from './../utils/constants.util';
+import { useRoute } from '@react-navigation/native';
+import { showMessage } from 'react-native-flash-message';
 
 let CURRENT_LOCATION = {};
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-const RegisterCommerceScreen = ({navigation}) => {
+const RegisterCommerceScreen = ({ navigation }) => {
   const route = useRoute();
   const [showPassword, setShowPassword] = useState(false);
   const [commerceName, setCommerceName] = useState('');
@@ -59,7 +59,7 @@ const RegisterCommerceScreen = ({navigation}) => {
       ),
     );
 
-    return ( {
+    return ({
       latitude: lat,
       longitude: lng,
       latitudeDelta,
@@ -92,7 +92,7 @@ const RegisterCommerceScreen = ({navigation}) => {
           longitude: location.longitude,
         };
 
-        const {data} = await http.post(
+        const { data } = await http.post(
           '/ecommerce/company/commerce',
           commerceData,
         );
@@ -114,7 +114,7 @@ const RegisterCommerceScreen = ({navigation}) => {
     }
   };
 
-  const GetGPSLocation = async () => {
+  const GetGPSLocation = useCallback(async () => {
     await GeoLocation.configure({
       distanceFilter: 5.0,
       desiredAccuracy: {
@@ -142,17 +142,25 @@ const RegisterCommerceScreen = ({navigation}) => {
         }
       }
 
+<<<<<<< HEAD
       GeoLocation.getLatestLocation({timeout: 1000}).then((current) => {
         setLocation(current);
       });
+=======
+      GeoLocation.getLatestLocation({ timeout: 1000 }).then(e => console.log(e));
+
+
+>>>>>>> d9da65c1306b43d7ea45b6ee733418ae096aa08c
     } catch (error) {
       errorMessage(error.toString());
     }
-  };
+  }, [])
 
   useEffect(() => {
     GetGPSLocation();
   }, []);
+
+  console.log(Object.values(location).length, location)
 
   return (
     <SafeAreaView style={GlobalStyles.superContainer}>
@@ -255,14 +263,59 @@ const RegisterCommerceScreen = ({navigation}) => {
             </View>
             <Modal isVisible={showFullScreen}>
               <View style={RegisterCommerceStyles.mapFullScreen}>
+
+                {
+                  (Object.values(location).length) &&
+                  <MapView
+                    style={RegisterCommerceStyles.map}
+                    initialRegion={{
+                      latitude: location.latitude,
+                      longitude: location.longitude,
+                      latitudeDelta: 0.050000,
+                      longitudeDelta: 0.050000,
+                    }}
+                    onMarkerDragEnd={(event) =>
+                      setLocation({
+                        latitude: event.nativeEvent.coordinate.latitude,
+                        longitude: event.nativeEvent.coordinate.longitude,
+                      })
+                    }>
+                    <Marker
+                      coordinate={{
+                        latitude: location.latitude,
+                        longitude: location.longitude,
+                      }} rr
+                      title={commerceName}
+                      pinColor={Colors.$colorYellow}
+                      draggable={true}
+                      id="commerce-location"
+                      zIndex={9999}
+                    />
+                  </MapView>
+                }
+
+                <TouchableOpacity
+                  onPress={(e) => setShowFullScreen(!showFullScreen)}
+                  style={RegisterCommerceStyles.fullScreenButton}>
+                  <Icon
+                    name={showFullScreen ? 'fullscreen-exit' : 'fullscreen'}
+                    size={18}
+                  />
+                </TouchableOpacity>
+              </View>
+            </Modal>
+            <View style={RegisterCommerceStyles.mapContainer}>
+
+              {
+                (Object.values(location).length > 0) &&
                 <MapView
                   style={RegisterCommerceStyles.map}
                   initialRegion={{
                     latitude: location.latitude,
                     longitude: location.longitude,
-                    latitudeDelta: 0.050000,
-                    longitudeDelta: 0.050000,
-                    }}
+                    latitudeDelta: 0.050,
+                    longitudeDelta: 0.050,
+                  }}
                   onMarkerDragEnd={(event) =>
                     setLocation({
                       latitude: event.nativeEvent.coordinate.latitude,
@@ -281,43 +334,8 @@ const RegisterCommerceScreen = ({navigation}) => {
                     zIndex={9999}
                   />
                 </MapView>
-                <TouchableOpacity
-                  onPress={(e) => setShowFullScreen(!showFullScreen)}
-                  style={RegisterCommerceStyles.fullScreenButton}>
-                  <Icon
-                    name={showFullScreen ? 'fullscreen-exit' : 'fullscreen'}
-                    size={18}
-                  />
-                </TouchableOpacity>
-              </View>
-            </Modal>
-            <View style={RegisterCommerceStyles.mapContainer}>
-              <MapView
-                style={RegisterCommerceStyles.map}
-                initialRegion={{
-                  latitude: location.latitude,
-                  longitude: location.longitude,
-                  latitudeDelta: 0.050,
-                  longitudeDelta: 0.050,
-                }}
-                onMarkerDragEnd={(event) =>
-                  setLocation({
-                    latitude: event.nativeEvent.coordinate.latitude,
-                    longitude: event.nativeEvent.coordinate.longitude,
-                  })
-                }>
-                <Marker
-                  coordinate={{
-                    latitude: location.latitude,
-                    longitude: location.longitude,
-                  }}
-                  title={commerceName}
-                  pinColor={Colors.$colorYellow}
-                  draggable={true}
-                  id="commerce-location"
-                  zIndex={9999}
-                />
-              </MapView>
+              }
+
               <TouchableOpacity
                 onPress={(e) => setShowFullScreen(!showFullScreen)}
                 style={RegisterCommerceStyles.fullScreenButton}>
