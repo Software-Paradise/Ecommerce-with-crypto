@@ -26,6 +26,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { http } from './../utils/constants.util';
 import { useRoute } from '@react-navigation/native';
 import { showMessage } from 'react-native-flash-message';
+import { PERMISSIONS, request } from 'react-native-permissions';
 
 let CURRENT_LOCATION = {};
 
