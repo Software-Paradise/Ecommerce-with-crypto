@@ -7,7 +7,8 @@ import {
   View,
   Dimensions,
   ScrollView,
-  KeyboardAvoidingView,
+  Linking,
+  Alert,
 } from 'react-native';
 import { GlobalStyles } from '../styles/global.style';
 import LogoHeaderComponent from '../components/logoheader.component';
@@ -44,7 +45,7 @@ const RegisterCommerceScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showFullScreen, setShowFullScreen] = useState(false);
-  const [location, setLocation] = useState({});
+  const [location, setLocation] = useState(null);
 
   const getRegionCoords = (lat, lng, distance) => {
     distance = distance / 2;
@@ -115,6 +116,31 @@ const RegisterCommerceScreen = ({ navigation }) => {
     }
   };
 
+
+  /**
+   * funcion que alerta al usuario de los permisos de ubicacions
+   */
+  const aletPermissionsDecline = () => {
+    Alert.alert(
+      "Permisos de ubicación",
+      "AlyPay no ha podido procesar tu ubicación",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+          onPress: () => { }
+        },
+        {
+          text: "Abir Preferencias",
+          style: "destructive",
+          onPress: () => {
+            Linking.openSettings()
+          }
+        }
+      ]
+    )
+  }
+
   const GetGPSLocation = useCallback(async () => {
     await GeoLocation.configure({
       distanceFilter: 5.0,
@@ -126,6 +152,7 @@ const RegisterCommerceScreen = ({ navigation }) => {
     });
 
     try {
+      // Verificamos si el dispositivo tiene permisos para GPS
       const checkPerm = await GeoLocation.checkPermission({
         ios: 'whenInUse',
         android: {
@@ -133,7 +160,10 @@ const RegisterCommerceScreen = ({ navigation }) => {
         },
       });
 
+      // Verifica si no hay permisos
       if (!checkPerm) {
+
+        // pedir permisos
         const permGranted = await GeoLocation.requestPermission({
           ios: 'whenInUse',
           android: {
@@ -141,14 +171,21 @@ const RegisterCommerceScreen = ({ navigation }) => {
           },
         });
 
-        if (!permGranted) {
-          console.log('Permission not granted');
 
-          request(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION).then(e => console.log(e));
+        // El usuario no permitio
+        if (!permGranted) {
+          aletPermissionsDecline()
         }
       }
 
-      GeoLocation.getLatestLocation({ timeout: 70000 }).then(setLocation);
+      const gps = await GeoLocation.getLatestLocation()
+
+      // verificamos si la ubicacion es nulla
+      if (gps === null) {
+        aletPermissionsDecline()
+      }
+
+      setLocation(gps)
 
 
     } catch (error) {
@@ -159,8 +196,6 @@ const RegisterCommerceScreen = ({ navigation }) => {
   useEffect(() => {
     GetGPSLocation();
   }, []);
-
-  console.log(Object.values(location).length, location)
 
   return (
     <SafeAreaView style={GlobalStyles.superContainer}>
@@ -265,7 +300,7 @@ const RegisterCommerceScreen = ({ navigation }) => {
               <View style={RegisterCommerceStyles.mapFullScreen}>
 
                 {
-                  (Object.values(location).length) &&
+                  (location !== null) &&
                   <MapView
                     style={RegisterCommerceStyles.map}
                     initialRegion={{
@@ -307,7 +342,7 @@ const RegisterCommerceScreen = ({ navigation }) => {
             <View style={RegisterCommerceStyles.mapContainer}>
 
               {
-                (Object.values(location).length > 0) &&
+                (location !== null) &&
                 <MapView
                   style={RegisterCommerceStyles.map}
                   initialRegion={{
