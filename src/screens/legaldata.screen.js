@@ -139,9 +139,8 @@ const LegalDataScreen = ({navigation}) => {
   return (
     <SafeAreaView style={GlobalStyles.superContainer}>
       <Modal
-        animationIn="fadeIn"
-        backdropOpacity={0.9}
-        animationOut="fadeOut"
+        animationType="slide"
+        transparent={true}
         onBackdropPress={(_) => setShowCountries(false)}
         onBackButtonPress={(_) => setShowCountries(false)}
         visible={showCountries}>

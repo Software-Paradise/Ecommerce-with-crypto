@@ -142,9 +142,9 @@ const RegisterCommerceScreen = ({navigation}) => {
         }
       }
 
-      return await GeoLocation.getLatestLocation({timeout: 1000});
-
-      
+      GeoLocation.getLatestLocation({timeout: 1000}).then((current) => {
+        setLocation(current);
+      });
     } catch (error) {
       errorMessage(error.toString());
     }
