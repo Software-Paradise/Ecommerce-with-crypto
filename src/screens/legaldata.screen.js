@@ -1,14 +1,15 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
   StyleSheet,
   View,
-  Image,
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Modal,
+  FlatList,
 } from 'react-native';
-import {Colors} from '../utils/constants.util';
+import {Colors, errorMessage, http} from '../utils/constants.util';
 import {GlobalStyles} from '../styles/global.style';
 import LogoHeaderComponent from '../components/logoheader.component';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -20,8 +21,11 @@ import ButtonSupport from '../components/buttonsupport.component';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Picker} from '@react-native-community/picker';
 import * as CoreService from './../services/core.services';
-import { showMessage } from 'react-native-flash-message';
+import {showMessage} from 'react-native-flash-message';
 import {useRoute} from '@react-navigation/native';
+
+import {RFValue} from 'react-native-responsive-fontsize';
+import {G} from 'react-native-svg';
 
 const LegalDataScreen = ({navigation}) => {
   const [currency, setCurrency] = useState('btc');
@@ -40,21 +44,60 @@ const LegalDataScreen = ({navigation}) => {
   const [repLastName, setLastname] = useState('');
   const [repEmail, setEmail] = useState('');
   const [countryOptions, setCountryOptions] = useState([]);
-  const [country, setCountry] = useState('');
+  const [country, setCountry] = useState(10);
+  const [showCountries, setShowCountries] = useState(false);
+  const [filter, setFilter] = useState('');
   const [repPhone, setPhone] = useState('');
   const [repIDType, setDoctype] = useState(1);
   const [repIdNumber, setIdNumber] = useState('');
 
-  const getOptions = async () => {
-    const countries = await CoreService.getCountries();
-  }
+  const ConfigurateComponent = async () => {
+    try {
+      const {data} = await http.get('/register/countries');
+
+      setCountryOptions(data);
+    } catch (error) {
+      errorMessage(error.toString());
+    }
+  };
+
+  const selectedCountry = (item) => {
+    console.log(item);
+    setCountry(item);
+    setShowCountries(false);
+  };
+
+  const toggleModalCountries = () => {
+    setShowCountries(true);
+  };
+
+  const ItemCountry = ({item, index}) => {
+    if (
+      item.name.length > 0 &&
+      item.name.toLowerCase().search(filter.toLocaleLowerCase()) > -1
+    ) {
+      return (
+        <TouchableOpacity
+          style={legalDataStyles.itemCountry}
+          key={index}
+          onPress={(_) => selectedCountry(index)}>
+          <Text style={{color: '#FFF'}}>{item.name}</Text>
+          <Text style={{color: Colors.$colorYellow}}>{item.phoneCode}</Text>
+        </TouchableOpacity>
+      );
+    }
+  };
+
+  useEffect(() => {
+    ConfigurateComponent();
+  }, []);
 
   const _handleSubmit = async () => {
     if (repFirstName === '') {
       showMessage({
         message: 'Nombre requerido',
         type: 'danger',
-      })
+      });
     } else if (repLastName === '') {
       showMessage({
         message: 'Apellido requerido',
@@ -63,29 +106,28 @@ const LegalDataScreen = ({navigation}) => {
     } else if (repEmail === '') {
       showMessage({
         message: 'Correo electronico requerido',
-        type: 'danger'
+        type: 'danger',
       });
     } else if (repPhone === '') {
       showMessage({
         message: 'Telefono requerido',
-        type: 'danger'
+        type: 'danger',
       });
     } else if (repIdNumber === '') {
       showMessage({
         message: 'Identificacion requerida',
-        type: 'danger'
+        type: 'danger',
       });
     } else {
-
       const legalData = {
         repFirstName,
         repLastName,
         repEmail,
-        country,
+        country: countryOptions[country].name,
         repPhone,
         repIDType,
         repIdNumber,
-        phoneCode: '',
+        phoneCode: countryOptions[country].phoneCode,
       };
       const data = {
         ...route.params.commerceData,
@@ -93,9 +135,33 @@ const LegalDataScreen = ({navigation}) => {
       };
       navigation.navigate('LegalImages', {companyData: data});
     }
-  }
+  };
   return (
     <SafeAreaView style={GlobalStyles.superContainer}>
+      <Modal
+        animationIn="fadeIn"
+        backdropOpacity={0.9}
+        animationOut="fadeOut"
+        onBackdropPress={(_) => setShowCountries(false)}
+        onBackButtonPress={(_) => setShowCountries(false)}
+        visible={showCountries}>
+        <View style={legalDataStyles.containerModal}>
+          <TextInput
+            style={registerStyles.TextInput}
+            placeholder="Buscar"
+            placeholderTextColor="#FFF"
+            value={filter}
+            onChangeText={(value) => setFilter(value)}
+          />
+          <View style={{height: 10}} />
+          <FlatList
+            keyboardShouldPersistTaps="always"
+            data={countryOptions}
+            renderItem={ItemCountry}
+            keyExtractor={(_, i) => i.toString()}
+          />
+        </View>
+      </Modal>
       <ScrollView>
         <LogoHeaderComponent title="Representante legal" />
         <View style={legalDataStyles.spacing}>
@@ -140,41 +206,39 @@ const LegalDataScreen = ({navigation}) => {
             <View style={registerStyles.touchableCol} />
           </View>
         </View>
-        <View style={registerStyles.phoneRow}>
-          <View style={registerStyles.countryField}>
-            <Text style={registerStyles.inputLabel}>País</Text>
-            <View style={registerStyles.textInputWithImage}>
-              <Icon name="location-on" size={18} color={Colors.$colorGray} />
-              <TextInput
-                placeholder="País"
-                value={country}
-                onChangeText={(value) => setCountry(value)}
-                placeholderTextColor={Colors.$colorGray}
-                style={registerStyles.textInputCol}
-              />
-              <TouchableOpacity style={registerStyles.touchableCol}>
-                <Icon
-                  color={Colors.$colorYellow}
-                  size={18}
-                  name="unfold-more"
+        {countryOptions.length > 0 && (
+          <>
+            <Text style={registerStyles.inputLabel}>Numero de telefono</Text>
+
+            <View style={{marginLeft: RFValue(20)}}>
+              <View style={legalDataStyles.rowPhoneNumber}>
+                <TouchableOpacity
+                  style={[
+                    GlobalStyles.textInput,
+                    {
+                      paddingVertical: RFValue(15),
+                      paddingHorizontal: RFValue(20),
+                      marginRight: RFValue(8),
+                    },
+                  ]}
+                  onPress={(_) => toggleModalCountries(true)}>
+                  <Text style={{color: Colors.$colorYellow}}>
+                    {countryOptions[country].phoneCode}
+                  </Text>
+                </TouchableOpacity>
+
+                <TextInput
+                  style={[GlobalStyles.textInput, {flex: 0.9}]}
+                  value={repPhone}
+                  autoCorrect={false}
+                  keyboardType="numeric"
+                  keyboardAppearance="dark"
+                  onChangeText={(value) => setPhone(value)}
                 />
-              </TouchableOpacity>
+              </View>
             </View>
-          </View>
-          <View style={registerStyles.phoneField}>
-            <Text style={legalDataStyles.inputLabel}>Número de Teléfono</Text>
-            <View style={registerStyles.textInputWithImage}>
-              <Icon name="phone" size={18} color={Colors.$colorGray} />
-              <TextInput
-                style={registerStyles.textInputCol}
-                value={repPhone}
-                onChangeText={(value) => setPhone(value)}
-                placeholder="Teléfono"
-                placeholderTextColor={Colors.$colorGray}
-              />
-            </View>
-          </View>
-        </View>
+          </>
+        )}
         <View style={registerStyles.spacing}>
           <Text style={registerStyles.inputLabel}>Tipo de identificación</Text>
           <View style={registerStyles.textInputWithImage}>
@@ -239,10 +303,6 @@ const LegalDataScreen = ({navigation}) => {
   );
 };
 
-const contactSupport = () => {
-  console.log('Printing support');
-};
-
 const legalDataStyles = StyleSheet.create({
   container: {
     flex: 1,
@@ -271,6 +331,20 @@ const legalDataStyles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: 5,
     paddingHorizontal: 20,
+  },
+  rowPhoneNumber: {
+    alignItems: "center",
+    flexDirection: "row",
+    flex: 0.8,
+  },
+
+  containerModal: {
+    alignSelf: "center",
+    backgroundColor: Colors.$colorMain,
+    borderRadius: 10,
+    padding: 10,
+    height: "80%",
+    width: "80%",
   },
   countryField: {
     flex: 0.2,
@@ -316,6 +390,19 @@ const legalDataStyles = StyleSheet.create({
   },
   whatsappOpacity: {
     height: 100,
+  },
+  selectCodeCountry: {
+    borderRadius: 5,
+    backgroundColor: Colors.colorBlack,
+    padding: 10,
+  },
+  itemCountry: {
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    borderRadius: 5,
+    padding: 10,
+    marginVertical: 5,
   },
 });
 

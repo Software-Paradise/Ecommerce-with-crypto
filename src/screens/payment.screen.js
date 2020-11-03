@@ -1,17 +1,26 @@
-import React, {useState} from 'react';
+/* eslint-disable prettier/prettier */
+import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, TextInput, Dimensions} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {GlobalStyles} from '../styles/global.style';
 import {Colors, logOutApp} from '../utils/constants.util';
 import {registerStyles} from './register.screen';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
 
-const PaymentScreen = ({navigation}) => {
+
+const PaymentScreen = () => {
+    const navigation = useNavigation();
     const [amount, setAmount] = useState('');
+
+    useEffect(() => {
+        const _unsubscribe = navigation.addListener('focus', () => {
+            setAmount('');
+        });
+
+        return _unsubscribe;
+    }, []);
+
     return (
-        <SafeAreaView style={GlobalStyles.superContainer}>
            <View style={PaymentStyles.mainContainer}>
                 <View style={PaymentStyles.inputContainer}>
                     <Text style={PaymentStyles.titleLabel}>
@@ -39,7 +48,6 @@ const PaymentScreen = ({navigation}) => {
                        </Text>
                        <MaterialCommunityIcons name='qrcode-scan' size={24} color={Colors.$colorBlack}/>
                    </TouchableOpacity>
-                   
                    <TouchableOpacity style={PaymentStyles.buttonFill} onPress={logOutApp}>
                         <Text style={PaymentStyles.buttonText}>
                             Salir
@@ -48,13 +56,12 @@ const PaymentScreen = ({navigation}) => {
                    </TouchableOpacity>
                </View>
            </View>
-        </SafeAreaView>
+        
     )
 };
 
 const PaymentStyles = StyleSheet.create({
     mainContainer: {
-        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },

@@ -21,6 +21,7 @@ import {showMessage} from 'react-native-flash-message';
 
 const RegisterScreen = ({navigation}) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   // Fields of form
   const [companyName, setCompanyName] = useState('');
   const [email, setEmail] = useState('');
@@ -136,14 +137,14 @@ const RegisterScreen = ({navigation}) => {
               value={confirmPassword}
               onChangeText={value => setConfirmPassword(value)}
               placeholderTextColor={Colors.$colorGray}
-              secureTextEntry={!showPassword}
+              secureTextEntry={!showConfirmPassword}
               style={registerStyles.textInputCol}
             />
             <TouchableOpacity
-              onPress={(e) => setShowPassword(!showPassword)}
+              onPress={(e) => setShowConfirmPassword(!showConfirmPassword)}
               style={registerStyles.touchableCol}>
               <Icon
-                name={showPassword ? 'visibility-off' : 'visibility'}
+                name={showConfirmPassword ? 'visibility-off' : 'visibility'}
                 color={Colors.$colorYellow}
                 size={18}
               />

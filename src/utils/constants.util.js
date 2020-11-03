@@ -11,7 +11,7 @@ import {
 import TouchID from 'react-native-touch-id';
 import axios from 'axios';
 import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
-
+import Clipboard from '@react-native-community/clipboard';
 import store from '../store/index';
 import {SETPERMISSIONS, DELETESTORAGE, SETLOADER} from '../store/actionTypes';
 import {showMessage} from 'react-native-flash-message';
@@ -177,15 +177,37 @@ export const successMessage = (description = '', title = 'AlyPay') => {
   });
 };
 
-const PORT = '3000';
+const PORT = '3085';
 
-export const serverAddress =
-  Platform.OS === 'ios'
-    ? `http://localhost:${PORT}`
-    : `http://192.168.0.134:${PORT}`;
+// export const serverAddress =
+//   Platform.OS === 'ios'
+//     ? `http://localhost:${PORT}`
+//     : `http://192.168.0.119:${PORT}`;
 
+export const serverAddress = 'https://test-after-prod.uc.r.appspot.com';
+// export const socketAddress = `http://192.168.0.117:${PORT}`;
+export const socketAddress = 'https://test-after-prod.uc.r.appspot.com';
 
-export const socketAddress = `http://192.168.0.134:${PORT}`;
+export const TYPE_VIEW = {
+  ORDER: 'order',
+  HISTORY: 'history',
+};
+
+export const CopyClipboard = async (text = "") => {
+  await Clipboard.setString(text)
+  Toast.show("Copiado a portapeles", Toast.LONG)
+}
+
+export const switchItems = [
+  {
+    text: 'Agregar orden',
+    state: TYPE_VIEW.ORDER,
+  },
+  {
+    text: 'Historial',
+    state: TYPE_VIEW.HISTORY,
+  },
+];
 
 export const http = axios.create({
   baseURL: serverAddress,

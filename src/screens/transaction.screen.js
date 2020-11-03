@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import LottieAnimationView from 'lottie-react-native';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {GlobalStyles} from '../styles/global.style';
 import {Colors, logOutApp, socketAddress} from '../utils/constants.util';
@@ -46,6 +46,7 @@ const TransactionScreen = ({navigation}) => {
 
   const handleSuccess = () => {
     setShowModal(!showModal);
+    navigation.goBack();
   };
 
   const handleFail = () => {
@@ -53,13 +54,13 @@ const TransactionScreen = ({navigation}) => {
   };
 
   const cancelButton = () => {
-    navigation.navigate('Payment');
+    navigation.goBack();
     // connectionSocket.emit('disconnect', 'cancel_transaction');
     connectionSocket.disconnect(true);
   };
 
   useEffect(() => {
-    const _unsubscribe = navigation.addListener('focus', () => {  
+    const _unsubscribe = navigation.addListener('focus', () => {
       connection();
     });
 
@@ -112,7 +113,8 @@ const TransactionScreen = ({navigation}) => {
       setRoomId(message.id);
       setTransaction(message.order);
 
-      console.log('On message',
+      console.log(
+        'On message',
         transaction,
         global.wallet_commerce,
         global.description,
@@ -194,7 +196,11 @@ const TransactionScreen = ({navigation}) => {
       <Text style={TransactionStyles.mainTitle}>Procesar transaccion</Text>
       <View style={TransactionStyles.mainContainer}>
         <View style={TransactionStyles.transactionData}>
-          <Text style={TransactionStyles.mediumText}>
+          <Text
+            style={[
+              TransactionStyles.mediumText,
+              {color: Colors.$colorYellow},
+            ]}>
             Numero de orden: {transaction}
           </Text>
           <Text style={TransactionStyles.currencyText}>{currency}</Text>

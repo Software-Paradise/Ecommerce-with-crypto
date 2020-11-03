@@ -11,39 +11,22 @@ import {
 } from 'react-native';
 import {GlobalStyles} from '../styles/global.style';
 import LogoHeaderComponent from '../components/logoheader.component';
-import {Colors} from '../utils/constants.util';
+import {Colors, errorMessage} from '../utils/constants.util';
 import FooterComponent from '../components/footer.component';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {registerStyles} from './register.screen';
 import MapView, {Marker} from 'react-native-maps';
-import RNLocation from 'react-native-location';
+import GeoLocation from 'react-native-location';
 import Modal from 'react-native-modal';
 import IconButton from '../components/icon-button';
 import ButtonWithIcon from '../components/button-with-icon.component';
 import ButtonSupport from '../components/buttonsupport.component';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {http} from './../utils/constants.util';
+import {useRoute} from '@react-navigation/native';
+import {showMessage} from 'react-native-flash-message';
 
 let CURRENT_LOCATION = {};
-
-RNLocation.configure({
-  distanceFilter: 100, // Meters
-  desiredAccuracy: {
-    ios: 'best',
-    android: 'balancedPowerAccuracy',
-  },
-  // Android only
-  androidProvider: 'auto',
-  interval: 5000, // Milliseconds
-  fastestInterval: 10000, // Milliseconds
-  maxWaitTime: 5000, // Milliseconds
-  // iOS Only
-  activityType: 'other',
-  allowsBackgroundLocationUpdates: false,
-  headingFilter: 1, // Degrees
-  headingOrientation: 'portrait',
-  pausesLocationUpdatesAutomatically: false,
-  showsBackgroundLocationIndicator: false,
-});
 
 const {width, height} = Dimensions.get('window');
 
@@ -52,29 +35,124 @@ const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 const RegisterCommerceScreen = ({navigation}) => {
+  const route = useRoute();
   const [showPassword, setShowPassword] = useState(false);
   const [commerceName, setCommerceName] = useState('');
+  const [zipCode, setZipCode] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showFullScreen, setShowFullScreen] = useState(false);
-  const [location, setLocation] = useState({
-    latitude: CURRENT_LOCATION.latitude || 0.0,
-    longitude: CURRENT_LOCATION.longitude || 0.0,
-  });
+  const [location, setLocation] = useState({});
+
+  const getRegionCoords = (lat, lng, distance) => {
+    distance = distance / 2;
+    const circumference = 40075;
+    const oneDegreeOfLatitudeInMeters = 111.32 * 1000;
+    const angularDistance = distance / circumference;
+
+    const latitudeDelta = distance / oneDegreeOfLatitudeInMeters;
+    const longitudeDelta = Math.abs(
+      Math.atan2(
+        Math.sin(angularDistance) * Math.cos(lat),
+        Math.cos(angularDistance) - Math.sin(lat) * Math.sin(lat),
+      ),
+    );
+
+    return ( {
+      latitude: lat,
+      longitude: lng,
+      latitudeDelta,
+      longitudeDelta,
+    });
+  };
+
+  const _handleSubmit = async () => {
+    try {
+      if (commerceName === '') {
+        errorMessage('Nombre de comercio requerido');
+      } else if (zipCode === '') {
+        errorMessage('Codigo postal requerido');
+      } else if (email === '') {
+        errorMessage('Correo electronico requerido');
+      } else if (password === '') {
+        errorMessage('Contraseña requerida');
+      } else {
+        const commerceData = {
+          username: commerceName.trim().toLowerCase(),
+          email: email,
+          password: password,
+          commerceType: 2,
+          description: commerceName,
+          idCompany: route.params.companyId,
+          emailCommerce: email,
+          phoneCommerce: 0,
+          physicalAddress: 'Managua',
+          latitude: location.latitude,
+          longitude: location.longitude,
+        };
+
+        const {data} = await http.post(
+          '/ecommerce/company/commerce',
+          commerceData,
+        );
+
+        if (data.error) {
+          errorMessage(data.message);
+        }
+
+        showMessage({
+          message: 'Exito',
+          description: 'Tu comercio se ha creado con exito',
+          type: 'success',
+        });
+
+        navigation.navigate('Login');
+      }
+    } catch (e) {
+      errorMessage(e.message);
+    }
+  };
+
+  const GetGPSLocation = async () => {
+    await GeoLocation.configure({
+      distanceFilter: 5.0,
+      desiredAccuracy: {
+        ios: 'best',
+        android: 'balancedPowerAccuracy',
+      },
+      allowsBackgroundLocationUpdates: false,
+    });
+
+    try {
+      const checkPerm = await GeoLocation.checkPermission({
+        ios: 'whenInUse',
+        android: {
+          detail: 'coarse',
+        },
+      });
+
+      if (!checkPerm) {
+        const permGranted = await GeoLocation.requestPermission({
+          ios: 'whenInUse',
+        });
+
+        if (!permGranted) {
+          console.log('Permission not granted');
+        }
+      }
+
+      return await GeoLocation.getLatestLocation({timeout: 1000});
+
+      
+    } catch (error) {
+      errorMessage(error.toString());
+    }
+  };
 
   useEffect(() => {
-    RNLocation.requestPermission({
-      ios: 'whenInUse',
-      android: {
-        detail: 'coarse',
-      },
-    }).then((granted) => {
-      // eslint-disable-next-line no-unused-vars
-      const locationSubscription = RNLocation.subscribeToLocationUpdates(
-        (locations) => {
-          CURRENT_LOCATION = locations[locations.length - 1];
-        },
-      );
-    });
-  });
+    GetGPSLocation();
+  }, []);
 
   return (
     <SafeAreaView style={GlobalStyles.superContainer}>
@@ -90,7 +168,7 @@ const RegisterCommerceScreen = ({navigation}) => {
                   placeholder="Nombre de comercio"
                   placeholderTextColor={Colors.$colorGray}
                   value={commerceName}
-                  onChange={($event) => setCommerceName($event.target.value)}
+                  onChangeText={(value) => setCommerceName(value)}
                   style={registerStyles.textInputCol}
                 />
                 <View style={registerStyles.touchableCol} />
@@ -102,6 +180,8 @@ const RegisterCommerceScreen = ({navigation}) => {
                 <Icon name="location-on" color={Colors.$colorGray} size={18} />
                 <TextInput
                   placeholder="Código postal"
+                  value={zipCode}
+                  onChangeText={(value) => setZipCode(value)}
                   placeholderTextColor={Colors.$colorGray}
                   style={registerStyles.textInputCol}
                 />
@@ -114,6 +194,8 @@ const RegisterCommerceScreen = ({navigation}) => {
                 <Icon name="email" size={18} color={Colors.$colorGray} />
                 <TextInput
                   placeholder="Correo electrónico"
+                  value={email}
+                  onChangeText={(value) => setEmail(value)}
                   placeholderTextColor={Colors.$colorGray}
                   style={registerStyles.textInputCol}
                 />
@@ -126,6 +208,8 @@ const RegisterCommerceScreen = ({navigation}) => {
                 <Icon name="lock" color={Colors.$colorGray} size={18} />
                 <TextInput
                   secureTextEntry={!showPassword}
+                  value={password}
+                  onChangeText={(value) => setPassword(value)}
                   placeholder="Contraseña"
                   placeholderTextColor={Colors.$colorGray}
                   style={registerStyles.textInputCol}
@@ -150,6 +234,8 @@ const RegisterCommerceScreen = ({navigation}) => {
                 <TextInput
                   secureTextEntry={!showPassword}
                   placeholder="Repita su contraseña"
+                  value={confirmPassword}
+                  onChangeText={(value) => setConfirmPassword(value)}
                   placeholderTextColor={Colors.$colorGray}
                   style={registerStyles.textInputCol}
                 />
@@ -174,9 +260,9 @@ const RegisterCommerceScreen = ({navigation}) => {
                   initialRegion={{
                     latitude: location.latitude,
                     longitude: location.longitude,
-                    latitudeDelta: LATITUDE_DELTA,
-                    longitudeDelta: LONGITUDE_DELTA,
-                  }}
+                    latitudeDelta: 0.050000,
+                    longitudeDelta: 0.050000,
+                    }}
                   onMarkerDragEnd={(event) =>
                     setLocation({
                       latitude: event.nativeEvent.coordinate.latitude,
@@ -211,8 +297,8 @@ const RegisterCommerceScreen = ({navigation}) => {
                 initialRegion={{
                   latitude: location.latitude,
                   longitude: location.longitude,
-                  latitudeDelta: LATITUDE_DELTA,
-                  longitudeDelta: LONGITUDE_DELTA,
+                  latitudeDelta: 0.050,
+                  longitudeDelta: 0.050,
                 }}
                 onMarkerDragEnd={(event) =>
                   setLocation({
@@ -247,7 +333,7 @@ const RegisterCommerceScreen = ({navigation}) => {
                 ...RegisterCommerceStyles.spacing,
               }}>
               <ButtonWithIcon
-                onPress={() => navigation.navigate('Main')}
+                onPress={_handleSubmit}
                 text="REGISTRAR"
                 icon="store"
                 type="filled"

@@ -7,8 +7,10 @@ import FooterComponent from '../components/footer.component';
 import {RFValue} from 'react-native-responsive-fontsize';
 import ButtonWithIcon from '../components/button-with-icon.component';
 import ButtonSupport from '../components/buttonsupport.component';
+import {useRoute} from '@react-navigation/native';
 
 const WelcomeScreen = ({navigation}) => {
+  const route = useRoute();
   return (
     <SafeAreaView style={GlobalStyles.superContainer}>
       <View style={WelcomeStyles.container}>
@@ -24,7 +26,9 @@ const WelcomeScreen = ({navigation}) => {
           </Text>
           <View style={WelcomeStyles.spacing}>
             <View>
-              <ButtonWithIcon onPress={() => navigation.navigate('RegisterCommerce')} text='REGISTRA TU COMERCIO' type='filled' icon='store'/>
+              <ButtonWithIcon onPress={() => navigation.navigate('RegisterCommerce', {
+                companyId: route.params.companyId,
+              })} text='REGISTRA TU COMERCIO' type='filled' icon='store'/>
             </View>
           </View>
           <FooterComponent />

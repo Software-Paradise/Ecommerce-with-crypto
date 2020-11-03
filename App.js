@@ -25,6 +25,7 @@ import store from './src/store/index';
 import {SETSTORAGE, DELETESTORAGE} from './src/store/actionTypes';
 import NetInfo from '@react-native-community/netinfo';
 import FlashMessage from 'react-native-flash-message';
+import TransactionScreen from './src/screens/transaction.screen';
 
 const Stack = createStackNavigator();
 
@@ -99,6 +100,11 @@ const App: () => React$Node = () => {
               <Stack.Screen
                 name="ProductList"
                 component={ProductList}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="Transaction"
+                component={TransactionScreen}
                 options={{headerShown: false}}
               />
             </>

@@ -32,6 +32,7 @@ import {
   getMacAddress,
   getSystemName,
 } from 'react-native-device-info';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const initialState = {
   email: '',
@@ -101,7 +102,7 @@ const LoginScreen = ({navigation}) => {
 
   const getDeviceInfo = async () => {
     try {
-      getIP().then((payload) => dispatch({type: 'ipAddress', payload}));
+      // getIP().then((payload) => dispatch({type: 'ipAddress', payload}));
 
       const device = await getBrand();
       const deviceId = await getDeviceId();
@@ -128,6 +129,7 @@ const LoginScreen = ({navigation}) => {
 
   return (
     <SafeAreaView style={GlobalStyles.superContainer}>
+      <ScrollView>
       <LogoHeaderComponent title="Iniciar sesión" />
       <View style={{paddingTop: 20, paddingHorizontal: 20}}>
         <Text style={loginStyles.inputLabel}>Correo electrónico</Text>
@@ -200,6 +202,7 @@ const LoginScreen = ({navigation}) => {
       <ButtonSupport />
 
       <FooterComponent />
+      </ScrollView>
     </SafeAreaView>
   );
 };

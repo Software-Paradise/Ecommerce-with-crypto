@@ -24,6 +24,7 @@ import {PERMISSIONS, request} from 'react-native-permissions';
 import {useRoute} from '@react-navigation/native';
 import * as axios from 'axios';
 import {serverAddress} from './../utils/constants.util';
+import {showMessage} from 'react-native-flash-message';
 
 // Options for React-Image-Picker
 const RIPOptions = {
@@ -96,26 +97,43 @@ const LegalImagesScreen = ({navigation}) => {
 
   const _handleSubmit = async () => {
     try {
-      axios.post(
-        `${serverAddress}/ecommerce/company/register`,
-        _createFormData(
-          operationPermission,
-          RUCImage,
-          legalPower,
-          repID,
-          route.params.companyData,
-        ),
-        {
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'multipart/form-data',
+      axios
+        .post(
+          `${serverAddress}/ecommerce/company/register`,
+          _createFormData(
+            operationPermission,
+            RUCImage,
+            legalPower,
+            repID,
+            route.params.companyData,
+          ),
+          {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'multipart/form-data',
+            },
+          },
+        )
+        .then((response) => {
+          const result = response.data;
+
+          if (result.error) {
+            errorMessage(result.message);
+          } else {
+            showMessage({
+              message: 'Exito',
+              description: 'La compañía se ha creado con éxito.',
+              type: 'success',
+            });
+
+            navigation.navigate('Welcome', {
+              companyId: result.id,
+            });
           }
-        }
-      ).then((response) => {
-        console.log(response);
-      }).catch(error => {
-        console.log('Error de request', error.message);
-      })
+        })
+        .catch((error) => {
+          console.log('Error de request', error);
+        });
     } catch (e) {
       errorMessage(e.message);
     }
@@ -123,11 +141,11 @@ const LegalImagesScreen = ({navigation}) => {
 
   const uploadImage = (imageDestination) => {
     request(PERMISSIONS.ANDROID.CAMERA).then((result) => {
-      console.log('CAMERA')
+      console.log('CAMERA');
       console.log(result);
     });
     request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE).then((result) => {
-      console.log('STORAGE')
+      console.log('STORAGE');
       console.log(result);
     });
     ImagePicker.showImagePicker(RIPOptions, (response) => {
@@ -176,15 +194,21 @@ const LegalImagesScreen = ({navigation}) => {
           <Text style={registerStyles.inputLabel}>Permiso de operación</Text>
           <TouchableOpacity
             onPress={(e) => uploadImage('operationPermission')}
-            style={{
-              ...GlobalStyles.textInput,
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'row',
-              paddingVertical: RFValue(10),
-            }}>
+            style={[
+              GlobalStyles.textInput,
+              {
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'row',
+                paddingVertical: RFValue(10),
+              },
+            ]}>
             <Icon name="upload" size={18} color={Colors.$colorYellow} />
-            {operationPermission !== null ? <Image source={{uri: operationPermission.uri}} width='100' height='100'/> : null}
+            {operationPermission && (
+              <Text style={{color: Colors.$colorYellow}}>
+                {operationPermission.fileName}
+              </Text>
+            )}
           </TouchableOpacity>
         </View>
         <View style={legalImagesStyles.regularSpacing}>
@@ -201,6 +225,11 @@ const LegalImagesScreen = ({navigation}) => {
               paddingVertical: RFValue(10),
             }}>
             <Icon name="upload" size={18} color={Colors.$colorYellow} />
+            {RUCImage && (
+              <Text style={{color: Colors.$colorYellow}}>
+                {RUCImage.fileName}
+              </Text>
+            )}
           </TouchableOpacity>
         </View>
         <View style={legalImagesStyles.regularSpacing}>
@@ -215,6 +244,14 @@ const LegalImagesScreen = ({navigation}) => {
               paddingVertical: RFValue(10),
             }}>
             <Icon name="upload" size={18} color={Colors.$colorYellow} />
+            {
+              legalPower && 
+              (
+                <Text style={{color: Colors.$colorYellow}}>
+                  {legalPower.fileName}
+                </Text>
+              )
+            }
           </TouchableOpacity>
         </View>
         <View style={legalImagesStyles.regularSpacing}>
@@ -231,6 +268,11 @@ const LegalImagesScreen = ({navigation}) => {
               paddingVertical: RFValue(10),
             }}>
             <Icon name="upload" size={18} color={Colors.$colorYellow} />
+            {
+              repID && (
+              <Text style={{color: Colors.$colorYellow}}>{repID.fileName}</Text>
+              )
+            }
           </TouchableOpacity>
         </View>
         <View
@@ -253,7 +295,7 @@ const LegalImagesScreen = ({navigation}) => {
           </View>
           <View style={registerStyles.column}>
             <ButtonWithIcon
-              onPress={_handleSubmit}
+              onPress={() => navigation.navigate('RegisterCommerce')}
               text="Siguiente"
               icon="arrow-right"
               type="filled"
