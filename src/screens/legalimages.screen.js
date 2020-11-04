@@ -25,6 +25,7 @@ import {useRoute} from '@react-navigation/native';
 import * as axios from 'axios';
 import {serverAddress} from './../utils/constants.util';
 import {showMessage} from 'react-native-flash-message';
+import TransactionScreen from './transaction.screen';
 
 // Options for React-Image-Picker
 const RIPOptions = {
@@ -38,9 +39,13 @@ const RIPOptions = {
 
 const LegalImagesScreen = ({navigation}) => {
   const [operationPermission, setOperationPermission] = useState(null);
+  const [viewOperationPermission, setViewOperationPermission] = useState(false);
   const [RUCImage, setRUCImage] = useState(null);
+  const [viewRucImage, setViewRucImage] = useState(false);
   const [legalPower, setLegalPower] = useState(null);
+  const [viewLegalPower, setViewLegalPower] = useState(false);
   const [repID, setRepID] = useState(null);
+  const [viewRepId, setViewRepId] = useState(false);
   const route = useRoute();
 
   const _createFormData = (
@@ -158,24 +163,23 @@ const LegalImagesScreen = ({navigation}) => {
       } else {
         switch (imageDestination) {
           case 'operationPermission': {
-            console.log('Operation Permission', response);
             setOperationPermission(response);
-            console.log('Operation permission state: ', operationPermission);
+            setViewOperationPermission(true);
             break;
           }
           case 'ruc': {
-            console.log('RUC', response);
             setRUCImage(response);
+            setViewRucImage(true);
             break;
           }
           case 'legalPower': {
-            console.log('Legal', response);
             setLegalPower(response);
+            setViewLegalPower(true);
             break;
           }
           case 'repID': {
-            console.log('Representative', response);
             setRepID(response);
+            setViewRepId(true);
             break;
           }
           default: {
@@ -191,89 +195,124 @@ const LegalImagesScreen = ({navigation}) => {
       <ScrollView>
         <LogoHeaderComponent title="Adjuntar documentos legales" />
         <View style={legalImagesStyles.regularSpacing}>
-          <Text style={registerStyles.inputLabel}>Permiso de operación</Text>
-          <TouchableOpacity
-            onPress={(e) => uploadImage('operationPermission')}
-            style={[
-              GlobalStyles.textInput,
-              {
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexDirection: 'row',
-                paddingVertical: RFValue(10),
-              },
-            ]}>
-            <Icon name="upload" size={18} color={Colors.$colorYellow} />
-            {operationPermission && (
-              <Text style={{color: Colors.$colorYellow}}>
-                {operationPermission.fileName}
-              </Text>
-            )}
-          </TouchableOpacity>
+          <View style={legalImagesStyles.row}>
+            <Text style={registerStyles.inputLabel}>
+              Permiso de operación
+            </Text>
+            <TouchableOpacity
+              onPress={(e) => uploadImage('operationPermission')}
+              style={[
+                GlobalStyles.textInput,
+                // eslint-disable-next-line react-native/no-inline-styles
+                {
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexDirection: 'row',
+                  paddingVertical: RFValue(10),
+                  paddingHorizontal: RFValue(20),
+                },
+              ]}>
+              <Icon name="upload" size={18} color={Colors.$colorYellow} />
+            </TouchableOpacity>
+          </View>
+          {viewOperationPermission && (
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+              <Image
+                source={{uri: operationPermission.uri}}
+                style={legalImagesStyles.viewImageUpload}
+              />
+            </View>
+          )}
         </View>
         <View style={legalImagesStyles.regularSpacing}>
-          <Text style={registerStyles.inputLabel}>
-            Código de Identificación de Empresa
-          </Text>
-          <TouchableOpacity
-            onPress={(e) => uploadImage('ruc')}
-            style={{
-              ...GlobalStyles.textInput,
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'row',
-              paddingVertical: RFValue(10),
-            }}>
-            <Icon name="upload" size={18} color={Colors.$colorYellow} />
-            {RUCImage && (
-              <Text style={{color: Colors.$colorYellow}}>
-                {RUCImage.fileName}
-              </Text>
-            )}
-          </TouchableOpacity>
+          <View style={legalImagesStyles.row}>
+            <Text style={registerStyles.inputLabel}>
+              Código de Identificación de Empresa
+            </Text>
+            <TouchableOpacity
+              onPress={(e) => uploadImage('ruc')}
+              style={[
+                GlobalStyles.textInput,
+                // eslint-disable-next-line react-native/no-inline-styles
+                {
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexDirection: 'row',
+                  paddingVertical: RFValue(10),
+                  paddingHorizontal: RFValue(20),
+                },
+              ]}>
+              <Icon name="upload" size={18} color={Colors.$colorYellow} />
+            </TouchableOpacity>
+          </View>
+          {viewRucImage && (
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+              <Image
+                source={{uri: RUCImage.uri}}
+                style={legalImagesStyles.viewImageUpload}
+              />
+            </View>
+          )}
         </View>
         <View style={legalImagesStyles.regularSpacing}>
-          <Text style={registerStyles.inputLabel}>Poder Administrativo</Text>
-          <TouchableOpacity
-            onPress={(e) => uploadImage('legalPower')}
-            style={{
-              ...GlobalStyles.textInput,
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'row',
-              paddingVertical: RFValue(10),
-            }}>
-            <Icon name="upload" size={18} color={Colors.$colorYellow} />
-            {
-              legalPower && 
-              (
-                <Text style={{color: Colors.$colorYellow}}>
-                  {legalPower.fileName}
-                </Text>
-              )
-            }
-          </TouchableOpacity>
+          <View style={legalImagesStyles.row}>
+            <Text style={registerStyles.inputLabel}>
+              Poder administrativo
+            </Text>
+            <TouchableOpacity
+              onPress={(e) => uploadImage('legalPower')}
+              style={[
+                GlobalStyles.textInput,
+                // eslint-disable-next-line react-native/no-inline-styles
+                {
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexDirection: 'row',
+                  paddingVertical: RFValue(10),
+                  paddingHorizontal: RFValue(20),
+                },
+              ]}>
+              <Icon name="upload" size={18} color={Colors.$colorYellow} />
+            </TouchableOpacity>
+          </View>
+          {viewLegalPower && (
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+              <Image
+                source={{uri: legalPower.uri}}
+                style={legalImagesStyles.viewImageUpload}
+              />
+            </View>
+          )}
         </View>
         <View style={legalImagesStyles.regularSpacing}>
-          <Text style={registerStyles.inputLabel}>
-            Identificación representante legal
-          </Text>
-          <TouchableOpacity
-            onPress={(e) => uploadImage('repID')}
-            style={{
-              ...GlobalStyles.textInput,
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'row',
-              paddingVertical: RFValue(10),
-            }}>
-            <Icon name="upload" size={18} color={Colors.$colorYellow} />
-            {
-              repID && (
-              <Text style={{color: Colors.$colorYellow}}>{repID.fileName}</Text>
-              )
-            }
-          </TouchableOpacity>
+          <View style={legalImagesStyles.row}>
+            <Text style={registerStyles.inputLabel}>
+              Identificación de representante legal
+            </Text>
+            <TouchableOpacity
+              onPress={(e) => uploadImage('repID')}
+              style={[
+                GlobalStyles.textInput,
+                // eslint-disable-next-line react-native/no-inline-styles
+                {
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexDirection: 'row',
+                  paddingVertical: RFValue(10),
+                  paddingHorizontal: RFValue(20),
+                },
+              ]}>
+              <Icon name="upload" size={18} color={Colors.$colorYellow} />
+            </TouchableOpacity>
+          </View>
+          {viewRepId && (
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+              <Image
+                source={{uri: repID.uri}}
+                style={legalImagesStyles.viewImageUpload}
+              />
+            </View>
+          )}
         </View>
         <View
           style={{
@@ -295,7 +334,7 @@ const LegalImagesScreen = ({navigation}) => {
           </View>
           <View style={registerStyles.column}>
             <ButtonWithIcon
-              onPress={() => navigation.navigate('RegisterCommerce')}
+              onPress={_handleSubmit}
               text="Siguiente"
               icon="arrow-right"
               type="filled"
@@ -332,6 +371,8 @@ const legalImagesStyles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
   column: {
     flex: 0.5,
@@ -356,6 +397,11 @@ const legalImagesStyles = StyleSheet.create({
     textDecorationLine: 'underline',
     color: Colors.$colorYellow,
     textTransform: 'uppercase',
+  },
+  viewImageUpload: {
+    width: 90,
+    height: 90,
+    // resizeMode: "contain"
   },
 });
 

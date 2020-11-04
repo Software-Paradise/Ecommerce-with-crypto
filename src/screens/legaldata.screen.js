@@ -6,7 +6,6 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  Modal,
   FlatList,
 } from 'react-native';
 import {Colors, errorMessage, http} from '../utils/constants.util';
@@ -25,10 +24,9 @@ import {showMessage} from 'react-native-flash-message';
 import {useRoute} from '@react-navigation/native';
 
 import {RFValue} from 'react-native-responsive-fontsize';
-import {G} from 'react-native-svg';
+import Modal from 'react-native-modal';
 
 const LegalDataScreen = ({navigation}) => {
-  const [currency, setCurrency] = useState('btc');
   const route = useRoute();
   const DOCUMENT_TYPE = [
     {
@@ -139,11 +137,12 @@ const LegalDataScreen = ({navigation}) => {
   return (
     <SafeAreaView style={GlobalStyles.superContainer}>
       <Modal
-        animationType="slide"
-        transparent={true}
+        animationIn="fadeIn"
+        backdropOpacity={0.9}
+        animationOut="fadeOut"
         onBackdropPress={(_) => setShowCountries(false)}
         onBackButtonPress={(_) => setShowCountries(false)}
-        visible={showCountries}>
+        isVisible={showCountries}>
         <View style={legalDataStyles.containerModal}>
           <TextInput
             style={registerStyles.TextInput}

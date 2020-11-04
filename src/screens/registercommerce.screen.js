@@ -137,7 +137,7 @@ const RegisterCommerceScreen = ({ navigation }) => {
           })
         },
         {
-          text: "Abir Preferencias",
+          text: "Abrir Preferencias",
           style: "destructive",
           onPress: () => {
             Linking.openSettings()
@@ -183,15 +183,15 @@ const RegisterCommerceScreen = ({ navigation }) => {
         }
       }
 
-      const gps = await GeoLocation.getLatestLocation()
+      const gps = await GeoLocation.getLatestLocation({timeout: 5000});
 
       // verificamos si la ubicacion es nulla
       if (gps === null) {
         aletPermissionsDecline()
       }
-
+      // console.log(gps)
       setLocation(gps)
-
+      // GeoLocation.getLatestLocation({timeout: 1000}).then(setLocation)
 
     } catch (error) {
       errorMessage(error.toString());

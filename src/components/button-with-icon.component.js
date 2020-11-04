@@ -26,7 +26,7 @@ const ButtonWithIcon = (props) => {
           props.type === 'filled' ? Colors.$colorBlack : Colors.$colorYellow
         }
         name={props.icon}
-        size={24}
+        size={RFValue(24)}
       />
     </TouchableOpacity>
   );
@@ -36,12 +36,11 @@ const buttonStyle = StyleSheet.create({
   containerFilled: {
     flexDirection: 'row',
     backgroundColor: Colors.$colorYellow,
-    borderRadius: 50,
+    borderRadius: RFValue(50),
     width: '100%',
-    padding: 12,
+    padding: RFValue(10),
     alignItems: 'center',
     justifyContent: 'center',
-    textAlign: 'center',
   },
   containerOutline: {
     flexDirection: 'row',
@@ -51,10 +50,10 @@ const buttonStyle = StyleSheet.create({
     padding: 15,
   },
   textButtonFilled: {
-    fontSize: RFValue(20),
+    fontSize: RFValue(16),
     color: Colors.$colorBlack,
     fontWeight: 'bold',
-    paddingRight: 10,
+    paddingRight: RFValue(8),
     textAlign: 'center',
   },
   textButtonOutlined: {

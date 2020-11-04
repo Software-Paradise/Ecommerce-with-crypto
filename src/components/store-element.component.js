@@ -9,7 +9,7 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const StoreElement = (item, index) => (
   <TouchableOpacity
-    onPress={(_) => CopyClipboard(item.hash)}
+    onPress={(_) => CopyClipboard(item.item.hash)}
     style={styles.container}>
     <View style={styles.subContainer}>
       <Text style={styles.name}>{item.item.description || 'Transacción'}</Text>

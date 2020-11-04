@@ -9,7 +9,7 @@ const IconButton = (props) => {
     <TouchableOpacity onPress={props.onPress} style={IconButtonStyle.container}>
       <Icon
         name={props.icon}
-        size={24}
+        size={RFValue(22)}
         color={
           props.type === 'filled' ? Colors.$colorBlack : Colors.$colorYellow
         }
@@ -22,9 +22,9 @@ const IconButtonStyle = StyleSheet.create({
   container: {
     flexDirection: 'row',
     width: RFValue(50),
-    padding: 12,
+    padding: RFValue(10),
     backgroundColor: Colors.$colorYellow,
-    borderRadius: 50,
+    borderRadius: RFValue(50),
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -84,7 +84,7 @@ const App: () => React$Node = () => {
   return (
     <>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="RegisterCommerce">
+        <Stack.Navigator initialRouteName="Login">
           {state.loged && (
             <>
               <Stack.Screen
@@ -112,11 +112,11 @@ const App: () => React$Node = () => {
 
           {!state.loged && (
             <>
-              {/* <Stack.Screen
+              <Stack.Screen
                 name="Login"
                 component={LoginScreen}
                 options={{headerShown: false}}
-              /> */}
+              />
               <Stack.Screen
                 name="Register"
                 component={RegisterScreen}

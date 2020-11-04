@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, TextInput, Dimensions} from 'react-native';
-import {Colors, logOutApp} from '../utils/constants.util';
+import {Colors, errorMessage, logOutApp} from '../utils/constants.util';
 import {registerStyles} from './register.screen';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -11,6 +11,16 @@ import {useNavigation} from '@react-navigation/native';
 const PaymentScreen = () => {
     const navigation = useNavigation();
     const [amount, setAmount] = useState('');
+
+    const _handleSubmit = async () => {
+        if (amount.trim().length === 0) {
+            errorMessage('El monto no puede estar vacio');
+        } else {
+            navigation.navigate('Transaction', {
+                amount,
+            });
+        }
+    }
 
     useEffect(() => {
         const _unsubscribe = navigation.addListener('focus', () => {
@@ -40,9 +50,7 @@ const PaymentScreen = () => {
 
                 </View>
                <View style={PaymentStyles.buttonSpacing}>
-                   <TouchableOpacity style={PaymentStyles.buttonFill} onPress={() => navigation.navigate('Transaction', {
-                       amount,
-                   })}>
+                   <TouchableOpacity style={PaymentStyles.buttonFill} onPress={_handleSubmit}>
                        <Text style={PaymentStyles.buttonText}>
                            Procesar transaccion
                        </Text>

@@ -6,6 +6,7 @@ import {
   Dimensions,
   StyleSheet,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import LottieAnimationView from 'lottie-react-native';
 import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
@@ -29,7 +30,7 @@ const TransactionScreen = ({navigation}) => {
   const [showModal, setShowModal] = useState(false);
   const [onSuccess, setOnSuccess] = useState(false);
   const [onSuccessMessage, setOnSuccessMessage] = useState(
-    'El pago se ha realizado con exito.',
+    'Pago realizado con éxito',
   );
   const [status, setStatus] = useState('Esperando pago');
   const [connectionSocket, setConnectionSocket] = useState();
@@ -158,11 +159,25 @@ const TransactionScreen = ({navigation}) => {
       ]}>
       <Modal animationType="slide" transparent={true} visible={showModal}>
         <View style={TransactionStyles.modalView}>
+          <View style={{
+            width: 120,
+              height: 100,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Image
+              source={require('./../assets/img/logo.png')}
+              style={TransactionStyles.logo}
+            />
+          </View>
+          <View>
+            <Text style={{color: Colors.$colorGray, fontSize: RFValue(20), textAlign: 'center', textTransform: 'uppercase' }}>¡Estupendo!</Text>
+          </View>
           <View style={TransactionStyles.animationContainer}>
             <LottieAnimationView
               source={
                 onSuccess
-                  ? require('./../animations/success_animation.json.json')
+                  ? require('./../animations/yellow-success.json')
                   : require('./../animations/error_animation.json.json')
               }
               autoPlay
@@ -173,7 +188,7 @@ const TransactionScreen = ({navigation}) => {
           <Text
             style={[
               TransactionStyles.textAlertStyle,
-              {color: onSuccess ? Colors.$colorGreen : Colors.$colorRed},
+              {color: onSuccess ? Colors.$colorYellow : Colors.$colorRed},
             ]}>
             {onSuccessMessage}
           </Text>
@@ -182,7 +197,10 @@ const TransactionScreen = ({navigation}) => {
             <TouchableOpacity
               onPress={handleSuccess}
               style={TransactionStyles.handleButton}>
-              <Text>Confirmar</Text>
+              <Text style={{
+                fontSize: RFValue(24),
+                fontWeight: 'bold'
+              }}>Confirmar</Text>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
@@ -297,7 +315,9 @@ const TransactionStyles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: 'white',
+    backgroundColor: Colors.$colorMain,
+    borderWidth: 2,
+    borderColor: Colors.$colorYellow,
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',
@@ -314,7 +334,8 @@ const TransactionStyles = StyleSheet.create({
   handleButton: {
     backgroundColor: Colors.$colorYellow,
     borderRadius: 50,
-    padding: 10,
+    marginTop: RFValue(30),
+    padding: RFValue(10),
   },
   animationContainer: {
     height: RFValue(150),
@@ -325,6 +346,12 @@ const TransactionStyles = StyleSheet.create({
   textAlertStyle: {
     fontSize: RFValue(24),
     fontWeight: 'bold',
+  },
+  logo: {
+    alignContent: "center",
+    resizeMode: "contain",
+    height: RFValue(128),
+    width: RFValue(256),
   },
 });
 
