@@ -1,10 +1,7 @@
 import React, {useState} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {KeyboardAvoidingView, ScrollView, Text, View, StyleSheet} from 'react-native';
-import {createDrawerNavigator} from '@react-navigation/drawer';
-import {GlobalStyles} from '../styles/global.style';
+import {KeyboardAvoidingView, Image, View, StyleSheet} from 'react-native';
+import {RFValue} from 'react-native-responsive-fontsize';
 import PaymentScreen from './payment.screen';
-import TransactionScreen from './transaction.screen';
 import HistoryScreen from './history.screen';
 import {switchItems, TYPE_VIEW} from '../utils/constants.util';
 import Switch from '../components/switch.component';
@@ -17,6 +14,10 @@ const MainScreen = () => {
 
   return (
     <View style={styles.container}>
+      <View style={{alignItems: 'center'}}>
+        <Image source={require('./../assets/img/logo.png')} style={styles.logo}/>
+      </View>
+      
       <Switch onSwitch={setStateView} items={switchItems} />
       <KeyboardAvoidingView enabled behavior="padding">
         {stateView === TYPE_VIEW.ORDER && <PaymentScreen />}
@@ -33,6 +34,12 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Colors.$colorMain,
     },
+    logo: {
+      alignContent: "center",
+      resizeMode: "contain",
+      height: RFValue(128),
+      width: RFValue(256),
+    }
 });
 
 export default MainScreen;

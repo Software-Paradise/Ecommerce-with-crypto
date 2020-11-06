@@ -229,7 +229,7 @@ const TransactionScreen = ({navigation}) => {
         <View style={TransactionStyles.qrCodeContainer}>
           <QRCode
             logo={require('./../assets/img/aly-coin.png')}
-            size={200}
+            size={RFValue(180)}
             backgroundColor={Colors.$colorYellow}
             value={`${cypherdata},${keySecret}`}
           />
@@ -254,8 +254,9 @@ const TransactionStyles = StyleSheet.create({
   mainContainer: {
     backgroundColor: Colors.$colorBlack,
     borderRadius: RFValue(20),
-    height: Dimensions.get('window').height - 200,
-    width: Dimensions.get('window').width - 80,
+    alignItems: 'center',
+    height: Dimensions.get('window').height - RFValue(180),
+    width: Dimensions.get('window').width - RFValue(75),
   },
   mainTitle: {
     color: Colors.$colorYellow,
@@ -266,9 +267,11 @@ const TransactionStyles = StyleSheet.create({
   qrCodeContainer: {
     backgroundColor: Colors.$colorYellow,
     alignItems: 'center',
-    marginHorizontal: RFValue(50),
-    paddingVertical: RFValue(10),
+    justifyContent: 'center',
+    // marginHorizontal: RFValue(50),
     borderRadius: RFValue(10),
+    width: RFValue(210),
+    height: RFValue(210),
   },
   mediumText: {
     color: Colors.$colorGray,

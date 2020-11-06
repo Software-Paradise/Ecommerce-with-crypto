@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
 import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, TextInput, Dimensions} from 'react-native';
+import {View, Text, TouchableOpacity, Image, StyleSheet, TextInput, Dimensions} from 'react-native';
 import {Colors, errorMessage, logOutApp} from '../utils/constants.util';
+import {RFValue} from 'react-native-responsive-fontsize';
 import {registerStyles} from './register.screen';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -63,6 +64,9 @@ const PaymentScreen = () => {
                         <MaterialCommunityIcons name='logout-variant' size={24} color={Colors.$colorBlack} />
                    </TouchableOpacity>
                </View>
+               <View style={PaymentStyles.buttonSpacing}>
+                   <Image source={require('./../assets/img/logo-aly.png')} style={PaymentStyles.logo}/>
+               </View>
            </View>
         
     )
@@ -105,7 +109,13 @@ const PaymentStyles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         paddingRight: 10
-    }
+    },
+    logo: {
+        alignContent: "center",
+        resizeMode: "contain",
+        height: RFValue(128),
+        width: RFValue(256),
+    },
 })
 
 export default PaymentScreen

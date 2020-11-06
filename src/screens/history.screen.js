@@ -1,12 +1,12 @@
 import React, {useState, useEffect, useReducer} from 'react';
-import {View, Text, FlatList} from 'react-native';
+import {View, Text, FlatList, StyleSheet} from 'react-native';
 import store from '../store';
 import {errorMessage, http, reducer} from '../utils/constants.util';
 import StoreElement from './../components/store-element.component';
-
-const initialState = {
-  history: [],
-};
+import {RFValue} from 'react-native-responsive-fontsize';
+import Lottie from 'lottie-react-native';
+import * as EmptyBox from './../animations/empty-state.json';
+import { Colors } from './../utils/constants.util';
 
 const HistoryScreen = ({navigation}) => {
   //   const [state, dispatch] = useReducer(reducer, initialState);
@@ -36,12 +36,28 @@ const HistoryScreen = ({navigation}) => {
   }, []);
 
   return (
+
+    transactions.length > 0 ?
     <FlatList
       keyExtractor={(_, key) => (key = key.toString())}
       data={transactions}
       renderItem={StoreElement}
-    />
-  );
+    /> : 
+    <View>
+      <Lottie source={EmptyBox} autoPlay loop={false} style={styles.empty} />
+      <Text style={{fontSize: RFValue(20), textAlign: 'center', color: Colors.$colorGray}}>
+        No hay transacciones realizadas
+      </Text>
+    </View>
+  )
 };
 
+const styles = StyleSheet.create({
+  empty: {
+    alignSelf: "center",
+        resizeMode: "contain",
+        height: RFValue(250),
+        width: RFValue(250),
+  }
+})
 export default HistoryScreen;
