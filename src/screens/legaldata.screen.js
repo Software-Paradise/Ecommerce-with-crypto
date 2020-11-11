@@ -19,7 +19,6 @@ import ButtonWithIcon from '../components/button-with-icon.component';
 import ButtonSupport from '../components/buttonsupport.component';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Picker} from '@react-native-community/picker';
-import * as CoreService from './../services/core.services';
 import {showMessage} from 'react-native-flash-message';
 import {useRoute} from '@react-navigation/native';
 

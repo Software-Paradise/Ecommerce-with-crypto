@@ -26,6 +26,8 @@ import {SETSTORAGE, DELETESTORAGE} from './src/store/actionTypes';
 import NetInfo from '@react-native-community/netinfo';
 import FlashMessage from 'react-native-flash-message';
 import TransactionScreen from './src/screens/transaction.screen';
+import RetirementsScreen from './src/screens/retirements.screen';
+import RechargeScreen from './src/screens/recharge.screen';
 
 const Stack = createStackNavigator();
 
@@ -93,6 +95,16 @@ const App: () => React$Node = () => {
                 options={{headerShown: false}}
               />
               <Stack.Screen
+                name="Recharge"
+                component={RechargeScreen}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="Retirements"
+                component={RetirementsScreen}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
                 name="CommerceList"
                 component={CommerceList}
                 options={{headerShown: false}}
@@ -112,6 +124,11 @@ const App: () => React$Node = () => {
 
           {!state.loged && (
             <>
+              <Stack.Screen
+                name="Retirements"
+                component={RetirementsScreen}
+                options={{headerShown: false}}
+              />
               <Stack.Screen
                 name="Login"
                 component={LoginScreen}
@@ -147,7 +164,7 @@ const App: () => React$Node = () => {
         </Stack.Navigator>
       </NavigationContainer>
 
-      <FlashMessage floating={true} position='top' />
+      <FlashMessage floating={true} position="top" />
     </>
   );
 };

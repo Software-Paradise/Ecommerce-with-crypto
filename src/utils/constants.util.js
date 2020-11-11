@@ -189,19 +189,45 @@ export const serverAddress = 'https://test-after-prod.uc.r.appspot.com';
 export const socketAddress = 'https://test-after-prod.uc.r.appspot.com';
 
 export const TYPE_VIEW = {
-  ORDER: 'order',
+  PAY: 'pay',
+  SEND: 'send',
+  RECEIVE: 'receive',
   HISTORY: 'history',
 };
 
-export const CopyClipboard = async (text = "") => {
-  await Clipboard.setString(text)
-  Toast.show("Copiado a portapeles", Toast.LONG)
-}
+export const CopyClipboard = async (text = '') => {
+  await Clipboard.setString(text);
+  Toast.show('Copiado a portapeles', Toast.LONG);
+};
+
+export const RETIREMENT_VIEW = {
+  RECEIVE: 'receive',
+  PAY: 'pay',
+};
+
+export const retirementSwitchItems = [
+  {
+    text: 'Recibir',
+    state: RETIREMENT_VIEW.RECEIVE,
+  },
+  {
+    text: 'Pagar',
+    state: RETIREMENT_VIEW.PAY,
+  },
+];
 
 export const switchItems = [
   {
-    text: 'Agregar orden',
-    state: TYPE_VIEW.ORDER,
+    text: 'Facturar',
+    state: TYPE_VIEW.PAY,
+  },
+  {
+    text: 'Enviar',
+    state: TYPE_VIEW.SEND,
+  },
+  {
+    text: 'Recibir',
+    state: TYPE_VIEW.RECEIVE,
   },
   {
     text: 'Historial',

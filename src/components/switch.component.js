@@ -39,7 +39,7 @@ const Switch = ({onSwitch = () => {}, items = []}) => {
       backgroundColor: Colors.$colorYellow,
     },
     textButton: {
-      fontSize: RFValue(itemWidth / 4),
+      fontSize: RFValue(itemWidth / 4 * 2),
       textTransform: 'uppercase',
     },
     textButtonActive: {

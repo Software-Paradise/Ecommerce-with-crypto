@@ -32,7 +32,7 @@ import {
   getMacAddress,
   getSystemName,
 } from 'react-native-device-info';
-import { ScrollView } from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 
 const initialState = {
   email: '',
@@ -86,8 +86,6 @@ const LoginScreen = ({navigation}) => {
           setStorage(data);
         }
       }
-
-
     } catch (error) {
       console.log(error);
       showMessage({
@@ -122,7 +120,7 @@ const LoginScreen = ({navigation}) => {
   };
 
   useEffect(() => {
-    store.dispatch({type: SETNAVIGATION, payload: navigation})
+    store.dispatch({type: SETNAVIGATION, payload: navigation});
 
     getDeviceInfo();
   }, [navigation]);
@@ -130,78 +128,80 @@ const LoginScreen = ({navigation}) => {
   return (
     <SafeAreaView style={GlobalStyles.superContainer}>
       <ScrollView>
-      <LogoHeaderComponent title="Iniciar sesión" />
-      <View style={{paddingTop: 20, paddingHorizontal: 20}}>
-        <Text style={loginStyles.inputLabel}>Correo electrónico</Text>
-        <View style={loginStyles.textInputWithImage}>
-          <Icon size={20} name="email" color={Colors.$colorGray} />
-          <TextInput
-            value={state.email}
-            keyboardType="email-address"
-            onChangeText={(payload) => dispatch({type: 'email', payload})}
-            placeholderTextColor={Colors.$colorGray}
-            placeholder="Correo electrónico"
-            style={loginStyles.textInputCol}
-          />
-          <View style={GlobalStyles.touchableCol} />
-        </View>
-      </View>
-      <View style={{paddingTop: 20, paddingHorizontal: 20}}>
-        <Text style={loginStyles.inputLabel}>Contraseña</Text>
-        <View style={loginStyles.textInputWithImage}>
-          <Icon color={Colors.$colorGray} size={18} name="lock" />
-          <TextInput
-            secureTextEntry={!showPassword}
-            value={state.password}
-            onChangeText={(payload) => dispatch({type: 'password', payload})}
-            placeholder="Contraseña"
-            placeholderTextColor={Colors.$colorGray}
-            style={loginStyles.textInputCol}
-          />
-          <TouchableOpacity
-            onPress={(e) => setShowPassword(!showPassword)}
-            style={loginStyles.touchableCol}>
-            <Icon
-              name={showPassword ? 'visibility-off' : 'visibility'}
-              color={Colors.$colorYellow}
-              size={18}
+        <LogoHeaderComponent title="Iniciar sesión" />
+        <View style={{paddingTop: RFValue(20), paddingHorizontal: RFValue(20)}}>
+          <Text style={loginStyles.inputLabel}>Correo electrónico</Text>
+          <View
+            style={[loginStyles.textInputWithImage, GlobalStyles.textInput]}>
+            <Icon size={RFValue(20)} name="email" color={Colors.$colorGray} />
+            <TextInput
+              value={state.email}
+              keyboardType="email-address"
+              onChangeText={(payload) => dispatch({type: 'email', payload})}
+              placeholderTextColor={Colors.$colorGray}
+              placeholder="Correo electrónico"
+              style={loginStyles.textInputCol}
             />
+            <View style={GlobalStyles.touchableCol} />
+          </View>
+        </View>
+        <View style={{paddingTop: RFValue(20), paddingHorizontal: RFValue(20)}}>
+          <Text style={loginStyles.inputLabel}>Contraseña</Text>
+          <View
+            style={[loginStyles.textInputWithImage, GlobalStyles.textInput]}>
+            <Icon color={Colors.$colorGray} size={RFValue(18)} name="lock" />
+            <TextInput
+              secureTextEntry={!showPassword}
+              value={state.password}
+              onChangeText={(payload) => dispatch({type: 'password', payload})}
+              placeholder="Contraseña"
+              placeholderTextColor={Colors.$colorGray}
+              style={loginStyles.textInputCol}
+            />
+            <TouchableOpacity
+              onPress={(e) => setShowPassword(!showPassword)}
+              style={loginStyles.touchableCol}>
+              <Icon
+                name={showPassword ? 'visibility-off' : 'visibility'}
+                color={Colors.$colorYellow}
+                size={18}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View
+          style={{
+            paddingVertical: 10,
+            paddingHorizontal: 20,
+            textAlign: 'right',
+          }}>
+          <TouchableOpacity>
+            <Text style={loginStyles.forgotPasswordLabel}>
+              ¿Ha olvidado su contraseña?
+            </Text>
           </TouchableOpacity>
         </View>
-      </View>
-      <View
-        style={{
-          paddingVertical: 10,
-          paddingHorizontal: 20,
-          textAlign: 'right',
-        }}>
-        <TouchableOpacity>
-          <Text style={loginStyles.forgotPasswordLabel}>
-            ¿Ha olvidado su contraseña?
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <View style={loginStyles.horizontalContainer}>
-        <View style={{...loginStyles.horizontalChild, marginRight: 10}}>
-          <ButtonWithIcon
-            text="Registrar"
-            onPress={() => navigation.navigate('Register')}
-            icon="store"
-            type="filled"
-          />
+        <View style={loginStyles.horizontalContainer}>
+          <View style={{...loginStyles.horizontalChild, marginRight: 10}}>
+            <ButtonWithIcon
+              text="Registrar"
+              onPress={() => navigation.navigate('Register')}
+              icon="store"
+              type="filled"
+            />
+          </View>
+          <View style={{...loginStyles.horizontalChild, marginLeft: 10}}>
+            <ButtonWithIcon
+              onPress={onSubmit}
+              text="Ingresar"
+              icon="login"
+              type="filled"
+            />
+          </View>
         </View>
-        <View style={{...loginStyles.horizontalChild, marginLeft: 10}}>
-          <ButtonWithIcon
-            onPress={onSubmit}
-            text="Ingresar"
-            icon="login"
-            type="filled"
-          />
-        </View>
-      </View>
-      <ButtonSupport />
+        <ButtonSupport />
 
-      <FooterComponent />
+        <FooterComponent />
       </ScrollView>
     </SafeAreaView>
   );
@@ -225,12 +225,12 @@ const loginStyles = StyleSheet.create({
   },
   inputLabel: {
     color: Colors.$colorYellow,
-    paddingBottom: 5,
-    paddingLeft: 15,
+    paddingBottom: RFValue(5),
+    paddingLeft: RFValue(15),
   },
   forgotPasswordLabel: {
     color: Colors.$colorGray,
-    fontSize: 15,
+    fontSize: RFValue(15),
     textAlign: 'right',
     fontStyle: 'italic',
     textDecorationLine: 'underline',
@@ -240,17 +240,17 @@ const loginStyles = StyleSheet.create({
     borderColor: Colors.$colorYellow,
     borderWidth: 3,
     borderStyle: 'solid',
-    borderRadius: 5,
-    marginHorizontal: 20,
-    marginVertical: 10,
-    padding: 10,
-    fontSize: 15,
+    borderRadius: RFValue(5),
+    marginHorizontal: RFValue(20),
+    marginVertical: RFValue(10),
+    padding: RFValue(10),
+    fontSize: RFValue(15),
     color: 'white',
   },
   horizontalContainer: {
     flexDirection: 'row',
-    paddingHorizontal: 20,
-    paddingVertical: 25,
+    paddingHorizontal: RFValue(20),
+    paddingVertical: RFValue(25),
   },
   horizontalChild: {
     flex: 0.5,
@@ -261,7 +261,7 @@ const loginStyles = StyleSheet.create({
     borderColor: Colors.$colorYellow,
     borderWidth: 3,
     borderRadius: 25,
-    marginEnd: 20,
+    marginEnd: RFValue(20),
   },
   buttonOutlined: {
     color: 'white',
@@ -281,7 +281,6 @@ const loginStyles = StyleSheet.create({
     resizeMode: 'contain',
   },
   textInputWithImage: {
-    ...GlobalStyles.textInput,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',

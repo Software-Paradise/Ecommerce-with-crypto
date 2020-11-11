@@ -24,8 +24,8 @@ export const GlobalStyles = StyleSheet.create({
   },
   textInput: {
     backgroundColor: Colors.$colorBlack,
-    borderRadius: 50,
-    borderWidth: 2,
+    borderRadius: RFValue(50),
+    borderWidth: RFValue(2),
     borderColor: Colors.$colorYellow + '55',
     color: '#FFF',
     elevation: 5,

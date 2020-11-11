@@ -9,10 +9,10 @@ import {
   Image,
 } from 'react-native';
 import LottieAnimationView from 'lottie-react-native';
-import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {GlobalStyles} from '../styles/global.style';
-import {Colors, logOutApp, socketAddress} from '../utils/constants.util';
+import {Colors, socketAddress} from '../utils/constants.util';
 import {RFValue} from 'react-native-responsive-fontsize';
 import QRCode from 'react-native-qrcode-svg';
 import * as CryptoJS from 'react-native-crypto-js';
@@ -143,6 +143,7 @@ const TransactionScreen = ({navigation}) => {
       console.log('Error', error);
     });
   }, [
+    amount,
     global.description,
     global.token,
     global.wallet_commerce,
@@ -159,8 +160,9 @@ const TransactionScreen = ({navigation}) => {
       ]}>
       <Modal animationType="slide" transparent={true} visible={showModal}>
         <View style={TransactionStyles.modalView}>
-          <View style={{
-            width: 120,
+          <View
+            style={{
+              width: 120,
               height: 100,
               alignItems: 'center',
               justifyContent: 'center',
@@ -171,7 +173,15 @@ const TransactionScreen = ({navigation}) => {
             />
           </View>
           <View>
-            <Text style={{color: Colors.$colorGray, fontSize: RFValue(20), textAlign: 'center', textTransform: 'uppercase' }}>¡Estupendo!</Text>
+            <Text
+              style={{
+                color: Colors.$colorGray,
+                fontSize: RFValue(20),
+                textAlign: 'center',
+                textTransform: 'uppercase',
+              }}>
+              ¡Estupendo!
+            </Text>
           </View>
           <View style={TransactionStyles.animationContainer}>
             <LottieAnimationView
@@ -197,10 +207,13 @@ const TransactionScreen = ({navigation}) => {
             <TouchableOpacity
               onPress={handleSuccess}
               style={TransactionStyles.handleButton}>
-              <Text style={{
-                fontSize: RFValue(24),
-                fontWeight: 'bold'
-              }}>Confirmar</Text>
+              <Text
+                style={{
+                  fontSize: RFValue(24),
+                  fontWeight: 'bold',
+                }}>
+                Confirmar
+              </Text>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
@@ -211,6 +224,10 @@ const TransactionScreen = ({navigation}) => {
           )}
         </View>
       </Modal>
+      <Image
+        source={require('./../assets/img/logo.png')}
+        style={TransactionStyles.logo}
+      />
       <Text style={TransactionStyles.mainTitle}>Procesar transaccion</Text>
       <View style={TransactionStyles.mainContainer}>
         <View style={TransactionStyles.transactionData}>
@@ -351,8 +368,8 @@ const TransactionStyles = StyleSheet.create({
     fontWeight: 'bold',
   },
   logo: {
-    alignContent: "center",
-    resizeMode: "contain",
+    alignContent: 'center',
+    resizeMode: 'contain',
     height: RFValue(128),
     width: RFValue(256),
   },
