@@ -30,6 +30,8 @@ import store from '../store';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {RNCamera} from 'react-native-camera';
 import Modal from 'react-native-modal';
+import {Picker} from '@react-native-community/picker';
+import {showMessage} from 'react-native-flash-message';
 
 // const Drawer = createDrawerNavigator();
 
@@ -40,6 +42,9 @@ const MainScreen = ({navigation}) => {
   const isMounted = useRef(null);
 
   const [walletAddress, setWalletAddress] = useState();
+  const [amount, setAmount] = useState('');
+  const [coin, setCoin] = useState('ALY');
+  const [coinList, setCoinList] = useState([]);
   const [showScanner, setShowScanner] = useState(false);
   const toggleScan = () => setShowScanner(!showScanner);
   const onReadCodeQR = ({data}) => {
@@ -47,9 +52,47 @@ const MainScreen = ({navigation}) => {
     setWalletAddress(data);
   };
 
+  const _handleTransaction = async () => {
+    console.log(amount);
+    console.log(walletAddress);
+    console.log(global.wallet_commerce);
+    console.log(coin);
+    const {data} = await http.post(
+      '/api/ecommerce/wallet/transaction',
+      {
+        amount_usd: parseFloat(amount),
+        amount: parseFloat(amount),
+        wallet: walletAddress,
+        id_wallet: global.wallet_commerce,
+        symbol: coin,
+      },
+      {
+        headers: {
+          'x-auth-token': global.token,
+        },
+      },
+    );
+
+    if (data.error) {
+      errorMessage(data.message);
+    }
+
+    if (data.response === 'success') {
+      showMessage({
+        type: 'success',
+        message: 'Alypay E-commerce',
+        description: 'Transaccion en proceso',
+      });
+    }
+  };
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const ConfigureComponent = async () => {
     try {
+      const coinsResponse = await http.get(
+        'https://ardent-medley-272823.appspot.com/collection/prices/minimal',
+      );
+
       const {data} = await http.get(
         `/api/ecommerce/wallet/details/${global.wallet_commerce}`,
         {
@@ -60,11 +103,14 @@ const MainScreen = ({navigation}) => {
       );
       if (isMounted.current) {
         setDetails(data);
+        setCoinList(Object.values(coinsResponse.data));
       }
     } catch (e) {
       errorMessage(e.message);
     } finally {
-      console.log('Wallet address: ', details.wallet);
+      if (isMounted.current) {
+        console.log('Coins', coinList[0]);
+      }
     }
   };
 
@@ -102,7 +148,7 @@ const MainScreen = ({navigation}) => {
       </View>
 
       <Switch onSwitch={setStateView} items={switchItems} />
-      <KeyboardAvoidingView enabled behavior="padding">
+      <View>
         {stateView === TYPE_VIEW.PAY && <PaymentScreen />}
 
         {stateView === TYPE_VIEW.RECEIVE && (
@@ -130,9 +176,11 @@ const MainScreen = ({navigation}) => {
                 />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => navigation.navigate('Recharge', {
-                  wallet: details.wallet,
-                })}
+                onPress={() =>
+                  navigation.navigate('Recharge', {
+                    wallet: details.wallet,
+                  })
+                }
                 style={{
                   backgroundColor: Colors.$colorYellow,
                   padding: RFValue(15),
@@ -168,15 +216,15 @@ const MainScreen = ({navigation}) => {
                   padding: RFValue(10),
                   flex: 0.9,
                 }}>
-                <Text style={registerStyles.inputLabel}>
-                  Dirección de billetera
-                </Text>
+                <Text style={styles.label}>Dirección de billetera</Text>
                 <TextInput
+                  value={walletAddress}
+                  onChangeText={(value) => setWalletAddress(value)}
                   style={[
                     GlobalStyles.textInput,
                     {
-                      paddingVertical: RFValue(5),
-                      paddingHorizontal: RFValue(10),
+                      paddingVertical: RFValue(0),
+                      paddingLeft: RFValue(15),
                       margin: RFValue(5),
                     },
                   ]}
@@ -210,23 +258,61 @@ const MainScreen = ({navigation}) => {
             </View>
             <View
               style={{
+                flexDirection: 'row',
                 padding: RFValue(10),
               }}>
-              <Text style={registerStyles.inputLabel}>Monto (USD)</Text>
-              <TextInput
-                style={[
-                  GlobalStyles.textInput,
-                  {
-                    padding: RFValue(5),
-                    margin: RFValue(5),
-                  },
-                ]}
-                placeholder="Monto"
-                placeholderTextColor={Colors.$colorGray}
-              />
+              <View style={{flex: 1}}>
+                <Text style={styles.label}>Monto (USD)</Text>
+                <TextInput
+                  value={amount}
+                  onChangeText={(value) => setAmount(value)}
+                  style={[
+                    GlobalStyles.textInput,
+                    {
+                      paddingVertical: RFValue(0),
+                      paddingLeft: RFValue(15),
+                      margin: RFValue(5),
+                    },
+                  ]}
+                  placeholder="Monto"
+                  placeholderTextColor={Colors.$colorGray}
+                />
+              </View>
             </View>
             <View style={{padding: RFValue(10)}}>
+              <Text style={styles.label}>Moneda</Text>
+              <View
+                style={{
+                  borderWidth: 0.3,
+                  borderRadius: RFValue(50),
+                  backgroundColor: Colors.$colorBlack,
+                  borderColor: Colors.$colorYellow,
+                }}>
+                <Picker
+                  style={{
+                    borderColor: Colors.$colorYellow,
+                    color: 'white',
+                    height: RFValue(40),
+                    fontSize: RFValue(10),
+                  }}
+                  mode="dialog"
+                  selectedValue={coin}
+                  onValueChange={(value) => setCoin(value)}>
+                  {coinList.map((item, index) => (
+                    <Picker.Item
+                      enabled={true}
+                      key={index}
+                      label={item.name}
+                      value={item.symbol}
+                    />
+                  ))}
+                </Picker>
+              </View>
+            </View>
+
+            <View style={{padding: RFValue(10)}}>
               <TouchableOpacity
+                onPress={_handleTransaction}
                 style={{
                   backgroundColor: Colors.$colorYellow,
                   borderRadius: RFValue(50),
@@ -239,6 +325,7 @@ const MainScreen = ({navigation}) => {
                     textTransform: 'uppercase',
                     fontWeight: 'bold',
                     fontSize: RFValue(18),
+                    color: Colors.$colorBlack,
                   }}>
                   Siguiente
                 </Text>
@@ -249,9 +336,11 @@ const MainScreen = ({navigation}) => {
                 padding: RFValue(10),
               }}>
               <TouchableOpacity
-                onPress={() => navigation.navigate('Retirements', {
-                  wallet: details.wallet,
-                })}
+                onPress={() =>
+                  navigation.navigate('Retirements', {
+                    wallet: details.wallet,
+                  })
+                }
                 style={{
                   padding: RFValue(15),
                   alignItems: 'center',
@@ -271,7 +360,7 @@ const MainScreen = ({navigation}) => {
         )}
 
         {stateView === TYPE_VIEW.HISTORY && <HistoryScreen />}
-      </KeyboardAvoidingView>
+      </View>
     </View>
   );
 };
@@ -302,6 +391,11 @@ const styles = StyleSheet.create({
     borderRadius: RFValue(5),
     height: RFValue(320),
     overflow: 'hidden',
+  },
+  label: {
+    color: Colors.$colorYellow,
+    fontSize: RFValue(12),
+    marginLeft: RFValue(10),
   },
 });
 
