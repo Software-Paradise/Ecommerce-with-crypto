@@ -22,10 +22,10 @@ const Switch = ({onSwitch = () => {}, items = []}) => {
     container: {
       alignItems: 'center',
       borderColor: Colors.$colorYellow,
-      borderWidth: 1,
+      borderWidth: 1.5,
       borderRadius: RFValue(50),
-      padding: RFValue(2),
-      margin: RFValue(20),
+      padding: RFValue(0),
+      margin: RFValue(15),
       flexDirection: 'row',
       justifyContent: 'space-between',
     },
@@ -39,7 +39,7 @@ const Switch = ({onSwitch = () => {}, items = []}) => {
       backgroundColor: Colors.$colorYellow,
     },
     textButton: {
-      fontSize: RFValue(itemWidth / 4 * 2),
+      fontSize: RFValue(itemWidth / 2 * .8 ),
       textTransform: 'uppercase',
     },
     textButtonActive: {

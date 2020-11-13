@@ -177,22 +177,21 @@ export const successMessage = (description = '', title = 'AlyPay') => {
   });
 };
 
-const PORT = '3085';
+// const PORT = '3000';
 
 // export const serverAddress =
 //   Platform.OS === 'ios'
 //     ? `http://localhost:${PORT}`
-//     : `http://192.168.0.119:${PORT}`;
+//     : `http://192.168.12.224:${PORT}`;
 
 export const serverAddress = 'https://test-after-prod.uc.r.appspot.com';
-// export const socketAddress = `http://192.168.0.117:${PORT}`;
+// export const socketAddress = `http://192.168.12.224:${PORT}`;
 export const socketAddress = 'https://test-after-prod.uc.r.appspot.com';
 
 export const TYPE_VIEW = {
   PAY: 'pay',
   SEND: 'send',
   RECEIVE: 'receive',
-  HISTORY: 'history',
 };
 
 export const CopyClipboard = async (text = '') => {
@@ -228,11 +227,7 @@ export const switchItems = [
   {
     text: 'Recibir',
     state: TYPE_VIEW.RECEIVE,
-  },
-  {
-    text: 'Historial',
-    state: TYPE_VIEW.HISTORY,
-  },
+  }
 ];
 
 export const http = axios.create({

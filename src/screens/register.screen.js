@@ -24,7 +24,6 @@ const RegisterScreen = ({navigation}) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   // Fields of form
   const [companyName, setCompanyName] = useState('');
-  const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -40,20 +39,14 @@ const RegisterScreen = ({navigation}) => {
         type: 'danger',
         position: 'top',
       });
-    } else if (email === '') {
-      console.log('Email is required');
-      showMessage({
-        message: 'Correo electronico requerido',
-        autoHide: false,
-        type: 'danger',
-        position: 'top',
-      });
+    } else if (username === '') {
+      errorMessage('Correo electrónico es requerido');
     } else if (companyRUC === '') {
       console.log('Email is required');
       errorMessage('El codigo de la empresa es requerido');
     } else {
       navigation.navigate('LegalData', {
-        commerceData: {companyName, email, username, password, companyRUC},
+        commerceData: {companyName, username, password, companyRUC},
       });
     }
   }
@@ -82,24 +75,10 @@ const RegisterScreen = ({navigation}) => {
             <Icon name="email" size={18} color={Colors.$colorGray} />
             <TextInput
               placeholderTextColor={Colors.$colorGray}
-              value={email}
-              onChangeText={value => setEmail(value)}
-              keyboardType='email-address'
-              placeholder="Correo electrónico"
-              style={registerStyles.textInputCol}
-            />
-            <View style={registerStyles.touchableCol} />
-          </View>
-        </View>
-        <View style={registerStyles.spacing}>
-          <Text style={registerStyles.inputLabel}>Nombre de usuario</Text>
-          <View style={registerStyles.textInputWithImage}>
-            <Icon name="person" size={18} color={Colors.$colorGray} />
-            <TextInput
-              placeholderTextColor={Colors.$colorGray}
               value={username}
               onChangeText={value => setUsername(value)}
-              placeholder="Nombre de usuario"
+              keyboardType='email-address'
+              placeholder="Correo electrónico"
               style={registerStyles.textInputCol}
             />
             <View style={registerStyles.touchableCol} />

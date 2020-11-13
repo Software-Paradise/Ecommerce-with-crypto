@@ -59,6 +59,7 @@ const RetirementsScreen = ({navigation}) => {
         message: 'Alypay E-commerce',
         description: 'Tu petición esta siendo procesada',
       });
+      navigation.pop();
     }
   };
 
@@ -168,6 +169,7 @@ const RetirementsScreen = ({navigation}) => {
         <Text style={styles.label}>Monto a retirar</Text>
         <TextInput
           value={amount}
+          keyboardType='numeric'
           onChangeText={(value) => setAmount(value)}
           style={[
             GlobalStyles.textInput,

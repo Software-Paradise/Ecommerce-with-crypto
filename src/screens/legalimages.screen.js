@@ -26,6 +26,7 @@ import * as axios from 'axios';
 import {serverAddress} from './../utils/constants.util';
 import {showMessage} from 'react-native-flash-message';
 import TransactionScreen from './transaction.screen';
+import Loader from '../components/loader.component';
 
 // Options for React-Image-Picker
 const RIPOptions = {
@@ -46,6 +47,7 @@ const LegalImagesScreen = ({navigation}) => {
   const [viewLegalPower, setViewLegalPower] = useState(false);
   const [repID, setRepID] = useState(null);
   const [viewRepId, setViewRepId] = useState(false);
+  const [showLoader, setShowLoader] = useState(false);
   const route = useRoute();
 
   const _createFormData = (
@@ -102,6 +104,9 @@ const LegalImagesScreen = ({navigation}) => {
 
   const _handleSubmit = async () => {
     try {
+
+      setShowLoader(true);
+
       axios
         .post(
           `${serverAddress}/ecommerce/company/register`,
@@ -124,23 +129,26 @@ const LegalImagesScreen = ({navigation}) => {
 
           if (result.error) {
             errorMessage(result.message);
-          } else {
+            setShowLoader(false);
+          } else if (result.success) {
             showMessage({
               message: 'Exito',
               description: 'La compañía se ha creado con éxito.',
               type: 'success',
             });
-
+            setShowLoader(false);
             navigation.navigate('Welcome', {
               companyId: result.id,
             });
           }
         })
         .catch((error) => {
+          setShowLoader(false);
           console.log('Error de request', error);
         });
     } catch (e) {
       errorMessage(e.message);
+      setShowLoader(false);
     }
   };
 
@@ -192,6 +200,7 @@ const LegalImagesScreen = ({navigation}) => {
 
   return (
     <SafeAreaView style={GlobalStyles.superContainer}>
+      {showLoader && <Loader isVisible={true}/>}
       <ScrollView>
         <LogoHeaderComponent title="Adjuntar documentos legales" />
         <View style={legalImagesStyles.regularSpacing}>
@@ -335,7 +344,7 @@ const LegalImagesScreen = ({navigation}) => {
           <View style={registerStyles.column}>
             <ButtonWithIcon
               onPress={_handleSubmit}
-              text="Siguiente"
+              text="Finalizar"
               icon="arrow-right"
               type="filled"
             />

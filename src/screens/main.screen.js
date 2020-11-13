@@ -13,6 +13,7 @@ import {RFValue} from 'react-native-responsive-fontsize';
 import PaymentScreen from './payment.screen';
 import HistoryScreen from './history.screen';
 import {
+  CopyClipboard,
   errorMessage,
   http,
   switchItems,
@@ -46,6 +47,7 @@ const MainScreen = ({navigation}) => {
   const [coin, setCoin] = useState('ALY');
   const [coinList, setCoinList] = useState([]);
   const [showScanner, setShowScanner] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   const toggleScan = () => setShowScanner(!showScanner);
   const onReadCodeQR = ({data}) => {
     toggleScan();
@@ -126,6 +128,60 @@ const MainScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity
+        onPress={() => setShowMenu(!showMenu)}
+        style={{
+          position: 'absolute',
+          top: '5%',
+          right: '5%',
+          backgroundColor: Colors.$colorYellow,
+          padding: RFValue(10),
+          borderRadius: RFValue(50),
+        }}>
+        <FontAwesome5Icon
+          name="bars"
+          size={RFValue(15)}
+          color={Colors.$colorBlack}
+        />
+      </TouchableOpacity>
+      <Modal
+        onBackdropPress={() => setShowMenu(!showMenu)}
+        isVisible={showMenu}
+        backdropOpacity={0}
+        style={{
+          position: 'absolute',
+          right: '0%',
+          top: '10%',
+          backgroundColor: 'white',
+          height: 200,
+          width: 200,
+          borderRadius: 10,
+        }}>
+        <TouchableOpacity
+          style={{
+            padding: RFValue(10),
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Text>Home</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            padding: RFValue(10),
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Text>Blockchain</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            padding: RFValue(10),
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Text>Cerrar sesión</Text>
+        </TouchableOpacity>
+      </Modal>
       <Modal
         backdropOpacity={0.9}
         animationIn="fadeIn"
@@ -161,38 +217,22 @@ const MainScreen = ({navigation}) => {
                 value={details.wallet}
               />
             </View>
-            <View style={{flexDirection: 'row'}}>
+            <View
+              style={{flexDirection: 'row', paddingHorizontal: RFValue(20)}}>
               <TouchableOpacity
+                onPress={() => CopyClipboard(details.wallet)}
                 style={{
                   backgroundColor: Colors.$colorYellow,
-                  padding: RFValue(18),
+                  padding: RFValue(15),
+                  width: '100%',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   borderRadius: RFValue(50),
-                  marginRight: RFValue(10),
                 }}>
                 <FeatherIcon
                   name="copy"
                   size={RFValue(22)}
-                  color={Colors.$colorBlack}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('Recharge', {
-                    wallet: details.wallet,
-                  })
-                }
-                style={{
-                  backgroundColor: Colors.$colorYellow,
-                  padding: RFValue(15),
-                  borderRadius: RFValue(50),
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <FontAwesome5Icon
-                  style={{marginRight: RFValue(5)}}
-                  name="hand-holding-usd"
-                  size={RFValue(20)}
                   color={Colors.$colorBlack}
                 />
                 <Text
@@ -200,8 +240,9 @@ const MainScreen = ({navigation}) => {
                     fontSize: RFValue(18),
                     fontWeight: 'bold',
                     textTransform: 'uppercase',
+                    marginLeft: RFValue(10),
                   }}>
-                  Recargar billetera
+                  Copiar
                 </Text>
               </TouchableOpacity>
             </View>
@@ -223,7 +264,7 @@ const MainScreen = ({navigation}) => {
                   style={[
                     GlobalStyles.textInput,
                     {
-                      paddingVertical: RFValue(0),
+                      paddingVertical: RFValue(5),
                       paddingLeft: RFValue(15),
                       margin: RFValue(5),
                     },
@@ -269,7 +310,7 @@ const MainScreen = ({navigation}) => {
                   style={[
                     GlobalStyles.textInput,
                     {
-                      paddingVertical: RFValue(0),
+                      paddingVertical: RFValue(5),
                       paddingLeft: RFValue(15),
                       margin: RFValue(5),
                     },
@@ -279,7 +320,11 @@ const MainScreen = ({navigation}) => {
                 />
               </View>
             </View>
-            <View style={{padding: RFValue(10)}}>
+            <View
+              style={{
+                paddingHorizontal: RFValue(15),
+                paddingBottom: RFValue(20),
+              }}>
               <Text style={styles.label}>Moneda</Text>
               <View
                 style={{
@@ -292,7 +337,7 @@ const MainScreen = ({navigation}) => {
                   style={{
                     borderColor: Colors.$colorYellow,
                     color: 'white',
-                    height: RFValue(40),
+                    height: RFValue(45),
                     fontSize: RFValue(10),
                   }}
                   mode="dialog"

@@ -33,6 +33,7 @@ import {
   getSystemName,
 } from 'react-native-device-info';
 import {ScrollView} from 'react-native-gesture-handler';
+import Loader from '../components/loader.component';
 
 const initialState = {
   email: '',
@@ -48,12 +49,14 @@ const initialState = {
 const LoginScreen = ({navigation}) => {
   const [showPassword, setShowPassword] = useState(false);
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [showLoader, setShowLoader] = useState(false);
 
   /**
    * Metodo que se ejecuta cuando el usuario hace login
    */
   const onSubmit = async () => {
     try {
+      setShowLoader(true)
       if (!validator.isEmail(state.email.trim())) {
         throw 'Correo electronico no es valido';
       }
@@ -77,9 +80,11 @@ const LoginScreen = ({navigation}) => {
       const {data} = response;
 
       if (data.error) {
+        setShowLoader(false);
         throw String(data.message);
       } else {
         console.log('Success');
+        setShowLoader(false);
         if (Object.values(data).length > 0) {
           store.dispatch({type: SETSTORAGE, payload: data});
 
@@ -127,6 +132,7 @@ const LoginScreen = ({navigation}) => {
 
   return (
     <SafeAreaView style={GlobalStyles.superContainer}>
+      {showLoader && <Loader isVisible={true} />}
       <ScrollView>
         <LogoHeaderComponent title="Iniciar sesión" />
         <View style={{paddingTop: RFValue(20), paddingHorizontal: RFValue(20)}}>
