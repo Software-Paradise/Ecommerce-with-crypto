@@ -1,13 +1,11 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {
-  KeyboardAvoidingView,
   Image,
   View,
   StyleSheet,
   TouchableOpacity,
   Text,
   TextInput,
-  ScrollView,
 } from 'react-native';
 import {RFValue} from 'react-native-responsive-fontsize';
 import PaymentScreen from './payment.screen';
@@ -15,7 +13,7 @@ import HistoryScreen from './history.screen';
 import {
   CopyClipboard,
   errorMessage,
-  http,
+  http, logOutApp,
   switchItems,
   TYPE_VIEW,
 } from '../utils/constants.util';
@@ -24,7 +22,6 @@ import {Colors} from './../utils/constants.util';
 import QRCode from 'react-native-qrcode-svg';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
-import {registerStyles} from './register.screen';
 import {GlobalStyles} from '../styles/global.style';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import store from '../store';
@@ -33,8 +30,7 @@ import {RNCamera} from 'react-native-camera';
 import Modal from 'react-native-modal';
 import {Picker} from '@react-native-community/picker';
 import {showMessage} from 'react-native-flash-message';
-
-// const Drawer = createDrawerNavigator();
+import Search from '../components/search.component';
 
 const MainScreen = ({navigation}) => {
   const [stateView, setStateView] = useState(TYPE_VIEW.ORDER);
@@ -48,6 +44,7 @@ const MainScreen = ({navigation}) => {
   const [coinList, setCoinList] = useState([]);
   const [showScanner, setShowScanner] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [hideSwitch, setHideSwitch] = useState(false);
   const toggleScan = () => setShowScanner(!showScanner);
   const onReadCodeQR = ({data}) => {
     toggleScan();
@@ -153,11 +150,12 @@ const MainScreen = ({navigation}) => {
           right: '0%',
           top: '10%',
           backgroundColor: 'white',
-          height: 200,
+          height: 180,
           width: 200,
           borderRadius: 10,
         }}>
         <TouchableOpacity
+          onPress={() => setHideSwitch(false)}
           style={{
             padding: RFValue(10),
             alignItems: 'center',
@@ -166,6 +164,22 @@ const MainScreen = ({navigation}) => {
           <Text>Home</Text>
         </TouchableOpacity>
         <TouchableOpacity
+          onPress={() => {
+            setHideSwitch(true);
+            setStateView(TYPE_VIEW.HISTORY);
+          }}
+          style={{
+            padding: RFValue(10),
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Text>Historial</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            setHideSwitch(true);
+            setStateView(TYPE_VIEW.SEARCH);
+          }}
           style={{
             padding: RFValue(10),
             alignItems: 'center',
@@ -174,6 +188,7 @@ const MainScreen = ({navigation}) => {
           <Text>Blockchain</Text>
         </TouchableOpacity>
         <TouchableOpacity
+          onPress={logOutApp}
           style={{
             padding: RFValue(10),
             alignItems: 'center',
@@ -203,7 +218,7 @@ const MainScreen = ({navigation}) => {
         />
       </View>
 
-      <Switch onSwitch={setStateView} items={switchItems} />
+      {!hideSwitch && <Switch onSwitch={setStateView} items={switchItems} />}
       <View>
         {stateView === TYPE_VIEW.PAY && <PaymentScreen />}
 
@@ -405,6 +420,8 @@ const MainScreen = ({navigation}) => {
         )}
 
         {stateView === TYPE_VIEW.HISTORY && <HistoryScreen />}
+
+        {stateView === TYPE_VIEW.SEARCH && <Search />}
       </View>
     </View>
   );

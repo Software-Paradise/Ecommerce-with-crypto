@@ -57,18 +57,12 @@ const PaymentScreen = () => {
                        </Text>
                        <MaterialCommunityIcons name='qrcode-scan' size={24} color={Colors.$colorBlack}/>
                    </TouchableOpacity>
-                   <TouchableOpacity style={PaymentStyles.buttonFill} onPress={logOutApp}>
-                        <Text style={PaymentStyles.buttonText}>
-                            Salir
-                        </Text>
-                        <MaterialCommunityIcons name='logout-variant' size={24} color={Colors.$colorBlack} />
-                   </TouchableOpacity>
                </View>
                <View style={PaymentStyles.buttonSpacing}>
                    <Image source={require('./../assets/img/logo-aly.png')} style={PaymentStyles.logo}/>
                </View>
            </View>
-        
+
     )
 };
 

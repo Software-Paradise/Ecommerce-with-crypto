@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
     elevation: 25,
     padding: RFValue(10),
     marginVertical: RFValue(10),
+    marginHorizontal: RFValue(15),
   },
   subContainer: {
     flex: 1,

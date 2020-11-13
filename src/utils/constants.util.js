@@ -192,6 +192,8 @@ export const TYPE_VIEW = {
   PAY: 'pay',
   SEND: 'send',
   RECEIVE: 'receive',
+  HISTORY: 'history',
+  SEARCH: 'search',
 };
 
 export const CopyClipboard = async (text = '') => {

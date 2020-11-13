@@ -8,23 +8,22 @@ import {
   ScrollView,
 } from 'react-native';
 // import all components
-import Container from '../../components/Container/Container';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Lottie from 'lottie-react-native';
 // import constants and functions
 import {
-  GlobalStyles,
   http,
   loader,
   errorMessage,
   CopyClipboard,
-  RFValue,
   Colors,
-} from '../../utils/constants';
+} from './../utils/constants.util';
+import {GlobalStyles} from '../styles/global.style';
+import {RFValue} from 'react-native-responsive-fontsize';
 import moment from 'moment';
 import {useNavigation} from '@react-navigation/native';
 // import assets
-import empty from '../../animations/empty.json';
+import empty from '../../src/animations/empty-state.json';
 const Description = ({item}) => {
   const styles = StyleSheet.create({
     //Secciones de los detalles
@@ -195,7 +194,7 @@ const Search = () => {
     }
   };
   return (
-    <Container>
+    <View>
       <View style={styless.containerSearch}>
         <TextInput
           value={searchText}
@@ -217,7 +216,7 @@ const Search = () => {
       ) : (
         <Lottie source={empty} style={styless.empty} loop={false} autoPlay />
       )}
-    </Container>
+    </View>
   );
 };
 const styless = StyleSheet.create({
