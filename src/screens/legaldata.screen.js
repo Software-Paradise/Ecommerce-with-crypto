@@ -1,31 +1,23 @@
-import React, {useEffect, useState} from 'react';
-import {
-  Text,
-  StyleSheet,
-  View,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  FlatList,
-} from 'react-native';
-import {Colors, errorMessage, http} from '../utils/constants.util';
-import {GlobalStyles} from '../styles/global.style';
+import React, { useEffect, useState } from 'react';
+import { Text, StyleSheet, View, TextInput, TouchableOpacity, ScrollView, FlatList } from 'react-native';
+import { Colors, errorMessage, http } from '../utils/constants.util';
+import { GlobalStyles } from '../styles/global.style';
 import LogoHeaderComponent from '../components/logoheader.component';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FooterComponent from '../components/footer.component';
-import {registerStyles} from './register.screen';
+import { registerStyles } from './register.screen';
 import IconButton from '../components/icon-button';
 import ButtonWithIcon from '../components/button-with-icon.component';
 import ButtonSupport from '../components/buttonsupport.component';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {Picker} from '@react-native-community/picker';
-import {showMessage} from 'react-native-flash-message';
-import {useRoute} from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Picker } from '@react-native-community/picker';
+import { showMessage } from 'react-native-flash-message';
+import { useRoute } from '@react-navigation/native';
 
-import {RFValue} from 'react-native-responsive-fontsize';
+import { RFValue } from 'react-native-responsive-fontsize';
 import Modal from 'react-native-modal';
 
-const LegalDataScreen = ({navigation}) => {
+const LegalDataScreen = ({ navigation }) => {
   const route = useRoute();
   const DOCUMENT_TYPE = [
     {
@@ -50,7 +42,7 @@ const LegalDataScreen = ({navigation}) => {
 
   const ConfigurateComponent = async () => {
     try {
-      const {data} = await http.get('/register/countries');
+      const { data } = await http.get('/register/countries');
 
       setCountryOptions(data);
     } catch (error) {
@@ -68,7 +60,7 @@ const LegalDataScreen = ({navigation}) => {
     setShowCountries(true);
   };
 
-  const ItemCountry = ({item, index}) => {
+  const ItemCountry = ({ item, index }) => {
     if (
       item.name.length > 0 &&
       item.name.toLowerCase().search(filter.toLocaleLowerCase()) > -1
@@ -78,8 +70,8 @@ const LegalDataScreen = ({navigation}) => {
           style={legalDataStyles.itemCountry}
           key={index}
           onPress={(_) => selectedCountry(index)}>
-          <Text style={{color: '#FFF'}}>{item.name}</Text>
-          <Text style={{color: Colors.$colorYellow}}>{item.phoneCode}</Text>
+          <Text style={{ color: '#FFF' }}>{item.name}</Text>
+          <Text style={{ color: Colors.$colorYellow }}>{item.phoneCode}</Text>
         </TouchableOpacity>
       );
     }
@@ -130,7 +122,7 @@ const LegalDataScreen = ({navigation}) => {
         ...route.params.commerceData,
         ...legalData,
       };
-      navigation.navigate('LegalImages', {companyData: data});
+      navigation.navigate('LegalImages', { companyData: data });
     }
   };
   return (
@@ -150,7 +142,7 @@ const LegalDataScreen = ({navigation}) => {
             value={filter}
             onChangeText={(value) => setFilter(value)}
           />
-          <View style={{height: 10}} />
+          <View style={{ height: 10 }} />
           <FlatList
             keyboardShouldPersistTaps="always"
             data={countryOptions}
@@ -161,8 +153,10 @@ const LegalDataScreen = ({navigation}) => {
       </Modal>
       <ScrollView>
         <LogoHeaderComponent title="Representante legal" />
+
         <View style={legalDataStyles.spacing}>
           <Text style={legalDataStyles.inputLabel}>Nombre</Text>
+
           <View style={registerStyles.textInputWithImage}>
             <Icon name="person" size={18} color={Colors.$colorGray} />
             <TextInput
@@ -175,8 +169,10 @@ const LegalDataScreen = ({navigation}) => {
             <View style={registerStyles.touchableCol} />
           </View>
         </View>
+
         <View style={legalDataStyles.spacing}>
           <Text style={legalDataStyles.inputLabel}>Apellido</Text>
+
           <View style={registerStyles.textInputWithImage}>
             <Icon name="person" size={18} color={Colors.$colorGray} />
             <TextInput
@@ -189,6 +185,7 @@ const LegalDataScreen = ({navigation}) => {
             <View style={registerStyles.touchableCol} />
           </View>
         </View>
+
         <View style={legalDataStyles.spacing}>
           <Text style={legalDataStyles.inputLabel}>Correo electrónico</Text>
           <View style={registerStyles.textInputWithImage}>
@@ -207,7 +204,7 @@ const LegalDataScreen = ({navigation}) => {
           <>
             <Text style={registerStyles.inputLabel}>Numero de telefono</Text>
 
-            <View style={{marginLeft: RFValue(20)}}>
+            <View style={{ marginLeft: RFValue(20) }}>
               <View style={legalDataStyles.rowPhoneNumber}>
                 <TouchableOpacity
                   style={[
@@ -219,13 +216,13 @@ const LegalDataScreen = ({navigation}) => {
                     },
                   ]}
                   onPress={(_) => toggleModalCountries(true)}>
-                  <Text style={{color: Colors.$colorYellow}}>
+                  <Text style={{ color: Colors.$colorYellow }}>
                     {countryOptions[country].phoneCode}
                   </Text>
                 </TouchableOpacity>
 
                 <TextInput
-                  style={[GlobalStyles.textInput, {flex: 0.9}]}
+                  style={[GlobalStyles.textInput, { flex: 0.9 }]}
                   value={repPhone}
                   autoCorrect={false}
                   keyboardType="numeric"

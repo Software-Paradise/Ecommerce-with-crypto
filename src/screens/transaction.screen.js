@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -9,18 +9,18 @@ import {
   Image,
 } from 'react-native';
 import LottieAnimationView from 'lottie-react-native';
-import {useRoute} from '@react-navigation/native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {GlobalStyles} from '../styles/global.style';
-import {Colors, socketAddress} from '../utils/constants.util';
-import {RFValue} from 'react-native-responsive-fontsize';
+import { useRoute } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { GlobalStyles } from '../styles/global.style';
+import { Colors, socketAddress } from '../utils/constants.util';
+import { RFValue } from 'react-native-responsive-fontsize';
 import QRCode from 'react-native-qrcode-svg';
 import * as CryptoJS from 'react-native-crypto-js';
 import store from '../store';
 import socketIO from 'socket.io-client';
 
-const TransactionScreen = ({navigation}) => {
-  const {global} = store.getState();
+const TransactionScreen = ({ navigation }) => {
+  const { global } = store.getState();
   const [keySecret, setKeySecret] = useState('');
   const route = useRoute();
   const [transaction, setTransaction] = useState('');
@@ -156,7 +156,7 @@ const TransactionScreen = ({navigation}) => {
     <SafeAreaView
       style={[
         GlobalStyles.superContainer,
-        {justifyContent: 'center', alignItems: 'center'},
+        { justifyContent: 'center', alignItems: 'center' },
       ]}>
       <Modal animationType="slide" transparent={true} visible={showModal}>
         <View style={TransactionStyles.modalView}>
@@ -172,6 +172,7 @@ const TransactionScreen = ({navigation}) => {
               style={TransactionStyles.logo}
             />
           </View>
+
           <View>
             <Text
               style={{
@@ -183,6 +184,7 @@ const TransactionScreen = ({navigation}) => {
               ¡Estupendo!
             </Text>
           </View>
+
           <View style={TransactionStyles.animationContainer}>
             <LottieAnimationView
               source={
@@ -195,10 +197,11 @@ const TransactionScreen = ({navigation}) => {
               loop={false}
             />
           </View>
+
           <Text
             style={[
               TransactionStyles.textAlertStyle,
-              {color: onSuccess ? Colors.$colorYellow : Colors.$colorRed},
+              { color: onSuccess ? Colors.$colorYellow : Colors.$colorRed },
             ]}>
             {onSuccessMessage}
           </Text>
@@ -216,12 +219,12 @@ const TransactionScreen = ({navigation}) => {
               </Text>
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity
-              onPress={handleFail}
-              style={TransactionStyles.handleButton}>
-              <Text>Confirmar</Text>
-            </TouchableOpacity>
-          )}
+              <TouchableOpacity
+                onPress={handleFail}
+                style={TransactionStyles.handleButton}>
+                <Text>Confirmar</Text>
+              </TouchableOpacity>
+            )}
         </View>
       </Modal>
       <Image
@@ -229,12 +232,13 @@ const TransactionScreen = ({navigation}) => {
         style={TransactionStyles.logo}
       />
       <Text style={TransactionStyles.mainTitle}>Procesar transaccion</Text>
+
       <View style={TransactionStyles.mainContainer}>
         <View style={TransactionStyles.transactionData}>
           <Text
             style={[
               TransactionStyles.mediumText,
-              {color: Colors.$colorYellow},
+              { color: Colors.$colorYellow },
             ]}>
             Numero de orden: {transaction}
           </Text>
@@ -243,6 +247,7 @@ const TransactionScreen = ({navigation}) => {
             {parseFloat(route.params.amount).toFixed(2) || 0.0}
           </Text>
         </View>
+
         <View style={TransactionStyles.qrCodeContainer}>
           <QRCode
             logo={require('./../assets/img/aly-coin.png')}
@@ -251,10 +256,12 @@ const TransactionScreen = ({navigation}) => {
             value={`${cypherdata},${keySecret}`}
           />
         </View>
+
         <View style={TransactionStyles.statusRow}>
           <Text style={TransactionStyles.statusLabel}>Estado: </Text>
           <Text style={TransactionStyles.status}>{status}</Text>
         </View>
+
         <View style={TransactionStyles.cancelContainer}>
           <TouchableOpacity style={TransactionStyles.cancelButton}>
             <Text onPress={cancelButton} style={TransactionStyles.cancelText}>
@@ -262,6 +269,7 @@ const TransactionScreen = ({navigation}) => {
             </Text>
           </TouchableOpacity>
         </View>
+
       </View>
     </SafeAreaView>
   );

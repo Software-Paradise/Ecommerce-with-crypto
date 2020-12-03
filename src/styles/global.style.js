@@ -12,12 +12,16 @@ const buttonStyle = {
 
 export const GlobalStyles = StyleSheet.create({
   button: buttonStyle,
+
   containerPicker: {
     backgroundColor: Colors.$colorMain,
     borderRadius: 5,
     borderWidth: 2,
     elevation: 5,
   },
+  superContainer: {
+    flex: 1,
+},
   picker: {
     paddingHorizontal: 0,
     color: '#FFF',

@@ -1,4 +1,4 @@
-import React, {useEffect, useReducer, useState} from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import {
   Text,
   SafeAreaView,
@@ -15,16 +15,15 @@ import {
   http,
 } from '../utils/constants.util';
 import validator from 'validator';
-import {GlobalStyles} from '../styles/global.style';
+import { GlobalStyles } from '../styles/global.style';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {RFValue} from 'react-native-responsive-fontsize';
+import { RFValue } from 'react-native-responsive-fontsize';
 import LogoHeaderComponent from '../components/logoheader.component';
 import FooterComponent from '../components/footer.component';
 import ButtonSupport from '../components/buttonsupport.component';
 import ButtonWithIcon from '../components/button-with-icon.component';
-import {SETNAVIGATION, SETSTORAGE} from '../store/actionTypes';
-import {showMessage} from 'react-native-flash-message';
-import {getIP} from 'react-native-public-ip';
+import { SETNAVIGATION, SETSTORAGE } from '../store/actionTypes';
+import { showMessage } from 'react-native-flash-message';
 import store from '../store';
 import {
   getBrand,
@@ -32,7 +31,7 @@ import {
   getMacAddress,
   getSystemName,
 } from 'react-native-device-info';
-import {ScrollView} from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 import Loader from '../components/loader.component';
 
 const initialState = {
@@ -46,7 +45,7 @@ const initialState = {
   systemName: '',
 };
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({ navigation }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [state, dispatch] = useReducer(reducer, initialState);
   const [showLoader, setShowLoader] = useState(false);
@@ -77,16 +76,14 @@ const LoginScreen = ({navigation}) => {
 
       const response = await http.post('/ecommerce/login', variables);
 
-      const {data} = response;
+      const { data } = response;
 
       if (data.error) {
-        setShowLoader(false);
         throw String(data.message);
       } else {
         console.log('Success');
-        setShowLoader(false);
         if (Object.values(data).length > 0) {
-          store.dispatch({type: SETSTORAGE, payload: data});
+          store.dispatch({ type: SETSTORAGE, payload: data });
 
           setStorage(data);
         }
@@ -100,6 +97,8 @@ const LoginScreen = ({navigation}) => {
         backgroundColor: Colors.$colorRed,
         icon: 'warning',
       });
+    } finally {
+      setShowLoader(false)
     }
   };
 
@@ -110,22 +109,22 @@ const LoginScreen = ({navigation}) => {
       const device = await getBrand();
       const deviceId = await getDeviceId();
 
-      dispatch({type: 'device', payload: `${device} - ${deviceId}`});
+      dispatch({ type: 'device', payload: `${device} - ${deviceId}` });
 
       await getMacAddress().then((payload) =>
-        dispatch({type: 'macAddress', payload}),
+        dispatch({ type: 'macAddress', payload }),
       );
 
       const systemVersion = await getSystemName();
 
-      dispatch({type: 'systemName', payload: systemVersion});
+      dispatch({ type: 'systemName', payload: systemVersion });
     } catch (error) {
       errorMessage(error.toString());
     }
   };
 
   useEffect(() => {
-    store.dispatch({type: SETNAVIGATION, payload: navigation});
+    store.dispatch({ type: SETNAVIGATION, payload: navigation });
 
     getDeviceInfo();
   }, [navigation]);
@@ -135,7 +134,7 @@ const LoginScreen = ({navigation}) => {
       {showLoader && <Loader isVisible={true} />}
       <ScrollView>
         <LogoHeaderComponent title="Iniciar sesión" />
-        <View style={{paddingTop: RFValue(20), paddingHorizontal: RFValue(20)}}>
+        <View style={{ paddingTop: RFValue(20), paddingHorizontal: RFValue(20) }}>
           <Text style={loginStyles.inputLabel}>Correo electrónico</Text>
           <View
             style={[loginStyles.textInputWithImage, GlobalStyles.textInput]}>
@@ -143,7 +142,7 @@ const LoginScreen = ({navigation}) => {
             <TextInput
               value={state.email}
               keyboardType="email-address"
-              onChangeText={(payload) => dispatch({type: 'email', payload})}
+              onChangeText={(payload) => dispatch({ type: 'email', payload })}
               placeholderTextColor={Colors.$colorGray}
               placeholder="Correo electrónico"
               style={loginStyles.textInputCol}
@@ -151,7 +150,8 @@ const LoginScreen = ({navigation}) => {
             <View style={GlobalStyles.touchableCol} />
           </View>
         </View>
-        <View style={{paddingTop: RFValue(20), paddingHorizontal: RFValue(20)}}>
+
+        <View style={{ paddingTop: RFValue(20), paddingHorizontal: RFValue(20) }}>
           <Text style={loginStyles.inputLabel}>Contraseña</Text>
           <View
             style={[loginStyles.textInputWithImage, GlobalStyles.textInput]}>
@@ -159,7 +159,7 @@ const LoginScreen = ({navigation}) => {
             <TextInput
               secureTextEntry={!showPassword}
               value={state.password}
-              onChangeText={(payload) => dispatch({type: 'password', payload})}
+              onChangeText={(payload) => dispatch({ type: 'password', payload })}
               placeholder="Contraseña"
               placeholderTextColor={Colors.$colorGray}
               style={loginStyles.textInputCol}
@@ -175,28 +175,23 @@ const LoginScreen = ({navigation}) => {
             </TouchableOpacity>
           </View>
         </View>
-        <View
-          style={{
-            paddingVertical: 10,
-            paddingHorizontal: 20,
-            textAlign: 'right',
-          }}>
+
+        <View style={{ paddingVertical: 10, paddingHorizontal: 20, textAlign: 'right' }}>
           <TouchableOpacity>
-            <Text style={loginStyles.forgotPasswordLabel}>
-              ¿Ha olvidado su contraseña?
-            </Text>
+            <Text style={loginStyles.forgotPasswordLabel}>¿Ha olvidado su contraseña?</Text>
           </TouchableOpacity>
         </View>
+
         <View style={loginStyles.horizontalContainer}>
-          <View style={{...loginStyles.horizontalChild, marginRight: 10}}>
+          <View style={{ ...loginStyles.horizontalChild, marginRight: 10 }}>
             <ButtonWithIcon
               text="Registrar"
-              onPress={() => navigation.navigate('Register')}
+              onPress={() => navigation.navigate('LegalImages')}
               icon="store"
               type="filled"
             />
           </View>
-          <View style={{...loginStyles.horizontalChild, marginLeft: 10}}>
+          <View style={{ ...loginStyles.horizontalChild, marginLeft: 10 }}>
             <ButtonWithIcon
               onPress={onSubmit}
               text="Ingresar"

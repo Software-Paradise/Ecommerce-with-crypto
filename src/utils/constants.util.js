@@ -10,17 +10,17 @@ import {
 
 import TouchID from 'react-native-touch-id';
 import axios from 'axios';
-import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
+import { check, PERMISSIONS, RESULTS, request } from 'react-native-permissions';
 import Clipboard from '@react-native-community/clipboard';
 import store from '../store/index';
-import {SETPERMISSIONS, DELETESTORAGE, SETLOADER} from '../store/actionTypes';
-import {showMessage} from 'react-native-flash-message';
+import { SETPERMISSIONS, DELETESTORAGE, SETLOADER } from '../store/actionTypes';
+import { showMessage } from 'react-native-flash-message';
 import Toast from 'react-native-simple-toast';
 
 const keyStorage = '@storage';
 
 export const Colors = {
-  $colorMain: '#1D1D1D',
+  $colorMain: '#2d2d2d',
   $colorBlack: '#151515',
   $colorSecondary: '#23AAB5',
   $colorBlue: '#3B66B7',
@@ -33,11 +33,11 @@ export const Colors = {
 export const logOutApp = async () => {
   await deleteStorage();
 
-  store.dispatch({type: DELETESTORAGE});
+  store.dispatch({ type: DELETESTORAGE });
 };
 
 export const loader = (payload = false) =>
-  store.dispatch({type: SETLOADER, payload});
+  store.dispatch({ type: SETLOADER, payload });
 
 export const setStorage = async (json = {}) => {
   const data = JSON.stringify(json);
@@ -62,7 +62,7 @@ export const getStorage = async () => {
 // Verificar permiso para acceder a camara
 export const CheckCameraPermission = async () => {
   try {
-    const {permissions} = store.getState();
+    const { permissions } = store.getState();
 
     // Check permission of camera
     const checkPermission = await check(
@@ -86,7 +86,7 @@ export const CheckCameraPermission = async () => {
           camera: true,
         };
 
-        store.dispatch({type: SETPERMISSIONS, payload});
+        store.dispatch({ type: SETPERMISSIONS, payload });
       }
 
       if (requestPermission === RESULTS.DENIED) {
@@ -104,7 +104,7 @@ export const CheckCameraPermission = async () => {
         camera: true,
       };
 
-      store.dispatch({type: SETPERMISSIONS, payload});
+      store.dispatch({ type: SETPERMISSIONS, payload });
     }
   } catch (description) {
     showMessage({
@@ -121,7 +121,7 @@ export const CheckCameraPermission = async () => {
 // Verificar permisos de TouchID
 export const CheckTouchIDPermission = async () => {
   try {
-    const {permissions} = store.getState();
+    const { permissions } = store.getState();
 
     // Verificar si hay permisos en redux
     if (permissions.touchID === undefined) {
@@ -138,7 +138,7 @@ export const CheckTouchIDPermission = async () => {
             touchID,
           };
 
-          store.dispatch({type: SETPERMISSIONS, payload});
+          store.dispatch({ type: SETPERMISSIONS, payload });
         })
         .catch((e) => {
           console.log(e);
@@ -177,16 +177,13 @@ export const successMessage = (description = '', title = 'AlyPay') => {
   });
 };
 
-// const PORT = '3000';
+const PORT = '3085';
 
-// export const serverAddress =
-//   Platform.OS === 'ios'
-//     ? `http://localhost:${PORT}`
-//     : `http://192.168.12.224:${PORT}`;
+export const serverAddress = Platform.OS === 'ios' ? `http://localhost:${PORT}` : `http://192.168.0.119:${PORT}`;
 
-export const serverAddress = 'https://test-after-prod.uc.r.appspot.com';
-// export const socketAddress = `http://192.168.12.224:${PORT}`;
-export const socketAddress = 'https://test-after-prod.uc.r.appspot.com';
+//export const serverAddress = 'https://test-after-prod.uc.r.appspot.com';
+export const socketAddress = `http://192.168.0.119:${PORT}`;
+// export const socketAddress = 'https://test-after-prod.uc.r.appspot.com';
 
 export const TYPE_VIEW = {
   PAY: 'pay',
@@ -249,7 +246,7 @@ export const http = axios.create({
 });
 
 export const getHeaders = () => {
-  const {token} = store.getState().global;
+  const { token } = store.getState().global;
 
   return {
     headers: {

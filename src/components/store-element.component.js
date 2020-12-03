@@ -2,52 +2,44 @@ import React from 'react';
 // Import Functions and constanst
 import moment from 'moment';
 
-import {Colors, CopyClipboard} from './../utils/constants.util';
-import {RFValue} from 'react-native-responsive-fontsize';
+import { Colors, CopyClipboard } from './../utils/constants.util';
+import { RFValue } from 'react-native-responsive-fontsize';
 // Import components
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
 const StoreElement = (item, index) => (
-  <TouchableOpacity
-    onPress={(_) => CopyClipboard(item.item.hash)}
-    style={styles.container}>
-    <View style={styles.subContainer}>
-      <Text style={styles.name}>{item.item.description || 'Transacción'}</Text>
-      <Text style={styles.hash}>
-        {item.item.hash?.substr(0, 10)}...
+  <View>
+    <TouchableOpacity onPress={(_) => CopyClipboard(item.item.hash)} style={styles.container}>
+      <View style={styles.subContainer}>
+        <Text style={styles.name}>{item.item.description || 'Transacción'}</Text>
+        <Text style={styles.hash}>
+          {item.item.hash?.substr(0, 10)}...
         {item.item.hash?.substr(
-          item.item.hash.length - 10,
-          item.item.hash.length - 1,
-        )}
-      </Text>
-      <View style={styles.detailsContain}>
-        <Text style={styles.id}># {item.item.id}</Text>
-        {/* <Text style={styles.date}>{item.date_create}</Text> */}
-        <Text style={styles.date}>
-          {moment(item.item.date_create).format('DD/MM/YY | HH:mm a')}
+            item.item.hash.length - 10,
+            item.item.hash.length - 1,
+          )}
         </Text>
+
+        <View style={styles.detailsContain}>
+          <Text style={styles.id}># {item.item.id}</Text>
+          <Text style={styles.date}>{moment(item.item.date_create).format('DD/MM/YY | HH:mm a')}</Text>
+        </View>
       </View>
-    </View>
-    <Icon
-      name={item.item.debit ? 'arrow-expand-up' : 'arrow-collapse-down'}
-      color={item.item.debit ? Colors.$colorRed : Colors.$colorGreen}
-      size={RFValue(12)}
-    />
-    <Text
-      style={[
-        styles.amount,
-        item.item.debit ? styles.debitAmount : styles.creditAmount,
-      ]}>
-      {item.item.amount} {item.item.symbol}
-    </Text>
-  </TouchableOpacity>
+
+      <Icon name={item.item.debit ? 'arrow-expand-up' : 'arrow-collapse-down'} color={item.item.debit ? Colors.$colorRed : Colors.$colorGreen} size={RFValue(12)} />
+      <Text style={[styles.amount, item.item.debit ? styles.debitAmount : styles.creditAmount,]}>
+        {item.item.amount} {item.item.symbol}
+      </Text>
+    </TouchableOpacity>
+  </View >
 );
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.$colorBlack,
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderRadius: RFValue(5),
+    borderRadius: RFValue(10),
     flexDirection: 'row',
     elevation: 25,
     padding: RFValue(10),

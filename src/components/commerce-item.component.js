@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import {View, Text, StyleSheet} from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {Colors} from './../utils/constants.util';
-import {RFValue} from 'react-native-responsive-fontsize';
+import { Colors } from './../utils/constants.util';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 
 const CommerceItem = (props) => {
@@ -11,52 +11,45 @@ const CommerceItem = (props) => {
 
     return (
         <View style={ItemStyles.commerceRow}>
-        <View style={ItemStyles.commerceRowHeader}>
-            <View style={ItemStyles.commerceRowHeaderImage}>
-                <View style={{
-                backgroundColor: Colors.$colorYellow,
-                borderRadius: 50,
-                alignItems: 'center',
-                padding: 2,
-                
-                }}>
-                    <Icon name="store" size={RFValue(50)} color={Colors.$colorBlack} />
+            <View style={ItemStyles.commerceRowHeader}>
+                <View style={ItemStyles.commerceRowHeaderImage}>
+                    <View style={{ backgroundColor: Colors.$colorYellow, borderRadius: 50, alignItems: 'center', padding: 2 }}>
+                        <Icon name="store" size={RFValue(50)} color={Colors.$colorBlack} />
+                    </View>
+                </View>
+
+                <View style={ItemStyles.commerceRowHeaderTitle}>
+                    <Text style={ItemStyles.commerceRowTitle}>
+                        {props.name}
+                    </Text>
+                </View>
+
+                <View style={ItemStyles.commerceRowHeaderMenu}>
+                    <TouchableOpacity onPress={() => setShowMenu(!showMenu)} >
+                        <Icon name="more-vert" size={RFValue(30)} color="white" />
+                    </TouchableOpacity>
+                </View>
+
+            </View>
+
+            <View style={ItemStyles.commerceRowBody}>
+                <View style={ItemStyles.commercerRowBodyItem}>
+                    <Text style={ItemStyles.commerceRowBodyTitle}>Ubicacion</Text>
+
+                    <TouchableOpacity onPress={() => console.log(props.id)}>
+                        <Text style={ItemStyles.linkStyle}>Ver ubicacion</Text>
+                    </TouchableOpacity>
+
+                </View>
+
+                <View style={ItemStyles.commercerRowBodyItem}>
+                    <Text style={ItemStyles.commerceRowBodyTitle}>Moneda</Text>
+
+                    <Text style={ItemStyles.currencyTextStyle}>DOLARES (USD)</Text>
                 </View>
             </View>
-            <View style={ItemStyles.commerceRowHeaderTitle}>
-                <Text style={ItemStyles.commerceRowTitle}>
-                    {props.name}
-                </Text>
-            </View>
-            <View style={ItemStyles.commerceRowHeaderMenu}>
-                <TouchableOpacity  onPress={() => setShowMenu(!showMenu)} >
-                    <Icon name="more-vert" size={RFValue(30)} color="white" />
-                </TouchableOpacity>
-            </View>
         </View>
-        <View style={ItemStyles.commerceRowBody}>
-            <View style={ItemStyles.commercerRowBodyItem}>
-                <Text style={ItemStyles.commerceRowBodyTitle}>
-                    Ubicacion
-                </Text>
-                <TouchableOpacity onPress={() => console.log(props.id)}>
-                    <Text style={ItemStyles.linkStyle}>
-                        Ver ubicacion
-                    </Text>
-                </TouchableOpacity>
-               
-            </View>
-            <View style={ItemStyles.commercerRowBodyItem}>
-                <Text style={ItemStyles.commerceRowBodyTitle}>
-                    Moneda
-                </Text>
-                <Text style={ItemStyles.currencyTextStyle}>
-                    DOLARES (USD)
-                </Text>
-            </View>
-        </View>
-    </View>
-   
+
     )
 }
 
@@ -98,9 +91,9 @@ const ItemStyles = StyleSheet.create({
         alignItems: 'center',
     },
     commerceRowBodyTitle: {
-       fontSize: RFValue(18),
-       color: Colors.$colorYellow,
-       marginBottom: RFValue(15)  
+        fontSize: RFValue(18),
+        color: Colors.$colorYellow,
+        marginBottom: RFValue(15)
     },
     linkStyle: {
         fontSize: RFValue(15),
@@ -111,7 +104,7 @@ const ItemStyles = StyleSheet.create({
         textTransform: 'uppercase',
         color: Colors.$colorGray
     },
-    
+
 });
 
 export default CommerceItem;

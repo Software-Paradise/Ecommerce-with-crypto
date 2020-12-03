@@ -1,8 +1,8 @@
 import React from 'react';
-import {TouchableOpacity, StyleSheet} from 'react-native';
+import { TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Colors} from '../utils/constants.util';
-import {RFValue} from 'react-native-responsive-fontsize';
+import { Colors } from '../utils/constants.util';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const IconButton = (props) => {
   return (
@@ -10,8 +10,7 @@ const IconButton = (props) => {
       <Icon
         name={props.icon}
         size={RFValue(22)}
-        color={
-          props.type === 'filled' ? Colors.$colorBlack : Colors.$colorYellow
+        color={props.type === 'filled' ? Colors.$colorBlack : Colors.$colorYellow
         }
       />
     </TouchableOpacity>

@@ -1,19 +1,14 @@
 import React, { useState } from 'react';
-import { FlatList, ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-    StyleSheet,
-    View,
-    Text,
-} from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import { Colors } from '../utils/constants.util';
 import { GlobalStyles } from '../styles/global.style';
 import { RFValue } from 'react-native-responsive-fontsize';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import Menu, { MenuItem } from 'react-native-material-menu';
 import CommerceItem from './../components/commerce-item.component';
 
-const CommerceList = ({navigation}) => {
+const CommerceList = ({ navigation }) => {
     const [showMenu, setShowMenu] = useState(false)
 
     const data = [
@@ -33,15 +28,16 @@ const CommerceList = ({navigation}) => {
 
     return (
         <SafeAreaView style={GlobalStyles.superContainer}>
-            <Text style={CommerceListStyles.viewTitle}>
-                Listado de comercios
-            </Text>
+            <Text style={CommerceListStyles.viewTitle}>Listado de comercios</Text>
 
-                <FlatList data={data} renderItem={ ({item}) => <CommerceItem id={item.id} name={item.name} />} />
+            <FlatList
+                data={data}
+                renderItem={({ item }) => <CommerceItem id={item.id} name={item.name} />}
+            />
 
             <View style={CommerceListStyles.buttonFixed}>
                 <TouchableOpacity style={CommerceListStyles.addButtonStyle}>
-                    <Icon name="add" size={RFValue(50)} color={Colors.$colorBlack}/>
+                    <Icon name="add" size={RFValue(50)} color={Colors.$colorBlack} />
                 </TouchableOpacity>
             </View>
         </SafeAreaView>
