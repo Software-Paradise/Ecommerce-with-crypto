@@ -4,10 +4,10 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 // Import Componente
 import { Image, View as ViewAnimation } from 'react-native-animatable'
 import { RFValue } from 'react-native-responsive-fontsize';
-import { Colors } from '../utils/constants.util';
+import { Colors } from '../../utils/constants.util';
 
 // Import Assets
-import images from '../assets/img/Recurso.png'
+import images from '../../assets/img/Recurso.png'
 
 const UploadImage = ({ onChange, value }) => {
     return (

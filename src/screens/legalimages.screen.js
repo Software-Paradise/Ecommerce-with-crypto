@@ -13,8 +13,8 @@ import { serverAddress } from './../utils/constants.util';
 import { showMessage } from 'react-native-flash-message';
 
 // Import Component
-import UploadImage from '../components/UploadImage.component';
-import Loader from '../components/loader.component';
+import UploadImage from '../components/UploadImage/UploadImage';
+import Loader from '../components/Loader/Loader';
 import IconButton from '../components/icon-button';
 import ButtonWithIcon from '../components/button-with-icon.component';
 import ButtonSupport from '../components/buttonsupport.component';

@@ -7,7 +7,7 @@ import ButtonSupport from '../components/buttonsupport.component';
 import ButtonWithIcon from '../components/button-with-icon.component';
 import FooterComponent from '../components/footer.component';
 import LogoHeaderComponent from '../components/logoheader.component';
-import Loader from '../components/loader.component';
+import Loader from '../components/Loader/Loader';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { showMessage } from 'react-native-flash-message';
 

@@ -1,12 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage';
-import {
-  Platform,
-  StyleSheet,
-  StatusBar,
-  Dimensions,
-  Alert,
-  Linking,
-} from 'react-native';
+import { Platform, StyleSheet, StatusBar, Dimensions, Alert, Linking, } from 'react-native';
 
 import TouchID from 'react-native-touch-id';
 import axios from 'axios';
@@ -16,6 +9,7 @@ import store from '../store/index';
 import { SETPERMISSIONS, DELETESTORAGE, SETLOADER } from '../store/actionTypes';
 import { showMessage } from 'react-native-flash-message';
 import Toast from 'react-native-simple-toast';
+
 
 const keyStorage = '@storage';
 
@@ -176,6 +170,18 @@ export const successMessage = (description = '', title = 'AlyPay') => {
     icon: 'success',
   });
 };
+
+/**Muestra una notificacion con estilo global */
+export const showNotification = (message = "", type = "info" | "error" | "warning") => {
+  showMessage({
+    message: "Alypay Ecommerce",
+    description: message,
+    color: "#FFF",
+    backgroundColor: "#f39c12",
+    icon: "warning",
+    duration: 10000,
+  })
+}
 
 const PORT = '3085';
 
