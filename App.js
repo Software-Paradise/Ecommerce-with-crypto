@@ -6,7 +6,7 @@ import RegisterScreen from './src/screens/Register/Register';
 import LegalDataScreen from './src/screens/legaldata.screen';
 import LegalImagesScreen from './src/screens/legalimages.screen';
 import WelcomeScreen from './src/screens/welcome.screen';
-import RegisterCommerceScreen from './src/screens/registercommerce.screen';
+import RegisterCommerceScreen from './src/screens/Register Commerce/RegisterCommerce';
 import CommerceList from './src/screens/commerce-list.screen';
 import ProductList from './src/screens/product-list.screen';
 import MainScreen from './src/screens/main.screen';
