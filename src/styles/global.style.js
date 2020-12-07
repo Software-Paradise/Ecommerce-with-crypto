@@ -1,7 +1,7 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
-import {Colors} from '../utils/constants.util';
-import {RFValue} from 'react-native-responsive-fontsize';
+import { StyleSheet } from 'react-native';
+import { Colors } from '../utils/constants.util';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const buttonStyle = {
   alignItems: 'center',
@@ -21,20 +21,18 @@ export const GlobalStyles = StyleSheet.create({
   },
   superContainer: {
     flex: 1,
-},
+  },
   picker: {
     paddingHorizontal: 0,
     color: '#FFF',
   },
   textInput: {
     backgroundColor: Colors.$colorBlack,
-    borderRadius: RFValue(50),
-    borderWidth: RFValue(2),
-    borderColor: Colors.$colorYellow + '55',
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: Colors.$colorYellow,
     color: '#FFF',
-    elevation: 5,
     paddingHorizontal: RFValue(10),
-    zIndex: 50,
   },
   textButton: {
     color: Colors.$colorMain,

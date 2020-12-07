@@ -1,25 +1,22 @@
-import React, {useState} from 'react';
-import {
-  Text,
-  TouchableOpacity,
-  TextInput,
-  StyleSheet,
-  View,
-  ScrollView,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import {Colors, errorMessage} from '../utils/constants.util';
-import {GlobalStyles} from '../styles/global.style';
-import {RFValue} from 'react-native-responsive-fontsize';
-import LogoHeaderComponent from '../components/logoheader.component';
-import FooterComponent from '../components/footer.component';
-import ButtonWithIcon from '../components/button-with-icon.component';
-import IconButton from '../components/icon-button';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import ButtonSupport from '../components/buttonsupport.component';
-import {showMessage} from 'react-native-flash-message';
+import React, { useState } from 'react';
+import { Text, TouchableOpacity, TextInput, StyleSheet, View, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-const RegisterScreen = ({navigation}) => {
+// Import Component
+import FooterComponent from '../components/footer.component';
+import ButtonSupport from '../components/buttonsupport.component';
+import ButtonWithIcon from '../components/button-with-icon.component';
+import LogoHeaderComponent from '../components/logoheader.component';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import IconButton from '../components/icon-button';
+
+// Import funtion and constants
+import { Colors, errorMessage } from '../utils/constants.util';
+import { GlobalStyles } from '../styles/global.style';
+import { RFValue } from 'react-native-responsive-fontsize';
+import { showMessage } from 'react-native-flash-message';
+
+const RegisterScreen = ({ navigation }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   // Fields of form
@@ -46,7 +43,7 @@ const RegisterScreen = ({navigation}) => {
       errorMessage('El codigo de la empresa es requerido');
     } else {
       navigation.navigate('LegalData', {
-        commerceData: {companyName, username, password, companyRUC},
+        commerceData: { companyName, username, password, companyRUC },
       });
     }
   }
@@ -275,6 +272,6 @@ const registerStyles = StyleSheet.create({
   },
 });
 
-export {registerStyles};
+export { registerStyles };
 
 export default RegisterScreen;

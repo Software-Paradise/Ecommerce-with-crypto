@@ -1,38 +1,30 @@
 import React, { useEffect, useReducer, useState } from 'react';
-import {
-  Text,
-  SafeAreaView,
-  StyleSheet,
-  View,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
-import {
-  Colors,
-  errorMessage,
-  reducer,
-  setStorage,
-  http,
-} from '../utils/constants.util';
-import validator from 'validator';
-import { GlobalStyles } from '../styles/global.style';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import { RFValue } from 'react-native-responsive-fontsize';
-import LogoHeaderComponent from '../components/logoheader.component';
-import FooterComponent from '../components/footer.component';
+import { Text, StyleSheet, View, TextInput, Image, TouchableOpacity, ScrollView, KeyboardAvoidingView } from 'react-native';
+
+// Import Component
+import Container from '../components/Container/Container'
 import ButtonSupport from '../components/buttonsupport.component';
 import ButtonWithIcon from '../components/button-with-icon.component';
-import { SETNAVIGATION, SETSTORAGE } from '../store/actionTypes';
-import { showMessage } from 'react-native-flash-message';
-import store from '../store';
-import {
-  getBrand,
-  getDeviceId,
-  getMacAddress,
-  getSystemName,
-} from 'react-native-device-info';
-import { ScrollView } from 'react-native-gesture-handler';
+import FooterComponent from '../components/footer.component';
+import LogoHeaderComponent from '../components/logoheader.component';
 import Loader from '../components/loader.component';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { showMessage } from 'react-native-flash-message';
+
+// Import funtion and constants
+import { Colors, errorMessage, reducer, setStorage, http } from '../utils/constants.util';
+import { getBrand, getDeviceId, getMacAddress, getSystemName, } from 'react-native-device-info';
+import { GlobalStyles } from '../styles/global.style';
+import { RFValue } from 'react-native-responsive-fontsize';
+import validator from 'validator';
+
+// Import Assets
+import Logo from '../assets/img/logo.png'
+import LogoFooter from '../assets/img/aly-system-by.png'
+
+// Import redux
+import store from '../store';
+import { SETNAVIGATION, SETSTORAGE } from '../store/actionTypes';
 
 const initialState = {
   email: '',
@@ -130,88 +122,110 @@ const LoginScreen = ({ navigation }) => {
   }, [navigation]);
 
   return (
-    <SafeAreaView style={GlobalStyles.superContainer}>
-      {showLoader && <Loader isVisible={true} />}
-      <ScrollView>
-        <LogoHeaderComponent title="Iniciar sesión" />
-        <View style={{ paddingTop: RFValue(20), paddingHorizontal: RFValue(20) }}>
-          <Text style={loginStyles.inputLabel}>Correo electrónico</Text>
-          <View
-            style={[loginStyles.textInputWithImage, GlobalStyles.textInput]}>
-            <Icon size={RFValue(20)} name="email" color={Colors.$colorGray} />
-            <TextInput
-              value={state.email}
-              keyboardType="email-address"
-              onChangeText={(payload) => dispatch({ type: 'email', payload })}
-              placeholderTextColor={Colors.$colorGray}
-              placeholder="Correo electrónico"
-              style={loginStyles.textInputCol}
-            />
-            <View style={GlobalStyles.touchableCol} />
-          </View>
-        </View>
+    <Container hideNavbar >
 
-        <View style={{ paddingTop: RFValue(20), paddingHorizontal: RFValue(20) }}>
-          <Text style={loginStyles.inputLabel}>Contraseña</Text>
-          <View
-            style={[loginStyles.textInputWithImage, GlobalStyles.textInput]}>
-            <Icon color={Colors.$colorGray} size={RFValue(18)} name="lock" />
-            <TextInput
-              secureTextEntry={!showPassword}
-              value={state.password}
-              onChangeText={(payload) => dispatch({ type: 'password', payload })}
-              placeholder="Contraseña"
-              placeholderTextColor={Colors.$colorGray}
-              style={loginStyles.textInputCol}
-            />
-            <TouchableOpacity
-              onPress={(e) => setShowPassword(!showPassword)}
-              style={loginStyles.touchableCol}>
-              <Icon
-                name={showPassword ? 'visibility-off' : 'visibility'}
-                color={Colors.$colorYellow}
-                size={18}
+      <KeyboardAvoidingView style={styles.container}>
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps='always'
+          style={styles.scroll}
+        >
+          <View style={styles.subContainer}>
+            <Image source={Logo} style={styles.logo} />
+
+            <View style={styles.row}>
+              <Text style={styles.legend}>Correo electrónico</Text>
+
+              <TextInput
+                value={state.email}
+                keyboardType="email-address"
+                onChangeText={(payload) => dispatch({ type: 'email', payload })}
+                placeholderTextColor={Colors.$colorGray}
+                placeholder="Correo electrónico"
+                style={GlobalStyles.textInput}
               />
-            </TouchableOpacity>
-          </View>
-        </View>
+            </View>
 
-        <View style={{ paddingVertical: 10, paddingHorizontal: 20, textAlign: 'right' }}>
-          <TouchableOpacity>
-            <Text style={loginStyles.forgotPasswordLabel}>¿Ha olvidado su contraseña?</Text>
-          </TouchableOpacity>
-        </View>
+            <View style={styles.row}>
+              <Text style={styles.legend}>Contraseña</Text>
 
-        <View style={loginStyles.horizontalContainer}>
-          <View style={{ ...loginStyles.horizontalChild, marginRight: 10 }}>
-            <ButtonWithIcon
-              text="Registrar"
-              onPress={() => navigation.navigate('LegalImages')}
-              icon="store"
-              type="filled"
-            />
+              <View style={[styles.textInputWithImage, GlobalStyles.textInput]}>
+                <TextInput
+                  secureTextEntry={!showPassword}
+                  value={state.password}
+                  onChangeText={(payload) => dispatch({ type: 'password', payload })}
+                  placeholder="Contraseña"
+                  placeholderTextColor={Colors.$colorGray}
+                  style={styles.textInputCol}
+                />
+                <TouchableOpacity onPress={(e) => setShowPassword(!showPassword)} style={styles.touchableCol}>
+                  <Icon name={showPassword ? 'visibility-off' : 'visibility'} color={Colors.$colorYellow} size={18} />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={styles.row}>
+              <View style={styles.col}>
+
+                <View style={{ ...styles.horizontalChild, marginRight: 10 }}>
+                  <ButtonWithIcon text="Registrar" onPress={() => navigation.navigate('Register')} icon="store" type="filled" />
+                </View>
+
+                <View style={{ ...styles.horizontalChild, marginLeft: 10 }}>
+                  <ButtonWithIcon onPress={onSubmit} text="Ingresar" icon="login" type="filled" />
+                </View>
+              </View>
+            </View>
+
+            <Image source={LogoFooter} style={styles.from} />
           </View>
-          <View style={{ ...loginStyles.horizontalChild, marginLeft: 10 }}>
-            <ButtonWithIcon
-              onPress={onSubmit}
-              text="Ingresar"
-              icon="login"
-              type="filled"
-            />
-          </View>
-        </View>
+
+          {/* <FooterComponent /> */}
+        </ScrollView>
+        <Loader isVisible={showLoader} />
         <ButtonSupport />
-
-        <FooterComponent />
-      </ScrollView>
-    </SafeAreaView>
+      </KeyboardAvoidingView>
+    </Container >
   );
 };
 
-const loginStyles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
+    alignItems: 'center',
     backgroundColor: Colors.$colorBlack,
     flex: 1,
+  },
+  subContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+  },
+  scroll: {
+    flex: 1,
+    paddingHorizontal: "10%",
+    width: "100%"
+  },
+  row: {
+    marginVertical: 10,
+    width: '100%'
+  },
+  legend: {
+    color: Colors.$colorYellow,
+    marginBottom: 5,
+  },
+  col: {
+    justifyContent: "space-around",
+    flexDirection: "row",
+    width: "100%"
+  },
+  from: {
+    justifyContent: "flex-start",
+    height: RFValue(60),
+    alignSelf: "center",
+    resizeMode: "contain",
+    marginTop: "25%",
+    opacity: 0.8,
+    width: RFValue(200),
   },
   textTitle: {
     color: Colors.$colorYellow,
