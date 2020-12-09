@@ -9,6 +9,7 @@ import store from '../store/index';
 import { SETPERMISSIONS, DELETESTORAGE, SETLOADER } from '../store/actionTypes';
 import { showMessage } from 'react-native-flash-message';
 import Toast from 'react-native-simple-toast';
+import { isIphoneX } from 'react-native-iphone-x-helper'
 
 
 const keyStorage = '@storage';
@@ -23,6 +24,119 @@ export const Colors = {
   $colorRed: '#B42C2C',
   $colorGreen: '#2E8B12',
 };
+
+const { height, width } = Dimensions.get("window")
+const standardLength = width > height ? width : height
+const offset =
+  width > height ? 0 : Platform.OS === "ios" ? 78 : StatusBar.currentHeight // iPhone X style SafeAreaView size in portrait
+
+const deviceHeight =
+  isIphoneX() || Platform.OS === "android"
+    ? standardLength - offset
+    : standardLength
+
+// guideline height for standard 5" device screen is 680
+export const RFValue = (fontSize = 0, standardScreenHeight = 680) => {
+  const heightPercent = (fontSize * deviceHeight) / standardScreenHeight
+  return Math.round(heightPercent)
+}
+
+const buttonStyle = {
+  alignItems: 'center',
+  borderRadius: 50,
+  justifyContent: 'center',
+  padding: 8,
+};
+
+export const GlobalStyles = StyleSheet.create({
+  button: buttonStyle,
+
+  containerPicker: {
+    backgroundColor: Colors.$colorMain,
+    borderRadius: 5,
+    borderWidth: 2,
+    elevation: 5,
+  },
+  superContainer: {
+    flex: 1,
+  },
+  picker: {
+    paddingHorizontal: 0,
+    color: '#FFF',
+  },
+  textInput: {
+    backgroundColor: Colors.$colorBlack,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: Colors.$colorYellow,
+    color: '#FFF',
+    paddingHorizontal: RFValue(10),
+  },
+  textButton: {
+    color: Colors.$colorMain,
+    // fontWeight: 'bold',
+    fontSize: RFValue(18),
+    textTransform: 'uppercase',
+  },
+  buttonNoBorder: {
+    ...buttonStyle,
+    borderWidth: 0,
+  },
+  buttonPrimaryLine: {
+    ...buttonStyle,
+    borderWidth: 1,
+    borderColor: Colors.$colorYellow,
+  },
+  textButtonPrimaryLine: {
+    color: Colors.$colorYellow,
+    fontSize: RFValue(18),
+    textTransform: 'uppercase',
+  },
+  buttonPrimary: {
+    ...buttonStyle,
+    backgroundColor: Colors.$colorYellow,
+  },
+  buttonSecondary: {
+    ...buttonStyle,
+    backgroundColor: Colors.$colorSecondary,
+  },
+  superContainer: {
+    flex: 1,
+    backgroundColor: Colors.$colorMain,
+    position: 'relative',
+  },
+  textBody: {
+    color: Colors.$colorYellow,
+    fontSize: 18,
+  },
+  textTitle: {
+    color: Colors.$colorYellow,
+    fontSize: 26,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+  },
+  dotSevenColumn: {
+    flex: 0.7,
+  },
+  dotThreeColumn: {
+    flex: 0.3,
+  },
+  textInputWithImage: {
+    // ...textInput,
+    flexDirection: 'row',
+  },
+  textInputCol: {
+    flex: 0.9,
+    color: 'white',
+  },
+  touchableCol: {
+    flex: 0.1,
+    alignItems: 'flex-end',
+  },
+});
 
 export const logOutApp = async () => {
   await deleteStorage();

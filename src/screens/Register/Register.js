@@ -10,9 +10,9 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import Modal from 'react-native-modal'
 import UploadImage from '../../components/UploadImage/UploadImage'
 import ImagePicker from 'react-native-image-picker'
-import { Colors, showNotification, http, serverAddress, getHeaders } from '../../utils/constants.util'
+import { Colors, showNotification, http, serverAddress, getHeaders, RFValue } from '../../utils/constants.util'
 import { GlobalStyles } from '../../styles/global.style'
-import { RFValue } from 'react-native-responsive-fontsize';
+// import { RFValue } from 'react-native-responsive-fontsize';
 import { Image, View as ViewAnimation } from 'react-native-animatable'
 import { Picker } from '@react-native-community/picker'
 
@@ -93,6 +93,7 @@ const Register = ({ navigation }) => {
         }
     }
 
+    // Funcion que hace la peticion para guardar las imagenes en la nube
     const createFormData = (
         operationPermission,
         rucImage,
@@ -145,6 +146,7 @@ const Register = ({ navigation }) => {
         return data;
     };
 
+    // Funcion que pertime almacenar las imagenes
     const uploadImage = (imageDestination) => {
         ImagePicker.showImagePicker(options, (response) => {
             switch (imageDestination) {
@@ -187,6 +189,7 @@ const Register = ({ navigation }) => {
         return true
     }
 
+    // Funcion que hace la peticion al server
     const onSubmitInformation = async () => {
         try {
             setLoader(true)
@@ -260,8 +263,9 @@ const Register = ({ navigation }) => {
         }
     }
 
+    // Funcion que permite llenar el registro del comercio
     const registerCommerce = (data) => {
-        console.log("Data", data)
+          // console.log("Data", data)
         navigation.navigate('RegisterCommerce', { companyId: data.id })
         setModalSuccess(false)
     }

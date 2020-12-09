@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import LoginScreen from './src/screens/login.screen';
+import Login from './src/screens/Login/Login';
 import RegisterScreen from './src/screens/Register/Register';
 import LegalDataScreen from './src/screens/legaldata.screen';
 import LegalImagesScreen from './src/screens/legalimages.screen';
@@ -83,7 +83,7 @@ const App = () => {
           {!logged && (
             <>
               <Stack.Screen name="Retirements" component={RetirementsScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
               <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
               <Stack.Screen name="LegalData" component={LegalDataScreen} options={{ headerShown: false }} />
               <Stack.Screen name="LegalImages" component={LegalImagesScreen} options={{ headerShown: false }} />
