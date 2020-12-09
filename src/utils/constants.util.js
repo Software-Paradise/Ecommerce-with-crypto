@@ -15,7 +15,7 @@ import { isIphoneX } from 'react-native-iphone-x-helper'
 const keyStorage = '@storage';
 
 export const Colors = {
-  $colorMain: '#2d2d2d',
+  $colorMain: '#1D1D1D',
   $colorBlack: '#151515',
   $colorSecondary: '#23AAB5',
   $colorBlue: '#3B66B7',
@@ -53,6 +53,7 @@ export const GlobalStyles = StyleSheet.create({
 
   containerPicker: {
     backgroundColor: Colors.$colorMain,
+    borderColor: Colors.$colorYellow,
     borderRadius: 5,
     borderWidth: 2,
     elevation: 5,

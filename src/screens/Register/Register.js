@@ -249,7 +249,8 @@ const Register = ({ navigation }) => {
                 RUCImage,
                 legalPower,
                 repID,
-            ), dataSent, getHeaders())
+                dataSent,
+            ), getHeaders())
 
             if (data.error) {
                 throw String(data.message)
@@ -265,7 +266,7 @@ const Register = ({ navigation }) => {
 
     // Funcion que permite llenar el registro del comercio
     const registerCommerce = (data) => {
-          // console.log("Data", data)
+        // console.log("Data", data)
         navigation.navigate('RegisterCommerce', { companyId: data.id })
         setModalSuccess(false)
     }

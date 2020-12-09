@@ -9,7 +9,7 @@ import WelcomeScreen from './src/screens/welcome.screen';
 import RegisterCommerceScreen from './src/screens/Register Commerce/RegisterCommerce';
 import CommerceList from './src/screens/commerce-list.screen';
 import ProductList from './src/screens/product-list.screen';
-import MainScreen from './src/screens/main.screen';
+import MainScreen from './src/screens/Main/Main';
 
 // Import functions and constants from utils
 import { getStorage } from './src/utils/constants.util';

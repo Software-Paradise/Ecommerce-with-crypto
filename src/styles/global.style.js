@@ -15,6 +15,7 @@ export const GlobalStyles = StyleSheet.create({
 
   containerPicker: {
     backgroundColor: Colors.$colorMain,
+    borderColor: Colors.$colorYellow,
     borderRadius: 5,
     borderWidth: 2,
     elevation: 5,
@@ -87,7 +88,7 @@ export const GlobalStyles = StyleSheet.create({
     flex: 0.3,
   },
   textInputWithImage: {
-    ...this.textInput,
+    // ...this.textInput,
     flexDirection: 'row',
   },
   textInputCol: {
