@@ -5,11 +5,11 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 
 import Container from '../../components/Container/Container'
 import { Image, View as ViewAnimation } from 'react-native-animatable'
 import Loader from '../../components/Loader/Loader'
-import { Colors, RFValue,showNotification, http, serverAddress, getHeaders } from '../../utils/constants.util'
+import { Colors, RFValue, showNotification, http, serverAddress, getHeaders } from '../../utils/constants.util'
 import { GlobalStyles } from '../../styles/global.style'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import MapView, { Marker } from 'react-native-maps'
-import GeoLocation from 'react-native-location'
+import GeoLocation from '@react-native-community/geolocation'
 
 // Import Assets
 import Logo from '../../assets/img/logo.png'
@@ -44,6 +44,19 @@ const RegisterCommerce = () => {
     // Estados que permiten previsualizar las contraseñas
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+    const position = () => {
+        GeoLocation.getCurrentPosition((position) => {
+            if (position !== null && position !== undefined) {
+                dispatch({ type: "latitude", payload: position.coords.latitude })
+                dispatch({ type: "longitude", payload: position.coords.longitude })
+            }
+        })
+    }
+
+    useEffect(() => {
+        position()
+    })
 
     return (
         <Container hideNavbar >
@@ -142,8 +155,30 @@ const RegisterCommerce = () => {
                             <View style={styles.labelsRow}>
                                 <Text style={styles.legendRow}>Dirección Física</Text>
                             </View>
+                            {
+                                (state.latitude !== null && state.longitude !== null) &&
 
+                                <MapView
+                                    initialRegion={{
+                                        longitude: state.longitude,
+                                        latitude: state.latitude,
+                                        latitudeDelta: 0.050,
+                                        longitudeDelta: 0.050
+                                    }}
+                                    // onMarkerDragEnd={
 
+                                    // }
+                                >
+                                    <Marker
+                                        coordinate={{
+                                            longitude: state.longitude,
+                                            latitude: state.latitude,
+                                        }}
+                                        draggable={true}
+                                    />
+
+                                </MapView>
+                            }
                         </View>
 
                         <View style={styles.row}>

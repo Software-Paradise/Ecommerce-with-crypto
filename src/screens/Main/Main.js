@@ -14,7 +14,7 @@ import { Colors, RFValue, reducer } from '../../utils/constants.util'
 const TYPE_VIEW = {
     PAY: 'pay',
     SEND: 'send',
-    RECEIVE: 'receive',
+    HISTORY: 'history',
 }
 
 const switchItems = [
@@ -27,8 +27,8 @@ const switchItems = [
         state: TYPE_VIEW.SEND,
     },
     {
-        text: 'Recibir',
-        state: TYPE_VIEW.RECEIVE,
+        text: 'Historial',
+        state: TYPE_VIEW.HISTORY,
     }
 ]
 
@@ -43,7 +43,7 @@ const Main = () => {
         <Container showLogo>
             <View style={styles.container}>
                 <Switch onSwitch={setStateView} items={switchItems} indexActive={state.idexTabActive} />
-                <KeyboardAvoidingView enabled behavior='padding' style={styles.containerWallets}>
+                <KeyboardAvoidingView enabled behavior='padding'>
                     {
                         stateView === TYPE_VIEW.PAY &&
                         <PayComponent />
@@ -63,10 +63,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.$colorMain
-    },
-    containerWallets: {
-        backgroundColor: Colors.$colorBlack,
-        marginHorizontal: RFValue(10),
     }
 })
 
