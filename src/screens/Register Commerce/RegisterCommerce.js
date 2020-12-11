@@ -9,7 +9,7 @@ import { Colors, RFValue, showNotification, http, serverAddress, getHeaders } fr
 import { GlobalStyles } from '../../styles/global.style'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import MapView, { Marker } from 'react-native-maps'
-import GeoLocation from '@react-native-community/geolocation'
+import Geolocation from '@react-native-community/geolocation'
 
 // Import Assets
 import Logo from '../../assets/img/logo.png'
@@ -46,7 +46,7 @@ const RegisterCommerce = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
     const position = () => {
-        GeoLocation.getCurrentPosition((position) => {
+        Geolocation.getCurrentPosition((position) => {
             if (position !== null && position !== undefined) {
                 dispatch({ type: "latitude", payload: position.coords.latitude })
                 dispatch({ type: "longitude", payload: position.coords.longitude })
@@ -56,7 +56,7 @@ const RegisterCommerce = () => {
 
     useEffect(() => {
         position()
-    })
+    }, [])
 
     return (
         <Container hideNavbar >
@@ -159,23 +159,22 @@ const RegisterCommerce = () => {
                                 (state.latitude !== null && state.longitude !== null) &&
 
                                 <MapView
+                                    style={styles.map}
                                     initialRegion={{
                                         longitude: state.longitude,
                                         latitude: state.latitude,
                                         latitudeDelta: 0.050,
                                         longitudeDelta: 0.050
                                     }}
-                                    // onMarkerDragEnd={
-
-                                    // }
+                                // onMarkerDragEnd={ }
                                 >
-                                    <Marker
+                                    {/* <Marker
                                         coordinate={{
                                             longitude: state.longitude,
                                             latitude: state.latitude,
                                         }}
                                         draggable={true}
-                                    />
+                                    /> */}
 
                                 </MapView>
                             }
@@ -290,6 +289,13 @@ const styles = StyleSheet.create({
     button: {
         marginTop: 20,
     },
+    map: {
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        position: "absolute",
+    }
 })
 
 export default RegisterCommerce
