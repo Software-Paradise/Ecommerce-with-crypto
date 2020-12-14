@@ -5,8 +5,8 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 
 import Container from '../../components/Container/Container'
 import { Image, View as ViewAnimation } from 'react-native-animatable'
 import Loader from '../../components/Loader/Loader'
-import { Colors, RFValue, showNotification, http, serverAddress, getHeaders } from '../../utils/constants.util'
-import { GlobalStyles } from '../../styles/global.style'
+import { Colors, RFValue, showNotification, http, serverAddress, getHeaders, GlobalStyles } from '../../utils/constants.util'
+import Modal from 'react-native-modal'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import MapView, { Marker } from 'react-native-maps'
 import Geolocation from '@react-native-community/geolocation'
@@ -39,11 +39,31 @@ const RegisterCommerce = () => {
     const [loader, setLoader] = useState(false)
     const [confirmPassword, setConfirmPassword] = useState('')
 
+    // Estado que visualiza el mapa en un modal
+    const [showModal, setShowModal] = useState(false)
+
     // const route = useRoute();
 
     // Estados que permiten previsualizar las contraseñas
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+    const ConfigureLocation = async () => {
+        await Geolocation.setRNConfiguration({
+            distanceFilter: 5.0,
+            desiredAccuracy: {
+                ios: 'bestForNavigation',
+                android: 'balancedPowerAccuracy',
+            }
+        });
+
+        try {
+            Geolocation.requestAuthorization()
+        } catch (error) {
+            console.log(error.message);
+        }
+    };
+
 
     const position = () => {
         Geolocation.getCurrentPosition((position) => {
@@ -55,6 +75,7 @@ const RegisterCommerce = () => {
     }
 
     useEffect(() => {
+        ConfigureLocation()
         position()
     }, [])
 
@@ -155,29 +176,37 @@ const RegisterCommerce = () => {
                             <View style={styles.labelsRow}>
                                 <Text style={styles.legendRow}>Dirección Física</Text>
                             </View>
-                            {
-                                (state.latitude !== null && state.longitude !== null) &&
 
-                                <MapView
-                                    style={styles.map}
-                                    initialRegion={{
-                                        longitude: state.longitude,
-                                        latitude: state.latitude,
-                                        latitudeDelta: 0.050,
-                                        longitudeDelta: 0.050
-                                    }}
-                                // onMarkerDragEnd={ }
-                                >
-                                    {/* <Marker
-                                        coordinate={{
+                            <ViewAnimation style={[showModal ? styles.mapFullScreen : styles.mapContainer]} animations="fadeOut">
+
+                                {
+                                    (state.latitude !== null && state.longitude !== null) &&
+
+                                    <MapView
+                                        style={styles.map}
+                                        initialRegion={{
                                             longitude: state.longitude,
                                             latitude: state.latitude,
+                                            latitudeDelta: 0.050,
+                                            longitudeDelta: 0.050
                                         }}
-                                        draggable={true}
-                                    /> */}
+                                    // onMarkerDragEnd={ }
+                                    >
+                                        <Marker
+                                            coordinate={{
+                                                longitude: state.longitude,
+                                                latitude: state.latitude,
+                                            }}
+                                            draggable={true}
+                                        />
 
-                                </MapView>
-                            }
+                                    </MapView>
+                                }
+
+                                <TouchableOpacity onPress={_ => setShowModal(!showModal)}>
+                                    <Icon name={showModal ? 'fullscreen-exit' : 'fullscreen'} size={40} color={Colors.$colorYellow} />
+                                </TouchableOpacity>
+                            </ViewAnimation>
                         </View>
 
                         <View style={styles.row}>
@@ -290,12 +319,25 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     map: {
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        position: "absolute",
-    }
+        ...StyleSheet.absoluteFillObject,
+    },
+    mapContainer: {
+        flex: 1,
+        width: '100%',
+        height: 200,
+        justifyContent: 'flex-end',
+        alignItems: 'flex-end',
+        borderWidth: 2,
+        borderColor: Colors.$colorYellow,
+        borderRadius: 30,
+    },
+    mapFullScreen: {
+        ...StyleSheet.absoluteFillObject,
+        height: 500,
+        width: '100%',
+        alignItems: 'flex-end',
+        justifyContent: 'flex-end',
+    },
 })
 
 export default RegisterCommerce

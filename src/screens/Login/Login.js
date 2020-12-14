@@ -10,9 +10,9 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { showMessage } from 'react-native-flash-message';
 
 // Import funtion and constants
-import { Colors, errorMessage, reducer, setStorage, http, RFValue } from '../../utils/constants.util';
+import { Colors, errorMessage, reducer, setStorage, http, RFValue,GlobalStyles } from '../../utils/constants.util';
 import { getBrand, getDeviceId, getMacAddress, getSystemName, } from 'react-native-device-info';
-import { GlobalStyles } from '../../styles/global.style';
+// import { GlobalStyles } from '../../styles/global.style';
 import validator from 'validator';
 
 // Import Assets

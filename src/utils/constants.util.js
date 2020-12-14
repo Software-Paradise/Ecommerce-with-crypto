@@ -66,12 +66,13 @@ export const GlobalStyles = StyleSheet.create({
     color: '#FFF',
   },
   textInput: {
-    backgroundColor: Colors.$colorBlack,
+    backgroundColor: Colors.$colorMain,
+    borderColor: Colors.$colorYellow,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: Colors.$colorYellow,
     color: '#FFF',
-    paddingHorizontal: RFValue(10),
+    elevation: 5,
+    padding: RFValue(10),
   },
   textButton: {
     color: Colors.$colorMain,

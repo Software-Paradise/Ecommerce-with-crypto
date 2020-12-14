@@ -62,24 +62,10 @@ const App = () => {
     setTimeout(() => setSplash(false), 1000)
   }
 
-  const ConfigureLocation = async () => {
-    await Geolocation.setRNConfiguration({
-      distanceFilter: 5.0,
-      desiredAccuracy: {
-        ios: 'bestForNavigation',
-        android: 'balancedPowerAccuracy',
-      }
-    });
-
-    try {
-      Geolocation.requestAuthorization()
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
+  
 
   useEffect(() => {
-    ConfigureLocation()
+    // ConfigureLocation()
     ConfigurateComponent()
   }, [])
 
