@@ -273,7 +273,7 @@ const Register = ({ navigation }) => {
         }
     }
 
-    const registerCommerce = ({ data }) => {
+    const registerCommerce = (data) => {
         navigation.navigate('RegisterCommerce', { companyId: data.id })
         setModalSuccess(false)
     }
@@ -514,7 +514,6 @@ const Register = ({ navigation }) => {
                                 <TouchableOpacity onPress={goBack}>
                                     <Text style={styles.textBack}>Iniciar sesion</Text>
                                 </TouchableOpacity>
-
 
                                 <TouchableOpacity onPress={onSubmitInformation} disabled={!nextPage} style={nextPage ? GlobalStyles.buttonPrimary : GlobalStyles.button}>
                                     <Text style={[GlobalStyles.textButton, { opacity: nextPage ? 1 : 0.5 }]}>Guardar</Text>

@@ -200,7 +200,7 @@ const registerStyles = StyleSheet.create({
   inputLabel: {
     fontSize: 15,
     paddingBottom: 5,
-    paddingLeft: 15,
+    paddingLeft: 5,
     color: Colors.$colorYellow,
   },
   phoneRow: {

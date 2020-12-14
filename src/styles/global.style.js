@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 import { Colors } from '../utils/constants.util';
 import { RFValue } from 'react-native-responsive-fontsize';
 
@@ -33,6 +33,7 @@ export const GlobalStyles = StyleSheet.create({
     borderColor: Colors.$colorYellow,
     color: '#FFF',
     paddingHorizontal: RFValue(10),
+    paddingVertical: Platform.OS === "ios" ? RFValue(8) : 0
   },
   textButton: {
     color: Colors.$colorMain,

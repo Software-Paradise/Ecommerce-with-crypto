@@ -84,11 +84,11 @@ const App = () => {
             <>
               <Stack.Screen name="Retirements" component={RetirementsScreen} options={{ headerShown: false }} />
               <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
+              {/* <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} /> */}
               <Stack.Screen name="LegalData" component={LegalDataScreen} options={{ headerShown: false }} />
               <Stack.Screen name="LegalImages" component={LegalImagesScreen} options={{ headerShown: false }} />
               <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="RegisterCommerce" component={RegisterCommerceScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="Register" component={RegisterCommerceScreen} options={{ headerShown: false }} />
             </>
           )}
         </Stack.Navigator>
