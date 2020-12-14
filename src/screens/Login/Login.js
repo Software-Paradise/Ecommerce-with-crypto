@@ -2,29 +2,26 @@ import React, { useEffect, useReducer, useState } from 'react';
 import { Text, StyleSheet, View, TextInput, Image, TouchableOpacity, ScrollView, KeyboardAvoidingView } from 'react-native';
 
 // Import Component
-import Container from '../components/Container/Container'
-import ButtonSupport from '../components/buttonsupport.component';
-import ButtonWithIcon from '../components/button-with-icon.component';
-import FooterComponent from '../components/footer.component';
-import LogoHeaderComponent from '../components/logoheader.component';
-import Loader from '../components/Loader/Loader';
+import Container from '../../components/Container/Container'
+import ButtonSupport from '../../components/buttonsupport.component';
+import ButtonWithIcon from '../../components/button-with-icon.component';
+import Loader from '../../components/Loader/Loader';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { showMessage } from 'react-native-flash-message';
 
 // Import funtion and constants
-import { Colors, errorMessage, reducer, setStorage, http } from '../utils/constants.util';
+import { Colors, errorMessage, reducer, setStorage, http, RFValue } from '../../utils/constants.util';
 import { getBrand, getDeviceId, getMacAddress, getSystemName, } from 'react-native-device-info';
-import { GlobalStyles } from '../styles/global.style';
-import { RFValue } from 'react-native-responsive-fontsize';
+import { GlobalStyles } from '../../styles/global.style';
 import validator from 'validator';
 
 // Import Assets
-import Logo from '../assets/img/logo.png'
-import LogoFooter from '../assets/img/aly-system-by.png'
+import Logo from '../../assets/img/logo.png'
+import LogoFooter from '../../assets/img/aly-system-by.png'
 
 // Import redux
-import store from '../store';
-import { SETNAVIGATION, SETSTORAGE } from '../store/actionTypes';
+import store from '../../store';
+import { SETNAVIGATION, SETSTORAGE } from '../../store/actionTypes';
 
 const initialState = {
   email: '',
@@ -37,7 +34,7 @@ const initialState = {
   systemName: '',
 };
 
-const LoginScreen = ({ navigation }) => {
+const Login = ({ navigation }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [state, dispatch] = useReducer(reducer, initialState);
   const [showLoader, setShowLoader] = useState(false);
@@ -311,4 +308,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default Login;

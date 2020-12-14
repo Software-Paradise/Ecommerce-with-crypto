@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import LoginScreen from './src/screens/login.screen';
+import Login from './src/screens/Login/Login';
 import RegisterScreen from './src/screens/Register/Register';
 import LegalDataScreen from './src/screens/legaldata.screen';
 import LegalImagesScreen from './src/screens/legalimages.screen';
 import WelcomeScreen from './src/screens/welcome.screen';
-import RegisterCommerceScreen from './src/screens/registercommerce.screen';
+import RegisterCommerceScreen from './src/screens/Register Commerce/RegisterCommerce';
 import CommerceList from './src/screens/commerce-list.screen';
 import ProductList from './src/screens/product-list.screen';
-import MainScreen from './src/screens/main.screen';
+import MainScreen from './src/screens/Main/Main';
 
 // Import functions and constants from utils
 import { getStorage } from './src/utils/constants.util';
@@ -20,6 +20,9 @@ import TransactionScreen from './src/screens/transaction.screen';
 import RetirementsScreen from './src/screens/retirements.screen';
 import RechargeScreen from './src/screens/recharge.screen';
 import HistoryScreen from './src/screens/history.screen'
+
+// Import Componets
+import Geolocation from '@react-native-community/geolocation'
 
 const Stack = createStackNavigator();
 
@@ -59,7 +62,24 @@ const App = () => {
     setTimeout(() => setSplash(false), 1000)
   }
 
+  const ConfigureLocation = async () => {
+    await Geolocation.setRNConfiguration({
+      distanceFilter: 5.0,
+      desiredAccuracy: {
+        ios: 'bestForNavigation',
+        android: 'balancedPowerAccuracy',
+      }
+    });
+
+    try {
+      Geolocation.requestAuthorization()
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   useEffect(() => {
+    ConfigureLocation()
     ConfigurateComponent()
   }, [])
 
@@ -83,8 +103,8 @@ const App = () => {
           {!logged && (
             <>
               <Stack.Screen name="Retirements" component={RetirementsScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-              {/* <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} /> */}
+              <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+              <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
               <Stack.Screen name="LegalData" component={LegalDataScreen} options={{ headerShown: false }} />
               <Stack.Screen name="LegalImages" component={LegalImagesScreen} options={{ headerShown: false }} />
               <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
