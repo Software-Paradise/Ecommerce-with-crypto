@@ -299,9 +299,9 @@ export const showNotification = (message = "", type = "info" | "error" | "warnin
   })
 }
 
-const PORT = '3001';
+const PORT = '3085';
 
-export const serverAddress = Platform.OS === 'ios' ? `http://localhost:${PORT}` : `http://192.168.0.117:${PORT}`;
+export const serverAddress = Platform.OS === 'ios' ? `http://localhost:${PORT}` : `http://192.168.0.119:${PORT}`;
 
 //export const serverAddress = 'https://test-after-prod.uc.r.appspot.com';
 export const socketAddress = serverAddress;

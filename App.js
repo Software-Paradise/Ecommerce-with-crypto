@@ -19,7 +19,7 @@ import FlashMessage from 'react-native-flash-message';
 import TransactionScreen from './src/screens/transaction.screen';
 import RetirementsScreen from './src/screens/retirements.screen';
 import RechargeScreen from './src/screens/recharge.screen';
-import HistoryScreen from './src/screens/history.screen'
+import HistoryScreen from './src/components/History/History'
 
 // Import Componets
 import Geolocation from '@react-native-community/geolocation'

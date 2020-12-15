@@ -299,6 +299,8 @@ const RegisterCommerceScreen = ({ navigation }) => {
                         <View style={RegisterCommerceStyles.smallSpacing}>
                             <Text style={registerStyles.inputLabel}>Dirección Física</Text>
                         </View>
+
+                        
                         
                         <View style={RegisterCommerceStyles.mapContainer}>
                             {

@@ -6,6 +6,7 @@ import Container from '../../components/Container/Container'
 import Switch from '../../components/Switch/Switch'
 import PayComponent from '../../components/Payment/Payment'
 import SendComponent from '../../components/Send/Send'
+import History from '../../components/History/History'
 
 // Import constants
 import { Colors, RFValue, reducer } from '../../utils/constants.util'
@@ -52,6 +53,11 @@ const Main = () => {
                     {
                         stateView === TYPE_VIEW.SEND &&
                         <SendComponent />
+                    }
+
+                    {
+                        stateView === TYPE_VIEW.HISTORY &&
+                        <History />
                     }
                 </KeyboardAvoidingView>
             </View>
