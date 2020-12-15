@@ -634,6 +634,7 @@ const styles = StyleSheet.create({
     textInputCol: {
         flex: 0.9,
         paddingLeft: 5,
+        padding: 0,
         color: 'white',
     },
     rowPhoneNumber: {

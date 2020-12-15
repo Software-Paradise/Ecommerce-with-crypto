@@ -6,10 +6,10 @@ import Container from '../../components/Container/Container'
 import { Image, View as ViewAnimation } from 'react-native-animatable'
 import Loader from '../../components/Loader/Loader'
 import { Colors, RFValue, showNotification, http, serverAddress, getHeaders, GlobalStyles } from '../../utils/constants.util'
-import Modal from 'react-native-modal'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import MapView, { Marker } from 'react-native-maps'
 import Geolocation from '@react-native-community/geolocation'
+import validator from 'validator'
 
 // Import Assets
 import Logo from '../../assets/img/logo.png'
@@ -48,6 +48,36 @@ const RegisterCommerce = () => {
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
+    // Hacemos la peticion al server
+    const onSubmit = async () => {
+        try {
+            setLoader(true)
+
+            if (state.companyName.trim().length === 0) {
+                throw String("Ingrese el nombre de la compañía")
+            }
+
+            if (!validator.isEmail(state.email)) {
+                throw String("Ingrese un correo electrónico valido")
+            }
+
+            if (state.password.trim().length === 0) {
+                throw String("Ingrese una constasena")
+            }
+
+            if (state.password !== confirmPassword) {
+                throw String("Las contraseña nos coinciden")
+            }
+
+
+        } catch (error) {
+            showNotification(error.toString())
+        } finally {
+            setLoader(false)
+        }
+    }
+
+    // Funcion que permite dar los permisos para la Geolocalizacion
     const ConfigureLocation = async () => {
         await Geolocation.setRNConfiguration({
             distanceFilter: 5.0,
@@ -65,6 +95,7 @@ const RegisterCommerce = () => {
     };
 
 
+    // Funcion que almacena la posicion en el mapa
     const position = () => {
         Geolocation.getCurrentPosition((position) => {
             if (position !== null && position !== undefined) {
@@ -168,6 +199,7 @@ const RegisterCommerce = () => {
                                 placeholder="Ingrese codigo postal aqui"
                                 placeholderTextColor={Colors.$colorGray}
                                 value={state.email}
+                                keyboardType='numeric'
                                 onChangeText={str => dispatch({ type: 'email', payload: str })}
                             />
                         </View>
@@ -181,7 +213,6 @@ const RegisterCommerce = () => {
 
                                 {
                                     (state.latitude !== null && state.longitude !== null) &&
-
                                     <MapView
                                         style={styles.map}
                                         initialRegion={{
@@ -190,7 +221,10 @@ const RegisterCommerce = () => {
                                             latitudeDelta: 0.050,
                                             longitudeDelta: 0.050
                                         }}
-                                    // onMarkerDragEnd={ }
+                                        onMarkerDragEnd={(event) => {
+                                            dispatch({ type: "longitude", payload: event.nativeEvent.coordinate.longitude })
+                                            dispatch({ type: "latitude", payload: event.nativeEvent.coordinate.latitude })
+                                        }}
                                     >
                                         <Marker
                                             coordinate={{
@@ -199,7 +233,6 @@ const RegisterCommerce = () => {
                                             }}
                                             draggable={true}
                                         />
-
                                     </MapView>
                                 }
 
@@ -292,6 +325,7 @@ const styles = StyleSheet.create({
     textInputCol: {
         flex: 0.9,
         paddingLeft: 5,
+        padding: 0,
         color: 'white',
     },
     rowPhoneNumber: {
