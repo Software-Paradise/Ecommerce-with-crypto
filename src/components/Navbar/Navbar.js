@@ -35,11 +35,6 @@ const NavBar = ({ config = {} }) => {
         setShowModal(false)
     }
 
-    const goToTransaccion = () => {
-        navigation.navigate("HistoryTransaction")
-        setShowModal(false)
-    }
-
     const logOut = async () => {
         await deleteStorage()
 
@@ -160,12 +155,6 @@ const NavBar = ({ config = {} }) => {
                                 <Lottie style={styles.imageItem} source={Home} autoPlay loop={false} />
 
                                 <Text style={styles.textSelection}>Ir a Inicio</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity onPress={goToTransaccion} style={styles.selectionMenu}>
-                                <Lottie style={styles.imageItem} source={Transaction} autoPlay loop={false} />
-
-                                <Text style={styles.textSelection}>Transacciones</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={logOut} style={styles.selectionMenu}>

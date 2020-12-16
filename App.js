@@ -22,7 +22,7 @@ import RechargeScreen from './src/screens/recharge.screen';
 import HistoryScreen from './src/components/History/History'
 
 // Import Componets
-import Geolocation from '@react-native-community/geolocation'
+import Description from './src/components/Description/Description'
 
 const Stack = createStackNavigator();
 
@@ -83,6 +83,7 @@ const App = () => {
               <Stack.Screen name="ProductList" component={ProductList} options={{ headerShown: false }} />
               <Stack.Screen name="Transaction" component={TransactionScreen} options={{ headerShown: false }} />
               <Stack.Screen name="HistoryTransaction" component={HistoryScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="Description" component={Description} options={{ headerShown: false }} />
             </>
           }
 

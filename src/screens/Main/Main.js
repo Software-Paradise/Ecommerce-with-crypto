@@ -44,7 +44,7 @@ const Main = () => {
         <Container showLogo>
             <View style={styles.container}>
                 <Switch onSwitch={setStateView} items={switchItems} indexActive={state.idexTabActive} />
-                <KeyboardAvoidingView enabled behavior='padding'>
+                <KeyboardAvoidingView enabled >
                     {
                         stateView === TYPE_VIEW.PAY &&
                         <PayComponent />

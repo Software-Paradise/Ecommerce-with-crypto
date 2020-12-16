@@ -7,17 +7,14 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // Import constants and functions
 import { Colors, RFValue, CopyClipboard } from '../../utils/constants.util'
-// import {useNavigation} from '@react-navigation/native'
 
 
-const HistoryElement = ({ item, index }) => {
-
-    // const navigation = useNavigation()
+const HistoryElement = ({ item, index, navigate }) => {
 
     // Funcion que permite visualizar el detalle de la transaccion
-    async function proccessData(value) {
+    const proccessData = (value) => {
         CopyClipboard(value);
-        // navigation.navigate("Transacciones", { hash: value })
+        navigate("Description", { hash: value })
     }
 
     return (
@@ -47,9 +44,9 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderRadius: RFValue(10),
         flexDirection: 'row',
-        elevation: 25,
+        // elevation: 25,
         padding: RFValue(10),
-        marginVertical: RFValue(10)
+        marginVertical: RFValue(10),
     },
     subContainer: {
         flex: 1,

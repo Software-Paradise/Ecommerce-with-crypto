@@ -57,11 +57,9 @@ const sentComponent = () => {
             }
 
             const dataSent = {
-                amount_usd: state.amountUSD,
                 amount: state.amountFraction,
                 wallet: state.walletAdress,
                 id_wallet: global.wallet_commerce,
-                symbol: coin,
             }
 
 
@@ -74,12 +72,6 @@ const sentComponent = () => {
 
             if (data === 'success') {
                 successMessage("Tu transaccion se ha completado")
-
-                // limpiamos el monto en usd
-                dispatch({ type: "amountUSD", payload: "" })
-
-                // limpiamos las fracciones de las moneda
-                dispatch({ type: "amountFraction", payload: "" })
 
                 // Limpiamos el usuario remitente
                 dispatch({ type: "dataWallet", payload: "" })
@@ -151,20 +143,7 @@ const sentComponent = () => {
             dispatch({ type: "dataWallet", payload: null })
         }
     }
-    const onChangeFractions = (payload = "") => {
-        dispatch({ type: "amountFraction", payload })
-
-        const _coin = coinList.filter(item => item.symbol === coin)[0]
-
-        const newAmount = _coin.quote.USD.price * parseFloat(payload)
-
-        if (parseFloat(payload) > details.amount) {
-            throw String("No tienes suficientes fondos")
-        }
-
-        dispatch({ type: "amountUSD", payload: isNaN(newAmount) ? "" : newAmount.toString() })
-    }
-
+    
     const onChangeAmount = (payload = '') => {
         dispatch({ type: 'amountUSD', payload })
 
@@ -219,39 +198,7 @@ const sentComponent = () => {
                 </View>
             </View>
 
-            <View style={styles.row}>
-                <View style={styles.col}>
-                    <Text style={styles.legend}>Moneda</Text>
 
-                    <View style={GlobalStyles.containerPicker}>
-                        <Picker
-                            style={GlobalStyles.picker}
-                            selectedValue={coin}
-                            onValueChange={(value) => setCoin(value)}>
-                            {
-                                coinList.map((item, index) => (
-                                    <Picker.Item enabled={true} key={index} label={item.name} value={item.symbol} />
-                                ))
-                            }
-                        </Picker>
-                    </View>
-
-
-                </View>
-                <View style={styles.col}>
-                    <Text style={styles.legend}>Monto ({coin})</Text>
-
-                    <View style={styles.rowInput}>
-                        <TextInput
-                            style={[GlobalStyles.textInput, { flex: 1 }]}
-                            value={state.amountFraction}
-                            onChangeText={onChangeFractions}
-                            keyboardType="numeric"
-                            returnKeyType="done"
-                        />
-                    </View>
-                </View>
-            </View>
 
             <View style={styles.row}>
                 <View style={styles.col}>
@@ -260,7 +207,7 @@ const sentComponent = () => {
                     <View style={styles.rowInput}>
                         <TextInput
                             style={[GlobalStyles.textInput, { flex: 1 }]}
-                            value={state.amountUSD}
+                            value={state.amountFraction}
                             onChangeText={onChangeAmount}
                             keyboardType="numeric"
                             returnKeyType="done"

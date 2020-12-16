@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRoute, useReducer } from 'react'
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import React, { useState, useEffect, useReducer } from 'react'
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, FlatList } from 'react-native'
 
 // Import Component
 import Container from '../../components/Container/Container'
@@ -10,21 +10,25 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import MapView, { Marker } from 'react-native-maps'
 import Geolocation from '@react-native-community/geolocation'
 import validator from 'validator'
+import { Picker } from '@react-native-community/picker'
+import Modal from 'react-native-modal'
 
 // Import Assets
 import Logo from '../../assets/img/logo.png'
+import countries from '../../utils/countries.json'
 
 const initialState = {
-    username: '',
     email: '',
     password: '',
     commerceType: '',
     description: '',
-    emailCommerce: '',
     phoneCommerce: '',
     physicalAddress: '',
     latitude: null,
     longitude: null,
+
+    filter: '',
+    country: countries[0]
 }
 
 const reducer = (state, action) => {
@@ -34,19 +38,44 @@ const reducer = (state, action) => {
     }
 }
 
-const RegisterCommerce = () => {
+const RegisterCommerce = ({ route }) => {
     const [state, dispatch] = useReducer(reducer, initialState)
     const [loader, setLoader] = useState(false)
     const [confirmPassword, setConfirmPassword] = useState('')
 
+    const companyId = route.params?.companyId
+
     // Estado que visualiza el mapa en un modal
     const [showModal, setShowModal] = useState(false)
-
-    // const route = useRoute();
 
     // Estados que permiten previsualizar las contraseñas
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+    // Estado que indica si muestra la modal de paises
+    const [modalCoutry, setModalCountry] = useState(false)
+
+    /**
+    * Funcion que permite guardar la seleccion del pais
+    * @param {*} item 
+    */
+    const selectedCountry = (item) => {
+        dispatch({ type: "country", payload: item })
+
+        setModalCountry(false)
+    }
+
+    /**render element country modal */
+    const ItemCountry = ({ item }) => {
+        if (item.name.length > 0 && item.name.toLowerCase().search(state.filter.toLocaleLowerCase()) > -1) {
+            return (
+                <TouchableOpacity style={styles.itemCountry} onPress={_ => selectedCountry(item)}>
+                    <Text style={{ color: "#FFF" }}>{item.name}</Text>
+                    <Text style={{ color: Colors.$colorYellow }}>{item.phoneCode}</Text>
+                </TouchableOpacity>
+            )
+        }
+    }
 
     // Hacemos la peticion al server
     const onSubmit = async () => {
@@ -69,7 +98,30 @@ const RegisterCommerce = () => {
                 throw String("Las contraseña nos coinciden")
             }
 
+            if (state.phoneCommerce.trim().length === 0) {
+                throw String("Ingrese un numero de telefono")
+            }
 
+            const dataSent = {
+                idCompany: companyId,
+                username: null,
+                email: state.email,
+                password: state.password,
+                description: state.companyName,
+                commerceType: state.commerceType,
+                phoneCommerce: `${state.country.phoneCode}` `${state.phoneCommerce}`,
+                physicalAddress: state.physicalAddress,
+                latitude: state.latitude,
+                longitude: state.longitude
+            }
+
+            const { data } = await http.post('/ecommerce/company/commerce', dataSent)
+
+            if (data.error) {
+                throw String(data.message)
+            } else {
+                navigation.navigate('Login')
+            }
         } catch (error) {
             showNotification(error.toString())
         } finally {
@@ -190,17 +242,73 @@ const RegisterCommerce = () => {
                         </View>
 
                         <View style={styles.row}>
+                            <Text style={styles.legendRow}>Numero de telefono</Text>
+
+                            <View style={styles.rowPhoneNumber}>
+                                <TouchableOpacity style={[GlobalStyles.textInput, { marginRight: 10, justifyContent: "center" }]} onPress={_ => setModalCountry(true)}>
+                                    <Text style={{ color: Colors.$colorGray }}>{state.country.phoneCode}</Text>
+                                </TouchableOpacity>
+
+                                <TextInput
+                                    style={[GlobalStyles.textInput, { flex: 1 }]}
+                                    placeholder="Ingrese numero de telefono"
+                                    placeholderTextColor={Colors.$colorGray}
+                                    value={state.phoneCommerce}
+                                    autoCorrect={false}
+                                    keyboardType="numeric"
+                                    keyboardAppearance="dark"
+                                    onChangeText={payload => dispatch({ type: "phoneCommerce", payload })}
+                                />
+                            </View>
+                        </View>
+
+                        <View style={styles.row}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Codigo postal</Text>
+                                <Text style={styles.legendRow}>Tipo de comercio</Text>
+                            </View>
+
+                            <View style={GlobalStyles.containerPicker}>
+                                <Picker
+                                    style={GlobalStyles.picker}
+                                    selectedValue={state.commerceType}
+                                    onValueChange={id => dispatch({ type: "commerceType", payload: id })}
+                                >
+                                    <Picker.Item label='Seleccione una categoria' value={0} />
+                                    <Picker.Item label='Abarrotería' value={1} />
+                                    <Picker.Item label='Agencia de Viajes' value={2} />
+                                    <Picker.Item label='Bar' value={3} />
+                                    <Picker.Item label='Bazar' value={4} />
+                                    <Picker.Item label='Cafetería' value={5} />
+                                    <Picker.Item label='Centro Comercial' value={6} />
+                                    <Picker.Item label='Heladería' value={7} />
+                                    <Picker.Item label='Discoteca' value={8} />
+                                    <Picker.Item label='Estacion de Servicios' value={9} />
+                                    <Picker.Item label='Ferretería' value={10} />
+                                    <Picker.Item label='Almacén' value={11} />
+                                    <Picker.Item label='Hotel / Hospedaje' value={12} />
+                                    <Picker.Item label='Joyería' value={13} />
+                                    <Picker.Item label='Librería' value={14} />
+                                    <Picker.Item label='Mercado' value={15} />
+                                    <Picker.Item label='Repostería' value={16} />
+                                    <Picker.Item label='Restaurante' value={17} />
+                                    <Picker.Item label='Tienda' value={18} />
+                                    <Picker.Item label='Venta Minorista' value={19} />
+                                    <Picker.Item label='Otros' value={20} />
+                                </Picker>
+                            </View>
+                        </View>
+
+                        <View style={styles.row}>
+                            <View style={styles.labelsRow}>
+                                <Text style={styles.legendRow}>Punto de referencia</Text>
                             </View>
 
                             <TextInput
                                 style={GlobalStyles.textInput}
-                                placeholder="Ingrese codigo postal aqui"
+                                placeholder="Ingrese un punto de referencia del comercio"
                                 placeholderTextColor={Colors.$colorGray}
-                                value={state.email}
-                                keyboardType='numeric'
-                                onChangeText={str => dispatch({ type: 'email', payload: str })}
+                                value={state.physicalAddress}
+                                onChangeText={str => dispatch({ type: 'physicalAddress', payload: str })}
                             />
                         </View>
 
@@ -243,13 +351,32 @@ const RegisterCommerce = () => {
                         </View>
 
                         <View style={styles.row}>
-                            <TouchableOpacity style={[GlobalStyles.buttonPrimary, styles.button]}>
+                            <TouchableOpacity onPress={onSubmit} style={[GlobalStyles.buttonPrimary, styles.button]}>
                                 <Text style={GlobalStyles.textButton}>GUARDAR</Text>
                             </TouchableOpacity>
                         </View>
                     </ViewAnimation>
                 </View>
             </ScrollView>
+
+            <Modal onBackdropPress={_ => setModalCountry(false)} onBackButtonPress={_ => setModalCountry(false)} isVisible={modalCoutry}>
+                <View style={styles.containerModal}>
+                    <TextInput
+                        style={GlobalStyles.textInput}
+                        placeholder="Buscar"
+                        placeholderTextColor="#FFF"
+                        value={state.filter}
+                        onChangeText={str => dispatch({ type: "filter", payload: str })} />
+
+                    <View style={{ height: 10 }} />
+
+                    <FlatList
+                        keyboardShouldPersistTaps="always"
+                        data={countries}
+                        renderItem={ItemCountry}
+                        keyExtractor={(_, i) => i.toString()} />
+                </View>
+            </Modal>
         </Container >
     )
 
