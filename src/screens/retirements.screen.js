@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -7,34 +7,37 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
-import {GlobalStyles} from '../styles/global.style';
-import {Colors, errorMessage, http} from '../utils/constants.util';
+import { GlobalStyles } from '../styles/global.style';
+import { Colors, errorMessage, http } from '../utils/constants.util';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {RFValue} from 'react-native-responsive-fontsize';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { RFValue } from 'react-native-responsive-fontsize';
 import Modal from 'react-native-modal';
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import {RNCamera} from 'react-native-camera';
-import {Picker} from '@react-native-community/picker';
+import { RNCamera } from 'react-native-camera';
+import { Picker } from '@react-native-community/picker';
 import store from '../store';
-import {showMessage} from 'react-native-flash-message';
+import { showMessage } from 'react-native-flash-message';
+import Lottie from 'lottie-react-native';
 
-const RetirementsScreen = ({navigation}) => {
+import QR from '../animations/scan-qr.json'
+
+const RetirementsScreen = ({ navigation }) => {
   const [walletAddress, setWalletAddress] = useState('');
-  const {global} = store.getState();
+  const { global } = store.getState();
   const [amount, setAmount] = useState('');
   const [showScanner, setShowScanner] = useState(false);
   const [coin, setCoin] = useState('ALY');
   const [coinList, setCoinList] = useState([]);
   const isMounted = useRef(null);
   const toggleScan = () => setShowScanner(!showScanner);
-  const onReadCodeQR = ({data}) => {
+  const onReadCodeQR = ({ data }) => {
     toggleScan();
     setWalletAddress(data);
   };
 
   const _handleSubmit = async () => {
-    const {data} = await http.post(
+    const { data } = await http.post(
       '/api/ecommerce/wallet/retirement',
       {
         wallet: walletAddress,
@@ -103,13 +106,13 @@ const RetirementsScreen = ({navigation}) => {
           />
         </View>
       </Modal>
-      <View style={{alignItems: 'center'}}>
+      <View style={{ alignItems: 'center' }}>
         <Image
           source={require('./../assets/img/logo.png')}
           style={styles.logo}
         />
       </View>
-      <View style={{alignItems: 'center', padding: RFValue(30)}}>
+      <View style={{ alignItems: 'center', padding: RFValue(30) }}>
         <Text
           style={{
             fontSize: RFValue(18),
@@ -120,46 +123,21 @@ const RetirementsScreen = ({navigation}) => {
           Retiro de fondos
         </Text>
       </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          paddingHorizontal: RFValue(20),
-        }}>
-        <View style={{flex: 0.8}}>
-          <Text style={styles.label}>Dirección de billetera externa</Text>
-          <TextInput
-            value={walletAddress}
-            onChangeText={(value) => setWalletAddress(value)}
-            style={[
-              GlobalStyles.textInput,
-              {
-                paddingVertical: RFValue(5),
-              },
-            ]}
-          />
-        </View>
-        <View
-          style={{
-            flex: 0.2,
-            marginBottom: RFValue(4),
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-          }}>
-          <TouchableOpacity
-            onPress={toggleScan}
-            style={{
-              backgroundColor: Colors.$colorYellow,
-              borderRadius: RFValue(50),
-              padding: RFValue(12),
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <MaterialCommunityIcon
-              name="qrcode-scan"
-              size={RFValue(20)}
-              color={Colors.$colorBlack}
+      <View style={styles.row}>
+        <View style={styles.col}>
+          <Text style={styles.legend}>Dirección de billetera</Text>
+
+          <View style={styles.rowInput}>
+            <TextInput
+              style={[GlobalStyles.textInput, { flex: 1 }]}
+              value={walletAddress}
+              onChangeText={setWalletAddress}
             />
-          </TouchableOpacity>
+
+            <TouchableOpacity onPress={toggleScan} style={styles.buttonScan}>
+              <Lottie source={QR} style={styles.lottieQRAnimation} autoPlay loop />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
       <View
@@ -179,7 +157,7 @@ const RetirementsScreen = ({navigation}) => {
           ]}
         />
       </View>
-      <View style={{paddingHorizontal: RFValue(20)}}>
+      <View style={{ paddingHorizontal: RFValue(20) }}>
         <Text style={styles.label}>Moneda</Text>
         <View
           style={{
@@ -254,6 +232,43 @@ const styles = StyleSheet.create({
     borderRadius: RFValue(5),
     height: RFValue(320),
     overflow: 'hidden',
+  },
+  buttonScan: {
+    backgroundColor: Colors.$colorYellow,
+    borderRadius: RFValue(5),
+    padding: RFValue(5),
+    marginLeft: RFValue(10),
+    zIndex: 1000,
+  },
+  col: {
+    flex: 1,
+    marginHorizontal: RFValue(10),
+  },
+
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: RFValue(10)
+  },
+
+  legend: {
+    color: Colors.$colorYellow
+  },
+
+  rowInput: {
+    alignItems: "center",
+    flexDirection: "row"
+  },
+  lottieQRAnimation: {
+    height: RFValue(35),
+    width: RFValue(35),
+  },
+  constainerQR: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: RFValue(5),
+    height: RFValue(200),
+    overflow: "hidden",
   },
 });
 export default RetirementsScreen;
