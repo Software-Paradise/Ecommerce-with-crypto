@@ -303,9 +303,10 @@ const PORT = '3085';
 
 export const serverAddress = Platform.OS === 'ios' ? `http://localhost:${PORT}` : `http://192.168.0.119:${PORT}`;
 
-//export const serverAddress = 'https://test-after-prod.uc.r.appspot.com';
+//export const serverAddress = 'https://staging.root-anvil-299019.appspot.com/';
 export const socketAddress = serverAddress;
-// export const socketAddress = 'https://test-after-prod.uc.r.appspot.com';
+// export const socketAddress = 'https://staging.root-anvil-299019.appspot.com/'
+
 
 export const TYPE_VIEW = {
   PAY: 'pay',

@@ -60,7 +60,7 @@ const Payment = () => {
 
             <View style={styles.button}>
                 <TouchableOpacity onPress={handleSubmit} style={GlobalStyles.buttonPrimary}>
-                    <Text style={styles.titleButton}>Procesar transaccion</Text>
+                    <Text >Procesar transaccion</Text>
                 </TouchableOpacity>
             </View>
 
