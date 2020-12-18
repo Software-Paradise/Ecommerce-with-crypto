@@ -144,7 +144,7 @@ const NavBar = ({ config = {} }) => {
                 backdropOpacity={0}
                 style={{ justifyContent: 'flex-start', alignItems: 'flex-end' }}
                 isVisible={showModal}
-                onBackdropPress={_ => { setShowModal(false), console.log('Hola puto') }}
+                onBackdropPress={_ => setShowModal(false)}
                 onBackButtonPress={_ => setShowModal(false)}
             >
                 <View style={styles.containerModal}>

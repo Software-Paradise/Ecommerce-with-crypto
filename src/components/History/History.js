@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, TextInput } from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 
 // Import Component
+import Loader from '../Loader/Loader'
 import Search from '../Search/Search'
 import HistorElement from '../HistoryElement/HistoryElement'
 import Lottie from 'lottie-react-native'
@@ -19,17 +20,22 @@ const History = () => {
     const { global } = store.getState()
     const { navigate } = useNavigation()
 
+    const [loader, setLoader] = useState(false)
+
     // Estado que almacena los datos de la api
     const [transaction, setTransaction] = useState([])
 
     const getAllData = async () => {
         try {
+            setLoader(true)
             // Consumimos la api
             const { data } = await http.get(`/api/ecommerce/wallet/details/${global.wallet_commerce}`, getHeaders())
             setTransaction(data.history)
 
         } catch (error) {
             showNotification(error.toString())
+        } finally {
+            setLoader(false)
         }
     }
 
@@ -40,6 +46,7 @@ const History = () => {
     return (
         <>
             <ViewAnimation style={styles.container}>
+                <Loader isVisible={loader} />
                 <Search />
                 {
                     (transaction.length > 0)
@@ -83,6 +90,17 @@ const styles = StyleSheet.create({
         color: '#FFF',
         elevation: 5,
         padding: RFValue(10),
+    },
+    empty: {
+        alignSelf: "center",
+        resizeMode: "contain",
+        height: RFValue(250),
+        width: RFValue(250),
+    },
+    titleText: {
+        fontSize: RFValue(20),
+        textAlign: 'center',
+        color: Colors.$colorGray
     }
 })
 

@@ -45,7 +45,7 @@ const Payment = () => {
                     <Text style={styles.textTitle}>Ingrese el monto (USD)</Text>
                 </View>
 
-                <View style={{ width: 250, height: 60 }}>
+                <View style={{ width: "90%", height: 55 }}>
                     <TextInput
                         style={GlobalStyles.textInput}
                         placeholder="0.00"
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
     },
     button: {
-        height: 10,
+        height: 30,
         margin: 30
     },
     titleButton: {

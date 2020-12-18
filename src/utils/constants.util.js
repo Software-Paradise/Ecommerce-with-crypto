@@ -68,8 +68,8 @@ export const GlobalStyles = StyleSheet.create({
   textInput: {
     backgroundColor: Colors.$colorMain,
     borderColor: Colors.$colorYellow,
-    borderRadius: 10,
-    borderWidth: 2,
+    borderRadius: 5,
+    borderWidth: 1.5,
     color: '#FFF',
     elevation: 5,
     padding: RFValue(10),

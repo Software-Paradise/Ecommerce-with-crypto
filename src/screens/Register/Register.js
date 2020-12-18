@@ -534,7 +534,7 @@ const Register = ({ navigation }) => {
                     </View>
 
                     <View style={{ alignItems: 'center', padding: 20 }}>
-                        <TouchableOpacity onPress={registerCommerce} style={GlobalStyles.buttonPrimary}>
+                        <TouchableOpacity onPress={onSubmitInformation} style={GlobalStyles.buttonPrimary}>
                             <Text>REGISTRA TU COMERCIO</Text>
                         </TouchableOpacity>
                     </View>

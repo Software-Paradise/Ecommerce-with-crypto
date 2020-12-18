@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   container: {
     width: RFValue(526),
     height: RFValue(256),
-    alignItems: 'center'
+    alignItems: 'center',
   }
 })
 

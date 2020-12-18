@@ -317,7 +317,7 @@ const RegisterCommerce = ({ route }) => {
                                 <Text style={styles.legendRow}>Dirección Física</Text>
                             </View>
 
-                            <ViewAnimation style={[showModal ? styles.mapFullScreen : styles.mapContainer]} animations="fadeOut">
+                            <View style={[showModal ? styles.mapFullScreen : styles.mapContainer]}>
 
                                 {
                                     (state.latitude !== null && state.longitude !== null) &&
@@ -347,7 +347,7 @@ const RegisterCommerce = ({ route }) => {
                                 <TouchableOpacity onPress={_ => setShowModal(!showModal)}>
                                     <Icon name={showModal ? 'fullscreen-exit' : 'fullscreen'} size={40} color={Colors.$colorYellow} />
                                 </TouchableOpacity>
-                            </ViewAnimation>
+                            </View>
                         </View>
 
                         <View style={styles.row}>
@@ -488,13 +488,11 @@ const styles = StyleSheet.create({
         height: 200,
         justifyContent: 'flex-end',
         alignItems: 'flex-end',
-        borderWidth: 2,
-        borderColor: Colors.$colorYellow,
-        borderRadius: 30,
     },
     mapFullScreen: {
-        ...StyleSheet.absoluteFillObject,
-        height: 500,
+        flex:1,
+        // ...StyleSheet.absoluteFillObject,
+        height: 350,
         width: '100%',
         alignItems: 'flex-end',
         justifyContent: 'flex-end',

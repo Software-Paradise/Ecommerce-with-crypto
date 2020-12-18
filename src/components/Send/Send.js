@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'reac
 import { useNavigation } from "@react-navigation/native"
 
 // Import components
+import Loader from '../Loader/Loader'
 import Lottie from 'lottie-react-native'
 import { RFValue, Colors, GlobalStyles, http, getHeaders, showNotification, errorMessage, successMessage } from '../../utils/constants.util'
 import { View as ViewAnimation, Text as TextAnimation } from 'react-native-animatable'
@@ -43,8 +44,9 @@ const sentComponent = () => {
     const [state, dispatch] = useReducer(reducer, initialState)
     const { navigate } = useNavigation()
 
+    const [loader, setLoader] = useState(false)
+
     const [details, setDetails] = useState(null);
-    const isMounted = useRef(null);
     const [coinList, setCoinList] = useState([]);
     const [coin, setCoin] = useState('ALY')
     const [showScanner, setShowScanner] = useState(false)
@@ -56,15 +58,15 @@ const sentComponent = () => {
                 throw String("Ingrese un monto")
             }
 
+            setLoader(true)
+
             const dataSent = {
                 amount: state.amountFraction,
                 wallet: state.walletAdress,
                 id_wallet: global.wallet_commerce,
             }
 
-
             const { data } = await http.post('/api/ecommerce/wallet/transaction', dataSent, getHeaders())
-
 
             if (data.error) {
                 errorMessage(data.message)
@@ -84,24 +86,19 @@ const sentComponent = () => {
             }
         } catch (error) {
             errorMessage(error.toString())
+        } finally {
+            setLoader(false)
         }
     }
 
     const configureComponent = async () => {
         try {
 
-            const coinsResponse = await http.get('https://ardent-medley-272823.appspot.com/collection/prices/minimal')
-
             const { data } = await http.get(`/api/ecommerce/wallet/details/${global.wallet_commerce}`, getHeaders())
 
-            if (isMounted.current) {
-                setDetails(data.information)
-                setCoinList(Object.values(coinsResponse.data));
-            }
+            setDetails(data.information)
         } catch (error) {
             showNotification(error.toString())
-        } finally {
-
         }
     }
 
@@ -143,7 +140,7 @@ const sentComponent = () => {
             dispatch({ type: "dataWallet", payload: null })
         }
     }
-    
+
     const onChangeAmount = (payload = '') => {
         dispatch({ type: 'amountUSD', payload })
 
@@ -159,23 +156,19 @@ const sentComponent = () => {
     }
 
     const onRetirement = () => {
-        navigate("Retirements", { wallet: details.wallet })
+        navigate("Retirements", { wallet: global.wallet_commerce })
     }
     const onReadCodeQR = ({ data }) => {
         toggleScan()
 
         dispatch({ type: 'walletAdress', payload: data })
     }
+    
     const toggleScan = () => setShowScanner(!showScanner)
 
 
     useEffect(() => {
-        isMounted.current = true
         configureComponent()
-
-        return () => {
-            isMounted.current = false
-        }
     }, [global])
 
     return (
