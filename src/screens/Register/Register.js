@@ -64,10 +64,10 @@ const Register = ({ navigation }) => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
     // Estados que almacenan la informacion de las imagenes
-    const [operationPermission, setOperationPermission] = useState(null);
-    const [RUCImage, setRUCImage] = useState(null);
-    const [legalPower, setLegalPower] = useState(null);
-    const [repID, setRepID] = useState(null)
+    const [operationPermission, setOperationPermission] = useState('');
+    const [RUCImage, setRUCImage] = useState('');
+    const [legalPower, setLegalPower] = useState('');
+    const [repID, setRepID] = useState('')
 
     // Estado que indica si muestra el modal de success
     const [modalSuccess, setModalSuccess] = useState(false)
@@ -245,7 +245,7 @@ const Register = ({ navigation }) => {
             }
             console.log("dataSent", dataSent)
 
-            const { data } = await http.post(`${serverAddress}/ecommerce/company/register`, createFormData(
+            const { data } = await http.post('/ecommerce/company/register', createFormData(
                 operationPermission,
                 RUCImage,
                 legalPower,
