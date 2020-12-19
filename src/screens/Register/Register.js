@@ -10,7 +10,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import Modal from 'react-native-modal'
 import UploadImage from '../../components/UploadImage/UploadImage'
 import ImagePicker from 'react-native-image-picker'
-import { Colors, showNotification, http, serverAddress, getHeaders, RFValue,GlobalStyles } from '../../utils/constants.util'
+import { Colors, showNotification, http, serverAddress, getHeaders, RFValue, GlobalStyles } from '../../utils/constants.util'
 // import { GlobalStyles } from '../../styles/global.style'
 // import { RFValue } from 'react-native-responsive-fontsize';
 import { Image, View as ViewAnimation } from 'react-native-animatable'
@@ -231,7 +231,7 @@ const Register = ({ navigation }) => {
             }
             const dataSent = {
                 companyName: state.companyName,
-                companyRUC: state.companyRUC,
+                companyRUC: state.companyRuc,
                 country: state.country.name,
                 phoneCode: state.country.phoneCode,
                 repFirstName: state.repFirstName,
@@ -243,6 +243,7 @@ const Register = ({ navigation }) => {
                 username: state.username,
                 password: state.password
             }
+            console.log("dataSent", dataSent)
 
             const { data } = await http.post(`${serverAddress}/ecommerce/company/register`, createFormData(
                 operationPermission,
@@ -251,6 +252,8 @@ const Register = ({ navigation }) => {
                 repID,
                 dataSent,
             ), getHeaders())
+
+            console.log("dataSent", data)
 
             if (data.error) {
                 throw String(data.message)
@@ -266,7 +269,6 @@ const Register = ({ navigation }) => {
 
     // Funcion que permite llenar el registro del comercio
     const registerCommerce = (data) => {
-        // console.log("Data", data)
         navigation.navigate('RegisterCommerce', { companyId: data.id })
         setModalSuccess(false)
     }
@@ -442,8 +444,9 @@ const Register = ({ navigation }) => {
                                 <Picker
                                     style={GlobalStyles.picker}
                                     selectedValue={state.repIDType}
-                                    onValueChange={id => dispatch({ type: 'repIDType', payload: id })}
+                                    onValueChange={id => dispatch({ type: "repIDType", payload: id })}
                                 >
+                                    <Picker.Item label='Seleccione el tipo de identificacion' value={0} />
                                     <Picker.Item label='Identificacion Personal' value={1} />
                                     <Picker.Item label='Pasaporte' value={2} />
                                     <Picker.Item label='Permiso de Conducir' value={3} />
@@ -507,7 +510,7 @@ const Register = ({ navigation }) => {
                             </TouchableOpacity>
 
 
-                            <TouchableOpacity onPress={_ => setModalSuccess(true)} disabled={!state.companyName} style={state.companyName ? GlobalStyles.buttonPrimary : GlobalStyles.button}>
+                            <TouchableOpacity onPress={onSubmitInformation} disabled={!state.companyName} style={state.companyName ? GlobalStyles.buttonPrimary : GlobalStyles.button}>
                                 <Text style={[GlobalStyles.textButton, { opacity: state.companyName ? 1 : 0.5 }]}>Guardar</Text>
                             </TouchableOpacity>
                         </View>
@@ -516,7 +519,7 @@ const Register = ({ navigation }) => {
                 </View>
             </ScrollView>
 
-            <Modal isVisible={modalSuccess}>
+            <Modal isVisible={modalSuccess} onBackButtonPress={_ => setModalSuccess(false)} onBackdropPress={_ => setModalSuccess(false)}>
                 <View style={styles.containerModalSuccess}>
                     <Image style={styles.logo} source={Logo} />
 
@@ -534,7 +537,7 @@ const Register = ({ navigation }) => {
                     </View>
 
                     <View style={{ alignItems: 'center', padding: 20 }}>
-                        <TouchableOpacity onPress={onSubmitInformation} style={GlobalStyles.buttonPrimary}>
+                        <TouchableOpacity onPress={registerCommerce} style={GlobalStyles.buttonPrimary}>
                             <Text>REGISTRA TU COMERCIO</Text>
                         </TouchableOpacity>
                     </View>

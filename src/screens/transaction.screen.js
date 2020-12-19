@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  Alert
 } from 'react-native';
 import LottieAnimationView from 'lottie-react-native';
 import { useRoute } from '@react-navigation/native';
@@ -55,10 +56,25 @@ const TransactionScreen = ({ navigation }) => {
   };
 
   const cancelButton = () => {
-    navigation.goBack();
+    goBack()
     // connectionSocket.emit('disconnect', 'cancel_transaction');
     connectionSocket.disconnect(true);
   };
+
+  const goBack = () => {
+    Alert.alert("Estas a punto de cancelar la transaccion", "Realmente quieres ejecutar esta accion", [
+      {
+        text: 'Cancelar',
+        onPress: () => { }
+      },
+      {
+        text: 'Salir',
+        onPress: () => {
+          navigation.pop()
+        }
+      }
+    ])
+  }
 
   useEffect(() => {
     const _unsubscribe = navigation.addListener('focus', () => {
