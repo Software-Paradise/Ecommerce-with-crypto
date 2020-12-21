@@ -53,6 +53,7 @@ const options = {
 const Register = ({ navigation }) => {
     const [state, dispatch] = useReducer(reducer, initialState)
     const [loader, setLoader] = useState(false)
+    const [dataRegister, setDataRegister] = useState('')
 
     const [confirmPassword, setConfirmPassword] = useState('')
 
@@ -253,6 +254,8 @@ const Register = ({ navigation }) => {
                 dataSent,
             ), getHeaders())
 
+            setDataRegister(data)
+
             console.log("dataSent", data)
 
             if (data.error) {
@@ -268,8 +271,8 @@ const Register = ({ navigation }) => {
     }
 
     // Funcion que permite llenar el registro del comercio
-    const registerCommerce = (data) => {
-        navigation.navigate('RegisterCommerce', { companyId: data.id })
+    const registerCommerce = () => {
+        navigation.navigate('RegisterCommerce', { companyId: dataRegister.id })
         setModalSuccess(false)
     }
 
@@ -510,7 +513,7 @@ const Register = ({ navigation }) => {
                             </TouchableOpacity>
 
 
-                            <TouchableOpacity onPress={_ => setModalSuccess(true)} disabled={!state.companyName} style={state.companyName ? GlobalStyles.buttonPrimary : GlobalStyles.button}>
+                            <TouchableOpacity onPress={onSubmitInformation} disabled={!state.companyName} style={state.companyName ? GlobalStyles.buttonPrimary : GlobalStyles.button}>
                                 <Text style={[GlobalStyles.textButton, { opacity: state.companyName ? 1 : 0.5 }]}>Guardar</Text>
                             </TouchableOpacity>
                         </View>

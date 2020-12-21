@@ -38,13 +38,13 @@ const reducer = (state, action) => {
     }
 }
 
-const RegisterCommerce = ({ route }) => {
+const RegisterCommerce = ({ route, navigation }) => {
     const [state, dispatch] = useReducer(reducer, initialState)
     const [loader, setLoader] = useState(false)
     const [confirmPassword, setConfirmPassword] = useState('')
 
     const companyId = route.params?.companyId
-
+    console.log(companyId)
     // Estado que visualiza el mapa en un modal
     const [showModal, setShowModal] = useState(false)
 
@@ -109,11 +109,13 @@ const RegisterCommerce = ({ route }) => {
                 password: state.password,
                 description: state.companyName,
                 commerceType: state.commerceType,
-                phoneCommerce: `${state.country.phoneCode}` `${state.phoneCommerce}`,
+                phoneCommerce: state.phoneCommerce,
                 physicalAddress: state.physicalAddress,
                 latitude: state.latitude,
                 longitude: state.longitude
             }
+
+            console.log("DataSent", dataSent);
 
             const { data } = await http.post('/ecommerce/company/commerce', dataSent)
 
@@ -490,7 +492,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end',
     },
     mapFullScreen: {
-        flex:1,
+        flex: 1,
         // ...StyleSheet.absoluteFillObject,
         height: 350,
         width: '100%',

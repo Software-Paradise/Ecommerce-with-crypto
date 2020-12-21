@@ -7,6 +7,7 @@ import Switch from '../../components/Switch/Switch'
 import PayComponent from '../../components/Payment/Payment'
 import SendComponent from '../../components/Send/Send'
 import History from '../../components/History/History'
+import Card from '../../components/CardProfile/CardProfile'
 
 // Import constants
 import { Colors, reducer } from '../../utils/constants.util'
@@ -60,6 +61,7 @@ const Main = () => {
     return (
         <Container showLogo>
             <View style={styles.container}>
+                <Card />
                 <Switch onSwitch={setStateView} items={switchItems} indexActive={state.idexTabActive} />
                 <KeyboardAvoidingView enabled >
                     {
