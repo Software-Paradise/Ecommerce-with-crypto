@@ -58,11 +58,12 @@ const Payment = () => {
                 </View>
             </View>
 
-            <View style={styles.button}>
-                <TouchableOpacity onPress={handleSubmit} style={GlobalStyles.buttonPrimary}>
-                    <Text >Procesar transaccion</Text>
+            <View style={[styles.buttonPosition,{height:100, paddingTop:20}]}>
+                <TouchableOpacity onPress={handleSubmit} style={[GlobalStyles.buttonPrimary,]}>
+                    <Text style={GlobalStyles.textButton}>Procesar transaccion</Text>
                 </TouchableOpacity>
             </View>
+
 
             <View style={[styles.row, { padding: RFValue(150) }]}>
                 <Image source={Logo} style={styles.logo} />
@@ -83,7 +84,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: "column",
         width: "100%",
-        paddingBottom: 10
+        paddingBottom: 20
     },
     textTitle: {
         color: Colors.$colorYellow,
@@ -96,8 +97,13 @@ const styles = StyleSheet.create({
         flexDirection: "row",
     },
     button: {
-        height: 30,
+        height: 50,
         margin: 30
+    },
+    buttonPosition: {
+        padding:20,
+        // marginVertical: 10,
+        width:'100%'
     },
     titleButton: {
         color: Colors.$colorBlack,

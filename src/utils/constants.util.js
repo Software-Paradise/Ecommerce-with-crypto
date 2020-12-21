@@ -45,7 +45,7 @@ const buttonStyle = {
   alignItems: 'center',
   borderRadius: 50,
   justifyContent: 'center',
-  padding: 8,
+  padding: 10,
 };
 
 export const GlobalStyles = StyleSheet.create({
@@ -55,7 +55,7 @@ export const GlobalStyles = StyleSheet.create({
     backgroundColor: Colors.$colorMain,
     borderColor: Colors.$colorYellow,
     borderRadius: 5,
-    borderWidth: 2,
+    borderWidth: 1.5,
     elevation: 5,
   },
   superContainer: {

@@ -9,7 +9,11 @@ import SendComponent from '../../components/Send/Send'
 import History from '../../components/History/History'
 
 // Import constants
-import { Colors, RFValue, reducer } from '../../utils/constants.util'
+import { Colors, reducer } from '../../utils/constants.util'
+
+// import redux
+import store from '../../store/index'
+import { SETFUNCTION } from '../../store/actionTypes'
 
 
 const TYPE_VIEW = {
@@ -40,6 +44,19 @@ const initialState = {
 const Main = () => {
     const [stateView, setStateView] = useState(TYPE_VIEW.PAY)
     const [state, dispatch] = useReducer(reducer, initialState)
+
+    useEffect(() => {
+        store.dispatch({
+            type: SETFUNCTION,
+            payload: {
+                setTab: () => {
+                    setStateView(TYPE_VIEW.PAY)
+
+                    state.dispatch({ type: 'indexActive', payload: 0 })
+                }
+            }
+        })
+    }, [])
     return (
         <Container showLogo>
             <View style={styles.container}>

@@ -11,7 +11,7 @@ import { Colors, deleteStorage } from '../../utils/constants.util'
 
 // Import Storege
 import storeRedux from '../../store/index'
-import { DELETESTORAGE } from '../../store/actionTypes'
+import { DELETESTORAGE, SETFUNCTION } from '../../store/actionTypes'
 
 // Import Assets
 import Logo from '../../assets/img/logo.png'
@@ -46,8 +46,18 @@ const NavBar = ({ config = {} }) => {
     }
 
     useEffect(() => {
+        storeRedux.dispatch({
+            type: SETFUNCTION,
+            payload: {
+                reloadView: goToMain,
+                // setTab: () => {
+                //     setStateView(TYPE_VIEW.PAY)
 
-        return () => setShowModal(false)
+                //     state.dispatch({ type: 'indexActive', payload: 0 })
+                // }
+            }
+        })
+        // return () => setShowModal(false)
     }, [])
 
     const styles = StyleSheet.create({
@@ -63,8 +73,8 @@ const NavBar = ({ config = {} }) => {
 
         logo: {
             resizeMode: "contain",
-            height: RFValue(60 * scale),
-            width: RFValue(100 * scale),
+            height: RFValue(80 * scale),
+            width: RFValue(165 * scale),
         },
 
         buttonMore: {
@@ -129,6 +139,7 @@ const NavBar = ({ config = {} }) => {
     })
 
     const logged = (Object.values({ ...global }).length > 0)
+
     return (
         <>
             <View style={styles.container}>
@@ -153,7 +164,6 @@ const NavBar = ({ config = {} }) => {
                         <>
                             <TouchableOpacity onPress={goToMain} style={styles.selectionMenu}>
                                 <Lottie style={styles.imageItem} source={Home} autoPlay loop={false} />
-
                                 <Text style={styles.textSelection}>Ir a Inicio</Text>
                             </TouchableOpacity>
 

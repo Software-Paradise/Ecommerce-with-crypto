@@ -16,6 +16,7 @@ import { RNCamera } from 'react-native-camera'
 import QR from '../../animations/scan-qr.json'
 import profileVerifedAnimation from '../../animations/profile-verifed.json'
 import defaultAvatar from '../../assets/img/profile-default.png'
+import Logo from '../../assets/img/transaction.png'
 
 // Import redux store
 import store from '../../store'
@@ -163,7 +164,7 @@ const sentComponent = () => {
 
         dispatch({ type: 'walletAdress', payload: data })
     }
-    
+
     const toggleScan = () => setShowScanner(!showScanner)
 
 
@@ -247,6 +248,10 @@ const sentComponent = () => {
                     <Text style={GlobalStyles.textButton}>Enviar</Text>
                 </TouchableOpacity>
             }
+
+            <View style={{alignItems: 'center'}}>
+                <Image source={Logo} style={styles.logo}/>
+            </View>
 
 
             <Modal backdropOpacity={0.9} animationIn='fadeIn' onBackButtonPress={toggleScan} onBackdropPress={toggleScan} animationOut='fadeOut' isVisible={showScanner} >
@@ -355,6 +360,11 @@ const styles = StyleSheet.create({
         height: RFValue(32),
         width: RFValue(32),
     },
+    logo: {
+        width: RFValue(345),
+        height: RFValue(240),
+        // marginBottom: RFValue(40),
+    }
 })
 
 export default sentComponent

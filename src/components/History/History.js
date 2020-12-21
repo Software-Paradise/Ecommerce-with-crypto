@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     },
     empty: {
         alignSelf: "center",
-        resizeMode: "contain",
+        // resizeMode: "contain",
         height: RFValue(250),
         width: RFValue(250),
     },

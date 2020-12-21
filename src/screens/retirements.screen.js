@@ -7,8 +7,8 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
-import { GlobalStyles } from '../styles/global.style';
-import { Colors, errorMessage, http } from '../utils/constants.util';
+// import { GlobalStyles } from '../styles/global.style';
+import { Colors, errorMessage, http, GlobalStyles } from '../utils/constants.util';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RFValue } from 'react-native-responsive-fontsize';
@@ -91,6 +91,7 @@ const RetirementsScreen = ({ navigation }) => {
     };
   }, []);
   return (
+
     <SafeAreaView style={GlobalStyles.superContainer}>
       <Modal
         backdropOpacity={0.9}
@@ -149,30 +150,16 @@ const RetirementsScreen = ({ navigation }) => {
           value={amount}
           keyboardType='numeric'
           onChangeText={(value) => setAmount(value)}
-          style={[
-            GlobalStyles.textInput,
-            {
-              paddingVertical: RFValue(4),
-            },
-          ]}
+          style={[GlobalStyles.textInput]}
         />
       </View>
+      
       <View style={{ paddingHorizontal: RFValue(20) }}>
         <Text style={styles.label}>Moneda</Text>
-        <View
-          style={{
-            borderWidth: 1,
-            borderRadius: RFValue(50),
-            backgroundColor: Colors.$colorBlack,
-            borderColor: Colors.$colorYellow,
-          }}>
-          <Picker
-            style={{
-              borderColor: Colors.$colorYellow,
-              color: 'white',
-              height: RFValue(40),
-              fontSize: RFValue(10),
-            }}
+
+        <View style={GlobalStyles.containerPicker}>
+
+          <Picker style={{ borderColor: Colors.$colorYellow, color: 'white', height: RFValue(40), fontSize: RFValue(10), }}
             prompt="Seleccione una moneda"
             mode="dialog"
             selectedValue={coin}
@@ -186,6 +173,7 @@ const RetirementsScreen = ({ navigation }) => {
               />
             ))}
           </Picker>
+
         </View>
       </View>
       <View
@@ -236,7 +224,7 @@ const styles = StyleSheet.create({
   buttonScan: {
     backgroundColor: Colors.$colorYellow,
     borderRadius: RFValue(5),
-    padding: RFValue(5),
+    padding: RFValue(10),
     marginLeft: RFValue(10),
     zIndex: 1000,
   },
@@ -260,7 +248,7 @@ const styles = StyleSheet.create({
     flexDirection: "row"
   },
   lottieQRAnimation: {
-    height: RFValue(35),
+    height: RFValue(40),
     width: RFValue(35),
   },
   constainerQR: {

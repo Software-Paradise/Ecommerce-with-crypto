@@ -510,7 +510,7 @@ const Register = ({ navigation }) => {
                             </TouchableOpacity>
 
 
-                            <TouchableOpacity onPress={onSubmitInformation} disabled={!state.companyName} style={state.companyName ? GlobalStyles.buttonPrimary : GlobalStyles.button}>
+                            <TouchableOpacity onPress={_ => setModalSuccess(true)} disabled={!state.companyName} style={state.companyName ? GlobalStyles.buttonPrimary : GlobalStyles.button}>
                                 <Text style={[GlobalStyles.textButton, { opacity: state.companyName ? 1 : 0.5 }]}>Guardar</Text>
                             </TouchableOpacity>
                         </View>

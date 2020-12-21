@@ -17,7 +17,7 @@ import reduxStore from './src/store/index';
 import { SETSTORAGE, DELETESTORAGE } from './src/store/actionTypes';
 import FlashMessage from 'react-native-flash-message';
 import TransactionScreen from './src/screens/transaction.screen';
-import RetirementsScreen from './src/screens/retirements.screen';
+import RetirementsScreen from './src/screens/Retirement/Retirement';
 import RechargeScreen from './src/screens/recharge.screen';
 import HistoryScreen from './src/components/History/History'
 
