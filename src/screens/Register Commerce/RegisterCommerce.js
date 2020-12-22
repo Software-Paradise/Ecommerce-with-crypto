@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from 'react'
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, FlatList } from 'react-native'
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, FlatList, Platform } from 'react-native'
 
 // Import Component
 import Container from '../../components/Container/Container'
@@ -12,6 +12,8 @@ import Geolocation from '@react-native-community/geolocation'
 import validator from 'validator'
 import { Picker } from '@react-native-community/picker'
 import Modal from 'react-native-modal'
+import UploadImage from '../../components/UploadImage/UploadImage'
+import ImagePicker from 'react-native-image-picker'
 
 // Import Assets
 import Logo from '../../assets/img/logo.png'
@@ -26,6 +28,8 @@ const initialState = {
     physicalAddress: '',
     latitude: null,
     longitude: null,
+    profilePicture: null,
+    backgroundPicture: null,
 
     filter: '',
     country: countries[0]
@@ -37,6 +41,10 @@ const reducer = (state, action) => {
         [action.type]: action.payload
     }
 }
+const options = {
+    noData: true,
+    title: 'Seleccione una Imagen a adjuntar'
+}
 
 const RegisterCommerce = ({ route, navigation }) => {
     const [state, dispatch] = useReducer(reducer, initialState)
@@ -44,7 +52,7 @@ const RegisterCommerce = ({ route, navigation }) => {
     const [confirmPassword, setConfirmPassword] = useState('')
 
     const companyId = route.params?.companyId
-    console.log(companyId)
+
     // Estado que visualiza el mapa en un modal
     const [showModal, setShowModal] = useState(false)
 
@@ -75,6 +83,38 @@ const RegisterCommerce = ({ route, navigation }) => {
                 </TouchableOpacity>
             )
         }
+    }
+
+    const uploadImage = (imageDestination) => {
+        ImagePicker.showImagePicker(options, (response) => {
+            dispatch({ type: imageDestination, payload: response })
+        })
+    }
+
+    const createForData = (body) => {
+        const data = new FormData()
+
+        data.append('profilePicture', {
+            name: state.profilePicture.fileName,
+            type: state.profilePicture.type,
+            uri: Platform.OS === 'android'
+                ? state.profilePicture.uri
+                : state.profilePicture.uri.replace('file://', '')
+        })
+
+        data.append('backgroundPicture', {
+            name: state.backgroundPicture.fileName,
+            type: state.backgroundPicture.type,
+            uri: Platform.OS === 'android'
+                ? state.backgroundPicture.uri
+                : state.backgroundPicture.uri.replace('file://', '')
+        })
+
+        Object.keys(body).forEach((key) => {
+            data.append(key, body[key]);
+        });
+
+        return data;
     }
 
     // Hacemos la peticion al server
@@ -114,10 +154,13 @@ const RegisterCommerce = ({ route, navigation }) => {
                 latitude: state.latitude,
                 longitude: state.longitude
             }
+            console.log('DataSent', dataSent)
 
-            console.log("DataSent", dataSent);
-
-            const { data } = await http.post('/ecommerce/company/commerce', dataSent)
+            const { data } = await http.post('/ecommerce/company/commerce', createForData(
+                state.profilePicture,
+                state.backgroundPicture,
+                dataSent
+            ))
 
             if (data.error) {
                 throw String(data.message)
@@ -319,7 +362,7 @@ const RegisterCommerce = ({ route, navigation }) => {
                                 <Text style={styles.legendRow}>Dirección Física</Text>
                             </View>
 
-                            <View style={[showModal ? styles.mapFullScreen : styles.mapContainer]}>
+                            <View style={showModal ? styles.mapFullScreen : styles.mapContainer}>
 
                                 {
                                     (state.latitude !== null && state.longitude !== null) &&
@@ -350,6 +393,22 @@ const RegisterCommerce = ({ route, navigation }) => {
                                     <Icon name={showModal ? 'fullscreen-exit' : 'fullscreen'} size={40} color={Colors.$colorYellow} />
                                 </TouchableOpacity>
                             </View>
+                        </View>
+
+                        <View style={styles.position}>
+                            <View style={styles.labelsRow}>
+                                <Text style={styles.legendRow}>Sube el logo del negocio</Text>
+                            </View>
+
+                            <UploadImage value={state.profilePicture} onChange={_ => uploadImage('profilePicture')} />
+                        </View>
+
+                        <View style={styles.position}>
+                            <View style={styles.labelsRow}>
+                                <Text style={styles.legendRow}>Sube la imagen del negocio</Text>
+                            </View>
+
+                            <UploadImage value={state.backgroundPicture} onChange={_ => uploadImage('backgroundPicture')} />
                         </View>
 
                         <View style={styles.row}>
@@ -498,6 +557,15 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'flex-end',
         justifyContent: 'flex-end',
+    },
+    position: {
+        padding: 10
+    },
+    labelsRow: {
+        alignItems: "center",
+        position: "relative",
+        marginBottom: 5,
+        flexDirection: "row",
     },
 })
 

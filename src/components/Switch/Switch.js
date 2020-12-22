@@ -4,10 +4,6 @@ import { StyleSheet, TouchableOpacity, Text, View } from 'react-native'
 // Import Constants
 import { Colors, RFValue } from '../../utils/constants.util'
 
-// Import redux store
-import store from '../../store/index'
-import { SETFUNCTION } from '../../store/actionTypes'
-
 
 const Switch = ({ onSwitch = () => { }, items = [] }) => {
     const [state, setState] = useState(items[0].state)
@@ -20,15 +16,6 @@ const Switch = ({ onSwitch = () => { }, items = [] }) => {
 
     useEffect(() => {
         changeState()
-        const { functions } = store.getState()
-
-        store.dispatch({
-            type: SETFUNCTION,
-            payload: {
-                ...functions,
-                resetTab: () => setState(item[0].state)
-            }
-        })
     }, [state])
 
     const styles = StyleSheet.create({

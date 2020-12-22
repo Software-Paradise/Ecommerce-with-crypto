@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from 'react'
+import React, { useState, useReducer } from 'react'
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, FlatList, Alert } from 'react-native'
 
 // Import Component
@@ -10,9 +10,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import Modal from 'react-native-modal'
 import UploadImage from '../../components/UploadImage/UploadImage'
 import ImagePicker from 'react-native-image-picker'
-import { Colors, showNotification, http, serverAddress, getHeaders, RFValue, GlobalStyles } from '../../utils/constants.util'
-// import { GlobalStyles } from '../../styles/global.style'
-// import { RFValue } from 'react-native-responsive-fontsize';
+import { Colors, showNotification, http, getHeaders, RFValue, GlobalStyles } from '../../utils/constants.util'
 import { Image, View as ViewAnimation } from 'react-native-animatable'
 import { Picker } from '@react-native-community/picker'
 
@@ -244,7 +242,6 @@ const Register = ({ navigation }) => {
                 username: state.username,
                 password: state.password
             }
-            console.log("dataSent", dataSent)
 
             const { data } = await http.post('/ecommerce/company/register', createFormData(
                 operationPermission,

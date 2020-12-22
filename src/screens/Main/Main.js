@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useReducer } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView } from 'react-native'
+import React, { useState, useReducer } from 'react'
+import { View, StyleSheet, KeyboardAvoidingView } from 'react-native'
 
 // Import Component
 import Container from '../../components/Container/Container'
@@ -11,11 +11,6 @@ import Card from '../../components/CardProfile/CardProfile'
 
 // Import constants
 import { Colors, reducer } from '../../utils/constants.util'
-
-// import redux
-import store from '../../store/index'
-import { SETFUNCTION } from '../../store/actionTypes'
-
 
 const TYPE_VIEW = {
     PAY: 'pay',
@@ -46,18 +41,6 @@ const Main = () => {
     const [stateView, setStateView] = useState(TYPE_VIEW.PAY)
     const [state, dispatch] = useReducer(reducer, initialState)
 
-    useEffect(() => {
-        store.dispatch({
-            type: SETFUNCTION,
-            payload: {
-                setTab: () => {
-                    setStateView(TYPE_VIEW.PAY)
-
-                    state.dispatch({ type: 'indexActive', payload: 0 })
-                }
-            }
-        })
-    }, [])
     return (
         <Container showLogo>
             <View style={styles.container}>
