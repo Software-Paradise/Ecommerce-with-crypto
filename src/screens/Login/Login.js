@@ -93,7 +93,6 @@ const Login = ({ navigation }) => {
 
   const getDeviceInfo = async () => {
     try {
-      // getIP().then((payload) => dispatch({type: 'ipAddress', payload}));
 
       const device = await getBrand();
       const deviceId = await getDeviceId();

@@ -156,14 +156,11 @@ const RegisterCommerce = ({ route, navigation }) => {
             }
             console.log('DataSent', dataSent)
 
-            const { data } = await http.post('/ecommerce/company/commerce', createForData(
-                state.profilePicture,
-                state.backgroundPicture,
-                dataSent
-            ))
+            const { data } = await http.post('/ecommerce/company/commerce', createForData(dataSent))
 
             if (data.error) {
                 throw String(data.message)
+
             } else {
                 navigation.navigate('Login')
             }

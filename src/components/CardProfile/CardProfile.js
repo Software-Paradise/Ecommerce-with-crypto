@@ -1,30 +1,42 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
 
 // Import constants
-import { RFValue, Colors } from '../../utils/constants.util'
+import { RFValue, Colors, http, getHeaders, showNotification, readFile } from '../../utils/constants.util'
 
-// Import Assets
-import Logo from '../../assets/img/logo.png'
+// Import redux store
+import store from '../../store'
+
 
 const CadProfile = () => {
+    const { global } = store.getState()
+    console.log('DatosGlobale', global)
+
+    const read = async () => {
+        console.log("Imagen", await readFile(global.profile_picture_commerce))
+    }
+
+    useEffect(() => {
+        read()
+    })
+
     return (
         <View style={styles.card}>
             <View style={styles.containerBackground}>
+                <Image style={styles.logo} />
             </View>
             <View style={styles.headerTableTitle}>
-                <Text style={styles.textHeaderTable}>Comercio 1</Text>
+                <Text style={styles.textHeaderTable}>{global.name_commerce}</Text>
             </View>
 
             <View style={styles.headerTable}>
                 <Text style={styles.textHeaderTable}>Punto de Referencia</Text>
                 <Text style={styles.textHeaderTable}>Monto</Text>
-
             </View>
 
             <View style={styles.bodyRowTable}>
-                <Text style={styles.textRowTable}>Punto de Referencia</Text>
-                <Text style={styles.textRowTable}>Monto</Text>
+                <Text style={styles.textRowTable}>{global.physical_address}</Text>
+                <Text style={styles.textRowTable}>{global.amount_wallet_commerce} {global.name_coin}</Text>
             </View>
         </View>
     )

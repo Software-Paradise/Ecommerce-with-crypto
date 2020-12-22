@@ -64,6 +64,7 @@ const Register = ({ navigation }) => {
 
     // Estados que almacenan la informacion de las imagenes
     const [operationPermission, setOperationPermission] = useState('');
+
     const [RUCImage, setRUCImage] = useState('');
     const [legalPower, setLegalPower] = useState('');
     const [repID, setRepID] = useState('')
@@ -141,6 +142,8 @@ const Register = ({ navigation }) => {
         Object.keys(body).forEach((key) => {
             data.append(key, body[key]);
         });
+
+        console.log('formdata', data)
 
         return data;
     };
@@ -242,6 +245,8 @@ const Register = ({ navigation }) => {
                 username: state.username,
                 password: state.password
             }
+
+            console.log("Data",dataSent)
 
             const { data } = await http.post('/ecommerce/company/register', createFormData(
                 operationPermission,
