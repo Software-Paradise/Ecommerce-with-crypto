@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView } from 'react-native'
 
 // Import Constants
 import { Colors, RFValue, GlobalStyles, showNotification } from '../../utils/constants.util'
@@ -40,14 +40,16 @@ const Payment = () => {
 
     return (
         <View style={styles.container}>
-            <View style={styles.row}>
-                <View style={styles.labelsRow}>
-                    <Text style={styles.textTitle}>Ingrese el monto (USD)</Text>
-                </View>
+            <View style={styles.containerTitle}>
+                <Text style={styles.legendTitle}>Facturar transaccion</Text>
+            </View>
 
-                <View style={{ width: "90%", height: 55 }}>
+            <View style={styles.row}>
+                <View style={styles.col}>
+                    <Text style={styles.legend}>Ingrese el monto (USD)</Text>
+
                     <TextInput
-                        style={GlobalStyles.textInput}
+                        style={[GlobalStyles.textInput]}
                         placeholder="0.00"
                         placeholderTextColor={Colors.$colorGray}
                         value={amount}
@@ -58,17 +60,11 @@ const Payment = () => {
                 </View>
             </View>
 
-            <View style={[styles.buttonPosition,{height:100, paddingTop:20}]}>
+            <View style={[styles.buttonPosition]}>
                 <TouchableOpacity onPress={handleSubmit} style={[GlobalStyles.buttonPrimary,]}>
                     <Text style={GlobalStyles.textButton}>Procesar transaccion</Text>
                 </TouchableOpacity>
             </View>
-
-
-            <View style={[styles.row, { padding: RFValue(150) }]}>
-                <Image source={Logo} style={styles.logo} />
-            </View>
-
             <Loader isVisible={loader} />
         </View>
     )
@@ -76,44 +72,37 @@ const Payment = () => {
 
 const styles = StyleSheet.create({
     container: {
+        width: "100%",
+        paddingHorizontal: RFValue(10),
+    },
+    containerTitle: {
+        flexDirection: "row",
+        justifyContent: "center"
+    },
+    col: {
         flex: 1,
-        marginVertical: RFValue(60),
+        marginHorizontal: RFValue(10),
     },
     row: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: "column",
-        width: "100%",
-        paddingBottom: 20
-    },
-    textTitle: {
-        color: Colors.$colorYellow,
-        fontSize: RFValue(18)
-    },
-    labelsRow: {
-        alignItems: "center",
-        position: "relative",
-        marginBottom: 20,
         flexDirection: "row",
+        justifyContent: "space-between",
+        marginVertical: RFValue(10)
     },
-    button: {
-        height: 50,
-        margin: 30
+    legendTitle: {
+        color: Colors.$colorYellow,
+        fontSize: RFValue(24),
+        textTransform: 'uppercase',
+        marginBottom:10
+    },
+    legend: {
+        color: Colors.$colorYellow,
+        marginBottom: 10
     },
     buttonPosition: {
-        padding:20,
-        // marginVertical: 10,
-        width:'100%'
+        marginVertical: 16,
+        paddingHorizontal: 10,
+        width: '100%'
     },
-    titleButton: {
-        color: Colors.$colorBlack,
-        fontSize: RFValue(20)
-    },
-    logo: {
-        width: RFValue(345),
-        height: RFValue(240),
-        // marginBottom: RFValue(40),
-    }
 
 })
 

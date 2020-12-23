@@ -73,8 +73,8 @@ const NavBar = ({ config = {} }) => {
 
         logo: {
             resizeMode: "contain",
-            height: RFValue(80 * scale),
-            width: RFValue(165 * scale),
+            height: RFValue(60 * scale),
+            width: RFValue(120 * scale),
         },
 
         buttonMore: {

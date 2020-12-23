@@ -8,9 +8,10 @@ import PayComponent from '../../components/Payment/Payment'
 import SendComponent from '../../components/Send/Send'
 import History from '../../components/History/History'
 import Card from '../../components/CardProfile/CardProfile'
+import Loader from '../../components/Loader/Loader'
 
 // Import constants
-import { Colors, reducer } from '../../utils/constants.util'
+import { Colors, reducer, RFValue } from '../../utils/constants.util'
 
 const TYPE_VIEW = {
     PAY: 'pay',
@@ -43,26 +44,25 @@ const Main = () => {
 
     return (
         <Container showLogo>
-            <View style={styles.container}>
+            {/* <Loader isVisible={true} /> */}
+            <KeyboardAvoidingView enabled behavior="padding" style={styles.containerSelection}>
                 <Card />
                 <Switch onSwitch={setStateView} items={switchItems} indexActive={state.idexTabActive} />
-                <KeyboardAvoidingView enabled >
-                    {
-                        stateView === TYPE_VIEW.PAY &&
-                        <PayComponent />
-                    }
+                {
+                    stateView === TYPE_VIEW.PAY &&
+                    <PayComponent />
+                }
 
-                    {
-                        stateView === TYPE_VIEW.SEND &&
-                        <SendComponent />
-                    }
+                {
+                    stateView === TYPE_VIEW.SEND &&
+                    <SendComponent />
+                }
 
-                    {
-                        stateView === TYPE_VIEW.HISTORY &&
-                        <History />
-                    }
-                </KeyboardAvoidingView>
-            </View>
+                {
+                    stateView === TYPE_VIEW.HISTORY &&
+                    <History />
+                }
+            </KeyboardAvoidingView>
         </Container>
     )
 }
@@ -71,6 +71,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.$colorMain
+    },
+    containerSelection: {
+        marginVertical: RFValue(10)
     }
 })
 

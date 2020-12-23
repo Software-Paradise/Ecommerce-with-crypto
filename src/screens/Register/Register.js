@@ -10,7 +10,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import Modal from 'react-native-modal'
 import UploadImage from '../../components/UploadImage/UploadImage'
 import ImagePicker from 'react-native-image-picker'
-import { Colors, showNotification, http, getHeaders, RFValue, GlobalStyles } from '../../utils/constants.util'
+import { Colors, showNotification, http, getHeaders, RFValue, GlobalStyles, compressImage } from '../../utils/constants.util'
 import { Image, View as ViewAnimation } from 'react-native-animatable'
 import { Picker } from '@react-native-community/picker'
 
@@ -45,7 +45,10 @@ const reducer = (state, action) => {
 
 const options = {
     noData: true,
-    title: 'Seleccione una Imagen a adjuntar'
+    title: 'Seleccione una Imagen a adjuntar',
+    maxWidth: 1080,
+    maxHeight: 1080,
+    quality: 0.75
 }
 
 const Register = ({ navigation }) => {
@@ -94,13 +97,7 @@ const Register = ({ navigation }) => {
     }
 
     // Funcion que hace la peticion para guardar las imagenes en la nube
-    const createFormData = (
-        operationPermission,
-        rucImage,
-        legalPower,
-        repID,
-        body,
-    ) => {
+    const createFormData = (operationPermission, rucImage, legalPower, repID, body) => {
         const data = new FormData();
 
         data.append('operationPermission', {
@@ -143,10 +140,9 @@ const Register = ({ navigation }) => {
             data.append(key, body[key]);
         });
 
-        console.log('formdata', data)
-
         return data;
-    };
+
+    }
 
     // Funcion que pertime almacenar las imagenes
     const uploadImage = (imageDestination) => {
@@ -231,6 +227,23 @@ const Register = ({ navigation }) => {
             if (state.repIdNumber.trim().length === 0) {
                 throw String("Ingrese su numero de identificacion")
             }
+
+            if (operationPermission === null) {
+                throw String("Imagen de operacion de permiso es requerida")
+            }
+
+            if (RUCImage === null) {
+                throw String("Imagen de identificacion de la empresa es requerida")
+            }
+
+            if (legalPower === null) {
+                throw String("Imagen de poder administrativo es requerida")
+            }
+
+            if (repID === null) {
+                throw String("Imagen de perfil es requerida")
+            }
+
             const dataSent = {
                 companyName: state.companyName,
                 companyRUC: state.companyRuc,
@@ -246,7 +259,6 @@ const Register = ({ navigation }) => {
                 password: state.password
             }
 
-            console.log("Data",dataSent)
 
             const { data } = await http.post('/ecommerce/company/register', createFormData(
                 operationPermission,
@@ -256,9 +268,9 @@ const Register = ({ navigation }) => {
                 dataSent,
             ), getHeaders())
 
+            console.log("data", data)
             setDataRegister(data)
 
-            console.log("dataSent", data)
 
             if (data.error) {
                 throw String(data.message)
@@ -475,7 +487,7 @@ const Register = ({ navigation }) => {
 
                         <View style={styles.position}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Foto de Perfil (Opcional)</Text>
+                                <Text style={styles.legendRow}>Foto de Perfil</Text>
                             </View>
 
                             <UploadImage value={repID} onChange={_ => uploadImage('repID')} />

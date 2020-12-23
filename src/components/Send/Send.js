@@ -98,6 +98,7 @@ const sentComponent = () => {
             const { data } = await http.get(`/api/ecommerce/wallet/details/${global.wallet_commerce}`, getHeaders())
 
             setDetails(data.information)
+            
         } catch (error) {
             showNotification(error.toString())
         }
@@ -170,10 +171,14 @@ const sentComponent = () => {
 
     useEffect(() => {
         configureComponent()
-    }, [global])
+    }, [])
 
     return (
         <ViewAnimation style={styles.container} animation='fadeIn'>
+            <View style={styles.containerTitle}>
+                <Text style={styles.legendTitle}>Enviar fondos</Text>
+            </View>
+
             <View style={styles.row}>
                 <View style={styles.col}>
                     <Text style={styles.legend}>Dirección de billetera</Text>
@@ -249,11 +254,6 @@ const sentComponent = () => {
                 </TouchableOpacity>
             }
 
-            <View style={{alignItems: 'center'}}>
-                <Image source={Logo} style={styles.logo}/>
-            </View>
-
-
             <Modal backdropOpacity={0.9} animationIn='fadeIn' onBackButtonPress={toggleScan} onBackdropPress={toggleScan} animationOut='fadeOut' isVisible={showScanner} >
                 <View style={styles.constainerQR}>
                     <QRCodeScanner
@@ -271,7 +271,16 @@ const styles = StyleSheet.create({
         width: "100%",
         paddingHorizontal: RFValue(10),
     },
-
+    containerTitle: {
+        flexDirection: "row",
+        justifyContent: "center"
+    },
+    legendTitle: {
+        color: Colors.$colorYellow,
+        fontSize: RFValue(24),
+        textTransform: 'uppercase',
+        marginBottom: 10
+    },
     col: {
         flex: 1,
         marginHorizontal: RFValue(10),

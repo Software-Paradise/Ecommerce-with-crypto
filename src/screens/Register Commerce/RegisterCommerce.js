@@ -5,7 +5,7 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, FlatLi
 import Container from '../../components/Container/Container'
 import { Image, View as ViewAnimation } from 'react-native-animatable'
 import Loader from '../../components/Loader/Loader'
-import { Colors, RFValue, showNotification, http, serverAddress, getHeaders, GlobalStyles } from '../../utils/constants.util'
+import { Colors, RFValue, showNotification, http, GlobalStyles, compressImage } from '../../utils/constants.util'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import MapView, { Marker } from 'react-native-maps'
 import Geolocation from '@react-native-community/geolocation'
@@ -29,7 +29,6 @@ const initialState = {
     latitude: null,
     longitude: null,
     profilePicture: null,
-    backgroundPicture: null,
 
     filter: '',
     country: countries[0]
@@ -43,7 +42,10 @@ const reducer = (state, action) => {
 }
 const options = {
     noData: true,
-    title: 'Seleccione una Imagen a adjuntar'
+    title: 'Seleccione una Imagen a adjuntar',
+    maxWidth: 1080,
+    maxHeight: 1080,
+    quality: 0.75
 }
 
 const RegisterCommerce = ({ route, navigation }) => {
@@ -100,14 +102,6 @@ const RegisterCommerce = ({ route, navigation }) => {
             uri: Platform.OS === 'android'
                 ? state.profilePicture.uri
                 : state.profilePicture.uri.replace('file://', '')
-        })
-
-        data.append('backgroundPicture', {
-            name: state.backgroundPicture.fileName,
-            type: state.backgroundPicture.type,
-            uri: Platform.OS === 'android'
-                ? state.backgroundPicture.uri
-                : state.backgroundPicture.uri.replace('file://', '')
         })
 
         Object.keys(body).forEach((key) => {
@@ -241,6 +235,7 @@ const RegisterCommerce = ({ route, navigation }) => {
                                 placeholder="Ingrese correo aqui"
                                 placeholderTextColor={Colors.$colorGray}
                                 value={state.email}
+                                keyboardType='email-address'
                                 onChangeText={str => dispatch({ type: 'email', payload: str })}
                             />
                         </View>
@@ -398,14 +393,6 @@ const RegisterCommerce = ({ route, navigation }) => {
                             </View>
 
                             <UploadImage value={state.profilePicture} onChange={_ => uploadImage('profilePicture')} />
-                        </View>
-
-                        <View style={styles.position}>
-                            <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Sube la imagen del negocio</Text>
-                            </View>
-
-                            <UploadImage value={state.backgroundPicture} onChange={_ => uploadImage('backgroundPicture')} />
                         </View>
 
                         <View style={styles.row}>

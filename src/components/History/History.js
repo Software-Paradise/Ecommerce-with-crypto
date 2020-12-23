@@ -47,6 +47,9 @@ const History = () => {
         <>
             <ViewAnimation style={styles.container}>
                 <Loader isVisible={loader} />
+                <View style={styles.containerTitle}>
+                    <Text style={styles.legendTitle}>Historial de transacciones</Text>
+                </View>
                 <Search />
                 {
                     (transaction.length > 0)
@@ -72,6 +75,16 @@ const styles = StyleSheet.create({
         width: "100%",
         paddingHorizontal: RFValue(10),
         padding: RFValue(10)
+    },
+    containerTitle: {
+        flexDirection: "row",
+        justifyContent: "center"
+    },
+    legendTitle: {
+        color: Colors.$colorYellow,
+        fontSize: RFValue(20),
+        textTransform: 'uppercase',
+        marginBottom: 10
     },
     row: {
         flexDirection: "row",

@@ -10,7 +10,30 @@ import { SETPERMISSIONS, DELETESTORAGE, SETLOADER } from '../store/actionTypes';
 import { showMessage } from 'react-native-flash-message';
 import Toast from 'react-native-simple-toast';
 import { isIphoneX } from 'react-native-iphone-x-helper'
+import RNFetchBlob from 'rn-fetch-blob'
+import Compress from 'compress.js'
+import { decode as atob, encode as btoa } from 'base-64'
 
+
+// window.atob = atob
+// window.btoa =  btoa
+
+// FileReader.prototype.readAsArrayBuffer = function (blob) {
+// 	if (this.readyState === this.LOADING) throw new Error("InvalidStateError");
+// 	this._setReadyState(this.LOADING);
+// 	this._result = null;
+// 	this._error = null;
+// 	const fr = new FileReader();
+// 	fr.onloadend = () => {
+// 		const content = window.atob(fr.result.substr("data:application/octet-stream;base64,".length));
+// 		const buffer = new ArrayBuffer(content.length);
+// 		const view = new Uint8Array(buffer);
+// 		view.set(Array.from(content).map(c => c.charCodeAt(0)));
+// 		this._result = buffer;
+// 		this._setReadyState(this.DONE);
+// 	};
+// 	fr.readAsDataURL(blob);
+// }
 
 const keyStorage = '@storage';
 
@@ -314,18 +337,21 @@ export const CopyClipboard = async (text = '') => {
 };
 
 export const readFile = (fileId) => new Promise(async (resolve, _) => {
-  http.get(`/ecommerce/file/${239}`, {
-    responseType: 'arraybuffer',
-    ...getHeaders()
+  const { headers } = getHeaders()
+
+  const response = await RNFetchBlob.config({
+    fileCache: true,
+    appendExt: 'jpg'
+  }).fetch('GET', `${serverAddress}/ecommerce/file/${fileId}`, {
+    ...headers
   })
-    .then(({ data, headers }) => {
-      const blob = new Blob([data], { type: headers['content-type'] })
-      resolve(blob)
-    }).catch(error => resolve({ error: true, message: error }))
+
+  const base64 = await response.base64()
+  resolve(`data:image/jpeg;base64,${base64}`)
 })
 
 
-export const http = axios.create({
+const http = axios.create({
   baseURL: serverAddress,
   timeout: 10 * 60 * 60,
   validateStatus: (status) => {
@@ -341,6 +367,14 @@ export const http = axios.create({
     }
   },
 });
+
+http.interceptors.request.use(config => {
+  console.log('interceptor', config);return config;
+})
+
+export {
+  http
+}
 
 export const getHeaders = () => {
   const { token } = store.getState().global;
