@@ -10,7 +10,7 @@ import store from '../../store'
 
 const CadProfile = () => {
     const { global } = store.getState()
-    const [source, setSource] =  useState('')
+    const [source, setSource] = useState('')
     console.log('DatosGlobale', global)
 
     const read = async () => {
@@ -30,18 +30,18 @@ const CadProfile = () => {
                 <View style={styles.containerBackground}>
                     {
                         source.length > 0 &&
-                        <Image source={{ uri: source }}   style={styles.logo}/>
+                        <Image source={{ uri: source }} style={styles.logo} />
                     }
                 </View>
 
-                <View style={{ flexDirection: 'column', width: '70%', paddingLeft: 10 }}>
+                <View style={{ flexDirection: 'column', width: '70%', paddingLeft: 5 }}>
                     <View style={styles.headerTableTitle}>
-                        <Text style={styles.textHeaderTable}>{global.name_commerce}</Text>
+                        <Text style={styles.textHeaderTableTitle}>{global.name_commerce}</Text>
                     </View>
 
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingLeft: 5, paddingRight: 5 }}>
                         <View style={styles.headerTable}>
-                            <Text style={styles.textHeaderTable}>Punto de Referencia</Text>
+                            <Text style={[styles.textHeaderTable]}>Punto de Referencia</Text>
                             <Text style={styles.textRowTable}>{global.physical_address}</Text>
                         </View>
 
@@ -74,11 +74,9 @@ const styles = StyleSheet.create({
         height: RFValue(90)
     },
     containerBackground: {
-        borderRadius: 3,
-        borderWidth: 0.5,
-        borderColor: "#FFF",
         height: '100%',
         width: '30%',
+        overflow: 'hidden',
         // padding: 10,
     },
     logo: {
@@ -94,20 +92,27 @@ const styles = StyleSheet.create({
     },
     headerTable: {
         flexDirection: 'column',
+        justifyContent: 'flex-start'
+    },
+    textHeaderTableTitle: {
+        fontSize: RFValue(16),
+        color: Colors.$colorYellow
+
     },
     textHeaderTable: {
-        textAlign: 'center',
-        fontSize: RFValue(16),
+        textAlign: 'right',
+        fontSize: RFValue(14),
         color: Colors.$colorYellow
     },
     bodyRowTable: {
         flexDirection: "column",
+        justifyContent: 'flex-end',
     },
     textRowTable: {
-        textAlign: 'center',
+        // textAlign: 'center',
         color: "#FFF",
-        fontSize: RFValue(14),
-        justifyContent: "center"
+        fontSize: RFValue(16),
+        // justifyContent: "center"
     },
 
 })

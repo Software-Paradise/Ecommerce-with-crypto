@@ -30,10 +30,10 @@ const NavBar = ({ config = {} }) => {
 
     const [showModal, setShowModal] = useState(false)
 
-    const goToMain = () => {
-        navigation.navigate("Main")
-        setShowModal(false)
-    }
+    // const goToMain = () => {
+    //     navigation.navigate("Main")
+    //     setShowModal(false)
+    // }
 
     const logOut = async () => {
         await deleteStorage()
@@ -44,21 +44,6 @@ const NavBar = ({ config = {} }) => {
 
         navigation.popToTop()
     }
-
-    useEffect(() => {
-        storeRedux.dispatch({
-            type: SETFUNCTION,
-            payload: {
-                reloadView: goToMain,
-                // setTab: () => {
-                //     setStateView(TYPE_VIEW.PAY)
-
-                //     state.dispatch({ type: 'indexActive', payload: 0 })
-                // }
-            }
-        })
-        // return () => setShowModal(false)
-    }, [])
 
     const styles = StyleSheet.create({
         container: {
@@ -162,10 +147,10 @@ const NavBar = ({ config = {} }) => {
                     {
                         logged &&
                         <>
-                            <TouchableOpacity onPress={goToMain} style={styles.selectionMenu}>
+                            {/* <TouchableOpacity onPress={goToMain} style={styles.selectionMenu}>
                                 <Lottie style={styles.imageItem} source={Home} autoPlay loop={false} />
                                 <Text style={styles.textSelection}>Ir a Inicio</Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
 
                             <TouchableOpacity onPress={logOut} style={styles.selectionMenu}>
                                 <Lottie style={styles.imageItem} source={LogOut} autoPlay loop={false} />

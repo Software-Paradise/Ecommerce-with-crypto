@@ -45,7 +45,7 @@ const History = () => {
 
     return (
         <>
-            <ViewAnimation style={styles.container}>
+            <View style={styles.container}>
                 <Loader isVisible={loader} />
                 <View style={styles.containerTitle}>
                     <Text style={styles.legendTitle}>Historial de transacciones</Text>
@@ -65,7 +65,7 @@ const History = () => {
                             <Text style={styles.titleText}>No hay transacciones realizadas</Text>
                         </View>
                 }
-            </ViewAnimation>
+            </View>
         </>
     )
 }
@@ -74,7 +74,6 @@ const styles = StyleSheet.create({
     container: {
         width: "100%",
         paddingHorizontal: RFValue(10),
-        padding: RFValue(10)
     },
     containerTitle: {
         flexDirection: "row",

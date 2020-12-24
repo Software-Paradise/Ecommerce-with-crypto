@@ -33,7 +33,7 @@ const Search = () => {
 
                     <View style={styles.rowInput}>
                         <TextInput
-                            style={[styles.textInput, { flex: 1 }]}
+                            style={[GlobalStyles.textInput, { flex: 1 }]}
                             value={searchText}
                             onChangeText={setSearchText}
                             placeholder="Buscar detalle de transaccion"
@@ -41,7 +41,7 @@ const Search = () => {
                         />
 
                         <TouchableOpacity onPress={goToSearch} style={styles.buttonSearch}>
-                            <Icon name='search' size={30} />
+                            <Icon name='search' size={40}  />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -82,8 +82,8 @@ const styles = StyleSheet.create({
         borderRadius: RFValue(5),
         padding: RFValue(5),
         marginLeft: RFValue(10),
-        height: RFValue(50),
-        width: RFValue(50),
+        height: RFValue(45),
+        width: RFValue(45),
     },
     lottieQRAnimation: {
         height: RFValue(40),

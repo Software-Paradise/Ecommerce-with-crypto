@@ -1,5 +1,5 @@
 import React, { useState, useReducer } from 'react'
-import { View, StyleSheet, KeyboardAvoidingView } from 'react-native'
+import { View, StyleSheet, KeyboardAvoidingView, ScrollView } from 'react-native'
 
 // Import Component
 import Container from '../../components/Container/Container'
@@ -45,23 +45,25 @@ const Main = () => {
     return (
         <Container showLogo>
             {/* <Loader isVisible={true} /> */}
-            <KeyboardAvoidingView enabled behavior="padding" style={styles.containerSelection}>
-                <Card />
-                <Switch onSwitch={setStateView} items={switchItems} indexActive={state.idexTabActive} />
-                {
-                    stateView === TYPE_VIEW.PAY &&
-                    <PayComponent />
-                }
+            <KeyboardAvoidingView enabled  >
+                <ScrollView>
+                    <Card />
+                    <Switch onSwitch={setStateView} items={switchItems} indexActive={state.idexTabActive} />
+                    {
+                        stateView === TYPE_VIEW.PAY &&
+                        <PayComponent />
+                    }
 
-                {
-                    stateView === TYPE_VIEW.SEND &&
-                    <SendComponent />
-                }
+                    {
+                        stateView === TYPE_VIEW.SEND &&
+                        <SendComponent />
+                    }
 
-                {
-                    stateView === TYPE_VIEW.HISTORY &&
-                    <History />
-                }
+                    {
+                        stateView === TYPE_VIEW.HISTORY &&
+                        <History />
+                    }
+                </ScrollView>
             </KeyboardAvoidingView>
         </Container>
     )
@@ -72,9 +74,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Colors.$colorMain
     },
-    containerSelection: {
-        marginVertical: RFValue(10)
-    }
 })
 
 export default Main

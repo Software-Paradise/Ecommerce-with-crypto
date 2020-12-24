@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useReducer } from 'react'
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native'
 import { useNavigation } from "@react-navigation/native"
 
 // Import components
@@ -55,29 +55,32 @@ const sentComponent = () => {
     const submit = async () => {
         try {
 
-            if (state.amountUSD.trim().length === 0) {
+            if (state.amountFraction.trim().length === 0) {
                 throw String("Ingrese un monto")
             }
 
             setLoader(true)
 
             const dataSent = {
-                amount: state.amountFraction,
+                amount: parseFloat(state.amountFraction),
                 wallet: state.walletAdress,
                 id_wallet: global.wallet_commerce,
             }
+            console.log("dataSent", dataSent)
 
-            const { data } = await http.post('/api/ecommerce/wallet/transaction', dataSent, getHeaders())
+            const { data } = await http.post('ecommerce/transaction', dataSent, getHeaders())
 
+            console.log("DataSent", data)
             if (data.error) {
                 errorMessage(data.message)
             }
 
-            if (data === 'success') {
+            if (data.response === 'success') {
                 successMessage("Tu transaccion se ha completado")
 
                 // Limpiamos el usuario remitente
                 dispatch({ type: "dataWallet", payload: "" })
+                dispatch({ type: "amountFraction", payload: "" })
 
                 // limpiamos la direccion de wallet
                 dispatch({ type: "walletAdress", payload: "" })
@@ -98,7 +101,7 @@ const sentComponent = () => {
             const { data } = await http.get(`/api/ecommerce/wallet/details/${global.wallet_commerce}`, getHeaders())
 
             setDetails(data.information)
-            
+
         } catch (error) {
             showNotification(error.toString())
         }
@@ -118,15 +121,6 @@ const sentComponent = () => {
                 throw String("Billetera no encontrada, intente nuevamente")
             }
 
-            // // Verificamos si la billetera es la misman
-            // if (data.id === data.id) {
-            //     throw String("Billetera incorrecta")
-            // }
-
-            // // Verificamos si la billetera son del mismo tipo
-            // if (data.symbol !== data.symbol) {
-            //     throw String(`Esta billetera no es de ${data.description}`)
-            // }
 
             dispatch({ type: "dataWallet", payload: data })
 
@@ -141,20 +135,6 @@ const sentComponent = () => {
             // clear data if is necesary
             dispatch({ type: "dataWallet", payload: null })
         }
-    }
-
-    const onChangeAmount = (payload = '') => {
-        dispatch({ type: 'amountUSD', payload })
-
-        const _coin = coinList.filter(item => item.symbol === coin)[0]
-
-        const newFraction = (parseFloat(payload) / _coin.quote.USD.price).toFixed(8)
-
-        if (newFraction > details.amount) {
-            throw String("No tienes suficientes fondos")
-        }
-
-        dispatch({ type: "amountFraction", payload: isNaN(newFraction) ? "" : newFraction.toString() })
     }
 
     const onRetirement = () => {
@@ -174,7 +154,7 @@ const sentComponent = () => {
     }, [])
 
     return (
-        <ViewAnimation style={styles.container} animation='fadeIn'>
+        <View style={styles.container}>
             <View style={styles.containerTitle}>
                 <Text style={styles.legendTitle}>Enviar fondos</Text>
             </View>
@@ -186,7 +166,7 @@ const sentComponent = () => {
                     <View style={styles.rowInput}>
                         <TextInput
                             style={[GlobalStyles.textInput, { flex: 1 }]}
-                            alue={state.walletAdress}
+                            value={state.walletAdress}
                             onChangeText={payload => dispatch({ type: "walletAdress", payload })}
                         />
 
@@ -197,8 +177,6 @@ const sentComponent = () => {
                 </View>
             </View>
 
-
-
             <View style={styles.row}>
                 <View style={styles.col}>
                     <Text style={styles.legend}>Mondo (USD)</Text>
@@ -207,7 +185,7 @@ const sentComponent = () => {
                         <TextInput
                             style={[GlobalStyles.textInput, { flex: 1 }]}
                             value={state.amountFraction}
-                            onChangeText={onChangeAmount}
+                            onChangeText={str => dispatch({ type: 'amountFraction', payload: str })}
                             keyboardType="numeric"
                             returnKeyType="done"
                         />
@@ -262,7 +240,7 @@ const sentComponent = () => {
                     />
                 </View>
             </Modal>
-        </ViewAnimation>
+        </View>
     )
 }
 
@@ -369,11 +347,6 @@ const styles = StyleSheet.create({
         height: RFValue(32),
         width: RFValue(32),
     },
-    logo: {
-        width: RFValue(345),
-        height: RFValue(240),
-        // marginBottom: RFValue(40),
-    }
 })
 
 export default sentComponent

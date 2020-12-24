@@ -351,7 +351,7 @@ export const readFile = (fileId) => new Promise(async (resolve, _) => {
 })
 
 
-const http = axios.create({
+export const http = axios.create({
   baseURL: serverAddress,
   timeout: 10 * 60 * 60,
   validateStatus: (status) => {
@@ -368,13 +368,7 @@ const http = axios.create({
   },
 });
 
-http.interceptors.request.use(config => {
-  console.log('interceptor', config);return config;
-})
 
-export {
-  http
-}
 
 export const getHeaders = () => {
   const { token } = store.getState().global;
