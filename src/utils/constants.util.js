@@ -381,6 +381,7 @@ export const getHeaders = () => {
 /**Metodo tradicional para verificar los permisos de la camara */
 export const checkPermissionCamera = () => new Promise(async (resolve, reject) => {
   try {
+    await request(PERMISSIONS.ANDROID.CAMERA)
     const result = await check(PERMISSIONS.ANDROID.CAMERA)
 
     console.log(result)
