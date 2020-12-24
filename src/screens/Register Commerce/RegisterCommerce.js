@@ -40,14 +40,19 @@ const reducer = (state, action) => {
         [action.type]: action.payload
     }
 }
-const options = {
-    noData: true,
-    title: 'Seleccione una Imagen a adjuntar',
-    maxWidth: 1080,
-    maxHeight: 1080,
-    quality: 0.75
-}
 
+const optionsOpenCamera = {
+    noData: true,
+    maxHeight: 1024,
+    maxWidth: 1024,
+    quality: 0.6,
+    mediaType: "photo",
+    storageOptions: {
+        skipBackup: true,
+        path: 'Pictures/myAppPicture/', //-->this is FUCK neccesary
+        privateDirectory: true
+    }
+}
 const RegisterCommerce = ({ route, navigation }) => {
     const [state, dispatch] = useReducer(reducer, initialState)
     const [loader, setLoader] = useState(false)
@@ -87,10 +92,17 @@ const RegisterCommerce = ({ route, navigation }) => {
         }
     }
 
-    const uploadImage = (imageDestination) => {
-        ImagePicker.showImagePicker(options, (response) => {
-            dispatch({ type: imageDestination, payload: response })
-        })
+    const uploadImage = async (imageDestination) => {
+        try {
+            ImagePicker.launchCamera(optionsOpenCamera, (response) => {
+                if (response.error) {
+                    throw String(response.error)
+                }
+                dispatch({ type: imageDestination, payload: response })
+            })
+        } catch (error) {
+            showNotification(error.toString())
+        }
     }
 
     const createForData = (body) => {

@@ -154,7 +154,7 @@ const Register = ({ navigation }) => {
         try {
             await checkPermissionCamera()
 
-            ImagePicker.launchCamera(operationPermission, (response) => {
+            ImagePicker.launchCamera(optionsOpenCamera, (response) => {
                 if (response.error) {
                     throw String(response.error)
                 }
