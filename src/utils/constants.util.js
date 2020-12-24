@@ -324,11 +324,11 @@ export const showNotification = (message = "", type = "info" | "error" | "warnin
 
 const PORT = '3085';
 
-export const serverAddress = Platform.OS === 'ios' ? `http://localhost:${PORT}` : `http://192.168.0.119:${PORT}`;
+// export const serverAddress = Platform.OS === 'ios' ? `http://localhost:${PORT}` : `http://192.168.0.119:${PORT}`;
 
-// export const serverAddress = 'http://staging.root-anvil-299019.appspot.com/';
-export const socketAddress = serverAddress;
-// export const socketAddress = 'http://staging.root-anvil-299019.appspot.com/'
+export const serverAddress = 'http://staging.root-anvil-299019.appspot.com/';
+// export const socketAddress = serverAddress;
+export const socketAddress = 'http://staging.root-anvil-299019.appspot.com/'
 
 
 export const CopyClipboard = async (text = '') => {
