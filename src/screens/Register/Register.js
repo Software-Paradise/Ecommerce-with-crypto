@@ -10,7 +10,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import Modal from 'react-native-modal'
 import UploadImage from '../../components/UploadImage/UploadImage'
 import ImagePicker from 'react-native-image-picker'
-import { Colors, showNotification, http, getHeaders, RFValue, GlobalStyles, compressImage } from '../../utils/constants.util'
+import { Colors, showNotification, http, getHeaders, RFValue, GlobalStyles, checkPermissionCamera } from '../../utils/constants.util'
 import { Image, View as ViewAnimation } from 'react-native-animatable'
 import { Picker } from '@react-native-community/picker'
 
@@ -43,12 +43,17 @@ const reducer = (state, action) => {
     }
 }
 
-const options = {
+const optionsOpenCamera = {
     noData: true,
-    title: 'Seleccione una Imagen a adjuntar',
-    maxWidth: 1080,
-    maxHeight: 1080,
-    quality: 0.75
+    maxHeight: 1024,
+    maxWidth: 1024,
+    quality: 0.6,
+    mediaType: "photo",
+    storageOptions: {
+        skipBackup: true,
+        path: 'Pictures/myAppPicture/', //-->this is FUCK neccesary
+        privateDirectory: true
+    }
 }
 
 const Register = ({ navigation }) => {
@@ -145,30 +150,40 @@ const Register = ({ navigation }) => {
     }
 
     // Funcion que pertime almacenar las imagenes
-    const uploadImage = (imageDestination) => {
-        ImagePicker.showImagePicker(options, (response) => {
-            switch (imageDestination) {
-                case 'operationPermission': {
-                    setOperationPermission(response);
-                    break;
+    const uploadImage = async (imageDestination) => {
+        try {
+            await checkPermissionCamera()
+
+            ImagePicker.launchCamera(operationPermission, (response) => {
+                if (response.error) {
+                    throw String(response.error)
                 }
-                case 'ruc': {
-                    setRUCImage(response);
-                    break;
+
+                switch (imageDestination) {
+                    case 'operationPermission': {
+                        setOperationPermission(response);
+                        break;
+                    }
+                    case 'ruc': {
+                        setRUCImage(response);
+                        break;
+                    }
+                    case 'legalPower': {
+                        setLegalPower(response);
+                        break;
+                    }
+                    case 'repID': {
+                        setRepID(response);
+                        break;
+                    }
+                    default: {
+                        break;
+                    }
                 }
-                case 'legalPower': {
-                    setLegalPower(response);
-                    break;
-                }
-                case 'repID': {
-                    setRepID(response);
-                    break;
-                }
-                default: {
-                    break;
-                }
-            }
-        })
+            })
+        } catch (error) {
+            showNotification(error.toString())
+        }
     }
 
     /**Metodo que confirma la salida del usuario a la pantalla de inicio */

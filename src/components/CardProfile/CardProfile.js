@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     },
     textHeaderTable: {
         textAlign: 'right',
-        fontSize: RFValue(14),
+        fontSize: RFValue(15),
         color: Colors.$colorYellow
     },
     bodyRowTable: {
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     textRowTable: {
         // textAlign: 'center',
         color: "#FFF",
-        fontSize: RFValue(16),
+        fontSize: RFValue(13),
         // justifyContent: "center"
     },
 

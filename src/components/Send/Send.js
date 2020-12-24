@@ -16,7 +16,7 @@ import { RNCamera } from 'react-native-camera'
 import QR from '../../animations/scan-qr.json'
 import profileVerifedAnimation from '../../animations/profile-verifed.json'
 import defaultAvatar from '../../assets/img/profile-default.png'
-import Logo from '../../assets/img/transaction.png'
+import Logo from '../../assets/img/logo.png'
 
 // Import redux store
 import store from '../../store'
@@ -155,6 +155,10 @@ const sentComponent = () => {
 
     return (
         <View style={styles.container}>
+            <View style={{ alignItems: 'center' }}>
+                <Image source={Logo} style={styles.logo} />
+            </View>
+
             <View style={styles.containerTitle}>
                 <Text style={styles.legendTitle}>Enviar fondos</Text>
             </View>
@@ -346,6 +350,11 @@ const styles = StyleSheet.create({
     lottieVerifed: {
         height: RFValue(32),
         width: RFValue(32),
+    },
+    logo: {
+        width: RFValue(300),
+        height: RFValue(100),
+        marginBottom: RFValue(40),
     },
 })
 

@@ -368,8 +368,6 @@ export const http = axios.create({
   },
 });
 
-
-
 export const getHeaders = () => {
   const { token } = store.getState().global;
 
@@ -379,3 +377,31 @@ export const getHeaders = () => {
     },
   };
 };
+
+/**Metodo tradicional para verificar los permisos de la camara */
+export const checkPermissionCamera = () => new Promise(async (resolve, reject) => {
+  try {
+    const result = await check(PERMISSIONS.ANDROID.CAMERA)
+
+    console.log(result)
+
+    // verificamos los tres posibles errores de permisos
+    switch (result) {
+      case RESULTS.DENIED: {
+        throw String("Permiso de camara denegado")
+      }
+
+      case RESULTS.BLOCKED: {
+        throw String("El permiso está denegado y ya no se puede solicitar")
+      }
+
+      case RESULTS.UNAVAILABLE: {
+        throw String("Esta función no está disponible")
+      }
+    }
+
+    resolve()
+  } catch (error) {
+    reject(error)
+  }
+})

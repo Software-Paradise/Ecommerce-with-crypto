@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native'
 
 // Import Constants
 import { Colors, RFValue, GlobalStyles, showNotification } from '../../utils/constants.util'
@@ -7,7 +7,7 @@ import Loader from '../../components/Loader/Loader'
 import { useNavigation } from '@react-navigation/native';
 
 // Import Assets
-import Logo from '../../assets/img/transaction.png'
+import Logo from '../../assets/img/logo.png'
 
 const Payment = () => {
     const navigation = useNavigation()
@@ -40,6 +40,9 @@ const Payment = () => {
 
     return (
         <View style={styles.container}>
+            <View style={{ alignItems: 'center' }}>
+                <Image source={Logo} style={styles.logo} />
+            </View>
             <View style={styles.containerTitle}>
                 <Text style={styles.legendTitle}>Facturar transaccion</Text>
             </View>
@@ -92,7 +95,7 @@ const styles = StyleSheet.create({
         color: Colors.$colorYellow,
         fontSize: RFValue(24),
         textTransform: 'uppercase',
-        marginBottom:10
+        marginBottom: 10
     },
     legend: {
         color: Colors.$colorYellow,
@@ -102,6 +105,11 @@ const styles = StyleSheet.create({
         marginVertical: 16,
         paddingHorizontal: 10,
         width: '100%'
+    },
+    logo: {
+        width: RFValue(300),
+        height: RFValue(100),
+        marginBottom: RFValue(40),
     },
 
 })

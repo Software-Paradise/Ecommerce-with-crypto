@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 
 // Import Componente
 import { Image, View as ViewAnimation } from 'react-native-animatable'
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Colors } from '../../utils/constants.util';
+import ImagePicker from 'react-native-image-picker'
+import Modal from 'react-native-modal'
 
 // Import Assets
 import images from '../../assets/img/Recurso.png'
@@ -65,6 +67,28 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         height: 25,
         width: 40
+    },
+    panel: {
+        padding: 20,
+        backgroundColor: Colors.$colorBlack,
+        paddingTop: 20
+    },
+    panelTitle: {
+        fontSize: RFValue(25),
+        color: "#FFF"
+    },
+    panelButton: {
+        padding: 13,
+        borderRadius: 10,
+        backgroundColor: Colors.$colorGray,
+        alignItems: 'center',
+        marginVertical: 7,
+    },
+    panelButtonTitle: {
+        fontSize: 17,
+        color: Colors.$colorYellow,
+        fontWeight: 'bold',
+        // color: 'white',
     },
 })
 
