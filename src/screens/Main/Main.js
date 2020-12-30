@@ -1,5 +1,5 @@
-import React, { useState, useReducer } from 'react'
-import { View, StyleSheet, KeyboardAvoidingView, ScrollView } from 'react-native'
+import React, { useState } from 'react'
+import { KeyboardAvoidingView, ScrollView, Image } from 'react-native'
 
 // Import Component
 import Container from '../../components/Container/Container'
@@ -8,10 +8,12 @@ import PayComponent from '../../components/Payment/Payment'
 import SendComponent from '../../components/Send/Send'
 import History from '../../components/History/History'
 import Card from '../../components/CardProfile/CardProfile'
-import Loader from '../../components/Loader/Loader'
 
-// Import constants
-import { Colors, reducer, RFValue } from '../../utils/constants.util'
+// import constants
+import { RFValue } from '../../utils/constants.util'
+
+// import assets
+import Logo from "../../assets/img/logo.png"
 
 const TYPE_VIEW = {
     PAY: 'pay',
@@ -34,21 +36,19 @@ const switchItems = [
     }
 ]
 
-const initialState = {
-    indexActive: 0,
-}
-
 const Main = () => {
     const [stateView, setStateView] = useState(TYPE_VIEW.PAY)
-    const [state, dispatch] = useReducer(reducer, initialState)
 
     return (
         <Container showLogo>
-            {/* <Loader isVisible={true} /> */}
-            <KeyboardAvoidingView enabled  >
+            <KeyboardAvoidingView enabled >
                 <ScrollView>
+                    <Image source={Logo} resizeMode="contain" style={{ alignSelf: "center", height: RFValue(128) }} />
+
                     <Card />
-                    <Switch onSwitch={setStateView} items={switchItems} indexActive={state.idexTabActive} />
+
+                    <Switch onSwitch={setStateView} items={switchItems} />
+
                     {
                         stateView === TYPE_VIEW.PAY &&
                         <PayComponent />
@@ -68,12 +68,5 @@ const Main = () => {
         </Container>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: Colors.$colorMain
-    },
-})
 
 export default Main

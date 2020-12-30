@@ -1,45 +1,22 @@
-import AsyncStorage from '@react-native-community/async-storage';
-import { Platform, StyleSheet, StatusBar, Dimensions, Alert, Linking, } from 'react-native';
-
-import TouchID from 'react-native-touch-id';
-import axios from 'axios';
-import { check, PERMISSIONS, RESULTS, request } from 'react-native-permissions';
-import Clipboard from '@react-native-community/clipboard';
-import store from '../store/index';
-import { SETPERMISSIONS, DELETESTORAGE, SETLOADER } from '../store/actionTypes';
-import { showMessage } from 'react-native-flash-message';
-import Toast from 'react-native-simple-toast';
-import { isIphoneX } from 'react-native-iphone-x-helper'
+import AsyncStorage from '@react-native-community/async-storage'
+import axios from 'axios'
+import Clipboard from '@react-native-community/clipboard'
+import TouchID from 'react-native-touch-id'
+import Toast from 'react-native-simple-toast'
 import RNFetchBlob from 'rn-fetch-blob'
-import Compress from 'compress.js'
-import { decode as atob, encode as btoa } from 'base-64'
-
-
-// window.atob = atob
-// window.btoa =  btoa
-
-// FileReader.prototype.readAsArrayBuffer = function (blob) {
-// 	if (this.readyState === this.LOADING) throw new Error("InvalidStateError");
-// 	this._setReadyState(this.LOADING);
-// 	this._result = null;
-// 	this._error = null;
-// 	const fr = new FileReader();
-// 	fr.onloadend = () => {
-// 		const content = window.atob(fr.result.substr("data:application/octet-stream;base64,".length));
-// 		const buffer = new ArrayBuffer(content.length);
-// 		const view = new Uint8Array(buffer);
-// 		view.set(Array.from(content).map(c => c.charCodeAt(0)));
-// 		this._result = buffer;
-// 		this._setReadyState(this.DONE);
-// 	};
-// 	fr.readAsDataURL(blob);
-// }
+import store from '../store/index'
+import { Platform, StyleSheet, StatusBar, Dimensions, Alert } from 'react-native'
+import { check, PERMISSIONS, RESULTS, request } from 'react-native-permissions'
+import { SETPERMISSIONS, DELETESTORAGE, SETLOADER } from '../store/actionTypes'
+import { showMessage } from 'react-native-flash-message'
+import { isIphoneX } from 'react-native-iphone-x-helper'
 
 const keyStorage = '@storage';
 
 export const Colors = {
-  $colorMain: '#1D1D1D',
-  $colorBlack: '#151515',
+  $colorMain: '#151515',
+  $colorBlack: '#1D1D1D',
+  // $colorBlack: '#151515',
   $colorSecondary: '#23AAB5',
   $colorBlue: '#3B66B7',
   $colorGray: '#707070',
@@ -336,15 +313,12 @@ export const CopyClipboard = async (text = '') => {
   Toast.show('Copiado a portapeles', Toast.LONG);
 };
 
+/// ?????? ????
 export const readFile = (fileId) => new Promise(async (resolve, _) => {
   const { headers } = getHeaders()
 
-  const response = await RNFetchBlob.config({
-    fileCache: true,
-    appendExt: 'jpg'
-  }).fetch('GET', `${serverAddress}/ecommerce/file/${fileId}`, {
-    ...headers
-  })
+  const response = await RNFetchBlob.config({ fileCache: true, appendExt: 'jpg' })
+    .fetch('GET', `${serverAddress}/ecommerce/file/${fileId}`, headers)
 
   const base64 = await response.base64()
   resolve(`data:image/jpeg;base64,${base64}`)
@@ -359,6 +333,7 @@ export const http = axios.create({
       Alert.alert('AlyPay', 'Tu sesion ha caducado', [
         {
           text: 'OK',
+          onPress: () => logOutApp()
         },
       ]);
       return true;

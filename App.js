@@ -28,7 +28,6 @@ const Stack = createStackNavigator();
 
 const App = () => {
   const [logged, setLogin] = useState(false)
-  const [splash, setSplash] = useState(true)
 
   const ConfigurateComponent = async () => {
     const payload = await getStorage()
@@ -58,8 +57,6 @@ const App = () => {
         setLogin(false)
       }
     })
-
-    setTimeout(() => setSplash(false), 1000)
   }
 
   

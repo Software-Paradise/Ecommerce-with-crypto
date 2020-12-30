@@ -3,20 +3,17 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView 
 import { useNavigation } from "@react-navigation/native"
 
 // Import components
-import Loader from '../Loader/Loader'
 import Lottie from 'lottie-react-native'
-import { RFValue, Colors, GlobalStyles, http, getHeaders, showNotification, errorMessage, successMessage } from '../../utils/constants.util'
-import { View as ViewAnimation, Text as TextAnimation } from 'react-native-animatable'
-import { Picker } from '@react-native-community/picker'
 import Modal from 'react-native-modal'
 import QRCodeScanner from 'react-native-qrcode-scanner'
+import { RFValue, Colors, GlobalStyles, http, getHeaders, showNotification, errorMessage, successMessage } from '../../utils/constants.util'
 import { RNCamera } from 'react-native-camera'
+import { View as ViewAnimation } from 'react-native-animatable'
 
 // Import Assets
 import QR from '../../animations/scan-qr.json'
 import profileVerifedAnimation from '../../animations/profile-verifed.json'
 import defaultAvatar from '../../assets/img/profile-default.png'
-import Logo from '../../assets/img/logo.png'
 
 // Import redux store
 import store from '../../store'
@@ -48,8 +45,6 @@ const sentComponent = () => {
     const [loader, setLoader] = useState(false)
 
     const [details, setDetails] = useState(null);
-    const [coinList, setCoinList] = useState([]);
-    const [coin, setCoin] = useState('ALY')
     const [showScanner, setShowScanner] = useState(false)
 
     const submit = async () => {
@@ -140,6 +135,7 @@ const sentComponent = () => {
     const onRetirement = () => {
         navigate("Retirements", { wallet: global.wallet_commerce })
     }
+
     const onReadCodeQR = ({ data }) => {
         toggleScan()
 
@@ -155,10 +151,6 @@ const sentComponent = () => {
 
     return (
         <View style={styles.container}>
-            <View style={{ alignItems: 'center' }}>
-                <Image source={Logo} style={styles.logo} />
-            </View>
-
             <View style={styles.containerTitle}>
                 <Text style={styles.legendTitle}>Enviar fondos</Text>
             </View>

@@ -7,7 +7,7 @@ import Loader from '../../components/Loader/Loader'
 import { useNavigation } from '@react-navigation/native';
 
 // Import Assets
-import Logo from '../../assets/img/logo.png'
+// import Logo from '../../assets/img/logo.png'
 
 const Payment = () => {
     const navigation = useNavigation()
@@ -40,9 +40,10 @@ const Payment = () => {
 
     return (
         <View style={styles.container}>
-            <View style={{ alignItems: 'center' }}>
+            {/* <View style={{ alignItems: 'center' }}>
                 <Image source={Logo} style={styles.logo} />
-            </View>
+            </View> */}
+
             <View style={styles.containerTitle}>
                 <Text style={styles.legendTitle}>Facturar transaccion</Text>
             </View>
