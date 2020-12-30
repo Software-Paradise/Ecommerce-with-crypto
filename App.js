@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Login from './src/screens/Login/Login';
 import RegisterScreen from './src/screens/Register/Register';
 import LegalDataScreen from './src/screens/legaldata.screen';
@@ -24,7 +25,10 @@ import HistoryScreen from './src/components/History/History'
 // Import Componets
 import Description from './src/components/Description/Description'
 
+import Router from './src/screens/Main/index'
 const Stack = createStackNavigator();
+
+const Tab = createBottomTabNavigator();
 
 const App = () => {
   const [logged, setLogin] = useState(false)
@@ -59,7 +63,7 @@ const App = () => {
     })
   }
 
-  
+
 
   useEffect(() => {
     // ConfigureLocation()
@@ -73,14 +77,9 @@ const App = () => {
           {
             logged &&
             <>
-              <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="Recharge" component={RechargeScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="Retirements" component={RetirementsScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="CommerceList" component={CommerceList} options={{ headerShown: false }} />
-              <Stack.Screen name="ProductList" component={ProductList} options={{ headerShown: false }} />
-              <Stack.Screen name="Transaction" component={TransactionScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="HistoryTransaction" component={HistoryScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="Main" component={Router} options={{ headerShown: false }} />
               <Stack.Screen name="Description" component={Description} options={{ headerShown: false }} />
+              <Tab.Screen name="Transaction" component={TransactionScreen} options={{ headerShown: false }} />
             </>
           }
 

@@ -40,10 +40,14 @@ const Payment = () => {
 
     return (
         <View style={styles.container}>
+<<<<<<< Updated upstream
             {/* <View style={{ alignItems: 'center' }}>
                 <Image source={Logo} style={styles.logo} />
             </View> */}
 
+=======
+            
+>>>>>>> Stashed changes
             <View style={styles.containerTitle}>
                 <Text style={styles.legendTitle}>Facturar transaccion</Text>
             </View>

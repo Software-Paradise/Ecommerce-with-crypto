@@ -18,6 +18,7 @@
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* alypay_ecommerceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* alypay_ecommerceTests.m */; };
+		4510FD17259D04D900238FB2 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = 4510FD16259D04D900238FB2 /* Fonts */; };
 		662C8A48BCD0104121397E42 /* libPods-alypay_ecommerce-alypay_ecommerceTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 835FF9A020C726200FBFA61C /* libPods-alypay_ecommerce-alypay_ecommerceTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
@@ -57,6 +58,7 @@
 		2D02E4901E0B4A5D006451C7 /* alypay_ecommerce-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "alypay_ecommerce-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BC5CCC24C627C8F23B30F7A /* Pods-alypay_ecommerce-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-alypay_ecommerce-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-alypay_ecommerce-tvOSTests/Pods-alypay_ecommerce-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		44795F625E2F9188CA9D9931 /* Pods-alypay_ecommerce-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-alypay_ecommerce-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-alypay_ecommerce-tvOS/Pods-alypay_ecommerce-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		4510FD16259D04D900238FB2 /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fonts; sourceTree = "<group>"; };
 		60B255E941BB8DE60606AF02 /* libPods-alypay_ecommerce-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-alypay_ecommerce-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = alypay_ecommerce/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		835FF9A020C726200FBFA61C /* libPods-alypay_ecommerce-alypay_ecommerceTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-alypay_ecommerce-alypay_ecommerceTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -182,6 +184,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				4510FD16259D04D900238FB2 /* Fonts */,
 				13B07FAE1A68108700A75B9A /* alypay_ecommerce */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* alypay_ecommerceTests */,
@@ -358,6 +361,7 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				4510FD17259D04D900238FB2 /* Fonts in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
