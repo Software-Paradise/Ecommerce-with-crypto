@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native'
 
-import { RFValue, Colors, GlobalStyles, http, getHeaders, showNotification, errorMessage, successMessage } from '../../utils/constants.util'
-import { View as ViewAnimation, Text as TextAnimation } from 'react-native-animatable'
+import { RFValue, Colors, GlobalStyles, http, errorMessage } from '../../utils/constants.util'
+import { View as ViewAnimation } from 'react-native-animatable'
 import Lottie from 'lottie-react-native'
 import Modal from 'react-native-modal'
 import QRCodeScanner from 'react-native-qrcode-scanner'
@@ -14,7 +14,6 @@ import Logo from '../../assets/img/logo.png'
 // Import redux store
 import store from '../../store'
 const Retirements = () => {
-
     const [walletAddress, setWalletAddress] = useState('');
     const { global } = store.getState();
     const [amount, setAmount] = useState('');
@@ -23,6 +22,8 @@ const Retirements = () => {
     const [coinList, setCoinList] = useState([]);
     const isMounted = useRef(null);
     const toggleScan = () => setShowScanner(!showScanner);
+    
+    ///?????
     const onReadCodeQR = ({ data }) => {
         toggleScan();
         setWalletAddress(data);
