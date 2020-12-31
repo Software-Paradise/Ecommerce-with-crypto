@@ -6,6 +6,10 @@ import { Colors, RFValue, GlobalStyles, showNotification } from '../../utils/con
 import Loader from '../../components/Loader/Loader'
 import { useNavigation } from '@react-navigation/native';
 
+// Import component
+import Container from '../Container/Container'
+import Card from '../../components/CardProfile/CardProfile'
+
 // Import Assets
 // import Logo from '../../assets/img/logo.png'
 
@@ -39,38 +43,36 @@ const Payment = () => {
     }, [])
 
     return (
-        <View style={styles.container}>
-            {/* <View style={{ alignItems: 'center' }}>
-                <Image source={Logo} style={styles.logo} />
-            </View> */}
-
-            <View style={styles.containerTitle}>
-                <Text style={styles.legendTitle}>Facturar transaccion</Text>
-            </View>
-
-            <View style={styles.row}>
-                <View style={styles.col}>
-                    <Text style={styles.legend}>Ingrese el monto (USD)</Text>
-
-                    <TextInput
-                        style={[GlobalStyles.textInput]}
-                        placeholder="0.00"
-                        placeholderTextColor={Colors.$colorGray}
-                        value={amount}
-                        keyboardType='email-address'
-                        keyboardType="numeric"
-                        onChangeText={(value) => setAmount(value)}
-                    />
+        <Container>
+            <View style={styles.container}>
+                <View style={styles.containerTitle}>
+                    <Text style={styles.legendTitle}>Facturar transaccion</Text>
                 </View>
-            </View>
 
-            <View style={[styles.buttonPosition]}>
-                <TouchableOpacity onPress={handleSubmit} style={[GlobalStyles.buttonPrimary,]}>
-                    <Text style={GlobalStyles.textButton}>Procesar transaccion</Text>
-                </TouchableOpacity>
+                <View style={styles.row}>
+                    <View style={styles.col}>
+                        <Text style={styles.legend}>Ingrese el monto (USD)</Text>
+
+                        <TextInput
+                            style={[GlobalStyles.textInput]}
+                            placeholder="0.00"
+                            placeholderTextColor={Colors.$colorGray}
+                            value={amount}
+                            keyboardType='email-address'
+                            keyboardType="numeric"
+                            onChangeText={(value) => setAmount(value)}
+                        />
+                    </View>
+                </View>
+
+                <View style={[styles.buttonPosition]}>
+                    <TouchableOpacity onPress={handleSubmit} style={[GlobalStyles.buttonPrimary,]}>
+                        <Text style={GlobalStyles.textButton}>Procesar transaccion</Text>
+                    </TouchableOpacity>
+                </View>
+                <Loader isVisible={loader} />
             </View>
-            <Loader isVisible={loader} />
-        </View>
+        </Container>
     )
 }
 

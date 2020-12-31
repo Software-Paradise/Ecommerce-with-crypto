@@ -1,25 +1,61 @@
-import React from 'react'
+import React, { useState } from 'react'
 
+import { SafeAreaView, Image, StyleSheet, ScrollView, View, RefreshControl } from "react-native"
+// Import constant
 import { GlobalStyles, RFValue } from '../../utils/constants.util'
 
-// Import Component
-import { SafeAreaView } from 'react-native'
-import NavBar from '../Navbar/Navbar'
+// Import assents
+import logo from '../../assets/img/logo.png'
 
 const Container = ({ children, showLogo = false, scrollViewStyles = {}, onRefreshEnd = null }) => {
+    const [refreshing, setRefresh] = useState(false)
+
+    /**Metodo para recargar pantalla */
+    const refetching = async () => {
+        try {
+            setRefresh(true)
+
+            await onRefreshEnd()
+
+            setRefresh(false)
+        } catch (error) {
+
+        }
+    }
 
     return (
+        <SafeAreaView style={GlobalStyles.superContainer}>
+            <ScrollView
+                keyboardDismissMode="interactive"
+                keyboardShouldPersistTaps="always"
+                refreshControl={onRefreshEnd !== null && <RefreshControl refreshing={refreshing} onRefresh={refetching} />}
+                style={[styles.scroll, scrollViewStyles]}>
 
-        <SafeAreaView style={GlobalStyles.superContainer} >
-            {/* {
-                    !hideNavbar &&
-                    <NavBar config={navBarConfig} />
-                } */}
-            { children}
-            {/* <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
-                </KeyboardAvoidingView> */}
-        </SafeAreaView >
+                {
+                    showLogo !== false &&
+                    <Image style={styles.logo} source={logo} />
+                }
+
+                {children}
+
+                <View style={{ height: RFValue(60) }} />
+            </ScrollView>
+        </SafeAreaView>
     )
 }
+
+const styles = StyleSheet.create({
+    scroll: {
+        flex: 1,
+        position: "relative",
+        // height: Dimensions.get("window").height
+    },
+    logo: {
+        alignSelf: "center",
+        resizeMode: "contain",
+        height: RFValue(128),
+        width: "80%",
+    }
+})
 
 export default Container
