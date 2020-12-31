@@ -9,6 +9,8 @@ import QRCodeScanner from 'react-native-qrcode-scanner'
 import { RFValue, Colors, GlobalStyles, http, getHeaders, showNotification, errorMessage, successMessage } from '../../utils/constants.util'
 import { RNCamera } from 'react-native-camera'
 import { View as ViewAnimation } from 'react-native-animatable'
+import Container from '../Container/Container'
+import Card from '../../components/CardProfile/CardProfile'
 
 // Import Assets
 import QR from '../../animations/scan-qr.json'
@@ -150,93 +152,96 @@ const sentComponent = () => {
     }, [])
 
     return (
-        <View style={styles.container}>
-            <View style={styles.containerTitle}>
-                <Text style={styles.legendTitle}>Enviar fondos</Text>
-            </View>
-
-            <View style={styles.row}>
-                <View style={styles.col}>
-                    <Text style={styles.legend}>Dirección de billetera</Text>
-
-                    <View style={styles.rowInput}>
-                        <TextInput
-                            style={[GlobalStyles.textInput, { flex: 1 }]}
-                            value={state.walletAdress}
-                            onChangeText={payload => dispatch({ type: "walletAdress", payload })}
-                        />
-
-                        <TouchableOpacity onPress={toggleScan} style={styles.buttonScan}>
-                            <Lottie source={QR} style={styles.lottieQRAnimation} autoPlay loop />
-                        </TouchableOpacity>
-                    </View>
+        <Container showLogo onRefreshEnd={configureComponent}>
+            <Card />
+            <View style={styles.container}>
+                <View style={styles.containerTitle}>
+                    <Text style={styles.legendTitle}>Enviar fondos</Text>
                 </View>
-            </View>
 
-            <View style={styles.row}>
-                <View style={styles.col}>
-                    <Text style={styles.legend}>Mondo (USD)</Text>
+                <View style={styles.row}>
+                    <View style={styles.col}>
+                        <Text style={styles.legend}>Dirección de billetera</Text>
 
-                    <View style={styles.rowInput}>
-                        <TextInput
-                            style={[GlobalStyles.textInput, { flex: 1 }]}
-                            value={state.amountFraction}
-                            onChangeText={str => dispatch({ type: 'amountFraction', payload: str })}
-                            keyboardType="numeric"
-                            returnKeyType="done"
-                        />
-                    </View>
-                </View>
-            </View>
+                        <View style={styles.rowInput}>
+                            <TextInput
+                                style={[GlobalStyles.textInput, { flex: 1 }]}
+                                value={state.walletAdress}
+                                onChangeText={payload => dispatch({ type: "walletAdress", payload })}
+                            />
 
-            <View style={{ height: RFValue(5) }} />
-
-            {
-                (state.walletAccepted && state.dataWallet !== null) &&
-                <ViewAnimation animation="fadeIn" style={styles.cardInfo}>
-                    <View style={styles.subCard}>
-                        <Image style={styles.avatar} source={defaultAvatar} />
-
-                        <View>
-                            <Text style={styles.usernameCard}>@{state.dataWallet.username}</Text>
-                            <Text style={styles.textFromCard}>{state.dataWallet.city}</Text>
+                            <TouchableOpacity onPress={toggleScan} style={styles.buttonScan}>
+                                <Lottie source={QR} style={styles.lottieQRAnimation} autoPlay loop />
+                            </TouchableOpacity>
                         </View>
                     </View>
-
-
-                    <Lottie source={profileVerifedAnimation} style={styles.lottieVerifed} autoPlay />
-                </ViewAnimation>
-            }
-
-            {
-                !state.walletAccepted &&
-                <View style={styles.retirementContainer}>
-                    <TouchableOpacity onPress={onRetirement}>
-                        <Text style={styles.retirementText}>Retirar fondos</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={onComprobateWallet} style={[GlobalStyles.buttonPrimary, { flex: 1, marginLeft: 25 }]}>
-                        <Text style={GlobalStyles.textButton}>siguiente</Text>
-                    </TouchableOpacity>
                 </View>
-            }
 
-            {
-                state.walletAccepted &&
-                <TouchableOpacity onPress={submit} style={GlobalStyles.buttonPrimary}>
-                    <Text style={GlobalStyles.textButton}>Enviar</Text>
-                </TouchableOpacity>
-            }
+                <View style={styles.row}>
+                    <View style={styles.col}>
+                        <Text style={styles.legend}>Mondo (USD)</Text>
 
-            <Modal backdropOpacity={0.9} animationIn='fadeIn' onBackButtonPress={toggleScan} onBackdropPress={toggleScan} animationOut='fadeOut' isVisible={showScanner} >
-                <View style={styles.constainerQR}>
-                    <QRCodeScanner
-                        onRead={onReadCodeQR}
-                        flashMode={RNCamera.Constants.FlashMode.auto}
-                    />
+                        <View style={styles.rowInput}>
+                            <TextInput
+                                style={[GlobalStyles.textInput, { flex: 1 }]}
+                                value={state.amountFraction}
+                                onChangeText={str => dispatch({ type: 'amountFraction', payload: str })}
+                                keyboardType="numeric"
+                                returnKeyType="done"
+                            />
+                        </View>
+                    </View>
                 </View>
-            </Modal>
-        </View>
+
+                <View style={{ height: RFValue(5) }} />
+
+                {
+                    (state.walletAccepted && state.dataWallet !== null) &&
+                    <ViewAnimation animation="fadeIn" style={styles.cardInfo}>
+                        <View style={styles.subCard}>
+                            <Image style={styles.avatar} source={defaultAvatar} />
+
+                            <View>
+                                <Text style={styles.usernameCard}>@{state.dataWallet.username}</Text>
+                                <Text style={styles.textFromCard}>{state.dataWallet.city}</Text>
+                            </View>
+                        </View>
+
+
+                        <Lottie source={profileVerifedAnimation} style={styles.lottieVerifed} autoPlay />
+                    </ViewAnimation>
+                }
+
+                {
+                    !state.walletAccepted &&
+                    <View style={styles.retirementContainer}>
+                        <TouchableOpacity onPress={onRetirement}>
+                            <Text style={styles.retirementText}>Retirar fondos</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={onComprobateWallet} style={[GlobalStyles.buttonPrimary, { flex: 1, marginLeft: 25 }]}>
+                            <Text style={GlobalStyles.textButton}>siguiente</Text>
+                        </TouchableOpacity>
+                    </View>
+                }
+
+                {
+                    state.walletAccepted &&
+                    <TouchableOpacity onPress={submit} style={GlobalStyles.buttonPrimary}>
+                        <Text style={GlobalStyles.textButton}>Enviar</Text>
+                    </TouchableOpacity>
+                }
+
+                <Modal backdropOpacity={0.9} animationIn='fadeIn' onBackButtonPress={toggleScan} onBackdropPress={toggleScan} animationOut='fadeOut' isVisible={showScanner} >
+                    <View style={styles.constainerQR}>
+                        <QRCodeScanner
+                            onRead={onReadCodeQR}
+                            flashMode={RNCamera.Constants.FlashMode.auto}
+                        />
+                    </View>
+                </Modal>
+            </View>
+        </Container>
     )
 }
 
@@ -244,6 +249,7 @@ const styles = StyleSheet.create({
     container: {
         width: "100%",
         paddingHorizontal: RFValue(10),
+        padding:10
     },
     containerTitle: {
         flexDirection: "row",
@@ -284,8 +290,8 @@ const styles = StyleSheet.create({
     },
 
     lottieQRAnimation: {
-        height: RFValue(50),
-        width: RFValue(50),
+        height: RFValue(30),
+        width: RFValue(35),
     },
     constainerQR: {
         alignItems: "center",

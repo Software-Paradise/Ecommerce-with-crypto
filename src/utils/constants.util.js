@@ -14,16 +14,13 @@ import { isIphoneX } from 'react-native-iphone-x-helper'
 const keyStorage = '@storage';
 
 export const Colors = {
-  $colorMain: '#151515',
-  $colorBlack: '#1D1D1D',
-  // $colorBlack: '#151515',
-  $colorSecondary: '#23AAB5',
-  $colorBlue: '#3B66B7',
-  $colorGray: '#707070',
-  $colorYellow: '#FECB2E',
-  $colorRed: '#B42C2C',
-  $colorGreen: '#2E8B12',
-};
+  $colorMain: "#000",
+  $colorBlack: "#1d1d1d",
+  $colorSecondary: "#9ed3da",
+  $colorYellow: "#ffcb08",
+  $colorRed: "#c0392b",
+  $colorGreen: "#33d9b2",
+}
 
 const { height, width } = Dimensions.get("window")
 const standardLength = width > height ? width : height

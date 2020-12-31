@@ -1,5 +1,5 @@
 import React, { useState, useReducer } from 'react'
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, FlatList, Alert } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, FlatList, Alert, KeyboardAvoidingView } from 'react-native'
 
 // Import Component
 import Container from '../../components/Container/Container'
@@ -306,7 +306,7 @@ const Register = ({ navigation }) => {
     }
 
     return (
-        <Container hideNavbar>
+        <KeyboardAvoidingView style={styles.container1}>
             <ScrollView keyboardShouldPersistTaps="always" style={styles.scrollView}>
                 <View style={styles.container}>
                     <Image source={Logo} style={styles.logo} />
@@ -326,7 +326,7 @@ const Register = ({ navigation }) => {
                             <TextInput
                                 style={GlobalStyles.textInput}
                                 placeholder="Ingrese nombre de la compañía aqui"
-                                placeholderTextColor={Colors.$colorGray}
+                                placeholderTextColor='#CCC'
                                 value={state.companyName}
                                 onChangeText={str => dispatch({ type: 'companyName', payload: str })}
                             />
@@ -340,7 +340,7 @@ const Register = ({ navigation }) => {
                             <TextInput
                                 style={GlobalStyles.textInput}
                                 placeholder="Ingrese correo aqui"
-                                placeholderTextColor={Colors.$colorGray}
+                                placeholderTextColor='#CCC'
                                 keyboardType='email-address'
                                 value={state.username}
                                 onChangeText={str => dispatch({ type: 'username', payload: str })}
@@ -357,7 +357,7 @@ const Register = ({ navigation }) => {
                                     value={state.password}
                                     onChangeText={(payload) => dispatch({ type: 'password', payload })}
                                     placeholder="Contraseña"
-                                    placeholderTextColor={Colors.$colorGray}
+                                    placeholderTextColor='#CCC'
                                     style={styles.textInputCol}
                                 />
                                 <TouchableOpacity onPress={(e) => setShowPassword(!showPassword)} style={styles.touchableCol}>
@@ -376,7 +376,7 @@ const Register = ({ navigation }) => {
                                     value={confirmPassword}
                                     onChangeText={value => setConfirmPassword(value)}
                                     placeholder="Contraseña"
-                                    placeholderTextColor={Colors.$colorGray}
+                                    placeholderTextColor='#CCC'
                                     style={styles.textInputCol}
                                 />
                                 <TouchableOpacity onPress={(e) => setShowConfirmPassword(!showConfirmPassword)} style={styles.touchableCol}>
@@ -393,7 +393,7 @@ const Register = ({ navigation }) => {
                             <TextInput
                                 style={GlobalStyles.textInput}
                                 placeholder="Ingrese numero ruc aqui"
-                                placeholderTextColor={Colors.$colorGray}
+                                placeholderTextColor='#CCC'
                                 value={state.companyRuc}
                                 onChangeText={str => dispatch({ type: 'companyRuc', payload: str })}
                             />
@@ -411,7 +411,7 @@ const Register = ({ navigation }) => {
                             <TextInput
                                 style={GlobalStyles.textInput}
                                 placeholder="Ingrese nombre aqui"
-                                placeholderTextColor={Colors.$colorGray}
+                                placeholderTextColor='#CCC'
                                 value={state.repFirstName}
                                 onChangeText={str => dispatch({ type: 'repFirstName', payload: str })}
                             />
@@ -425,7 +425,7 @@ const Register = ({ navigation }) => {
                             <TextInput
                                 style={GlobalStyles.textInput}
                                 placeholder="Ingrese numero ruc aqui"
-                                placeholderTextColor={Colors.$colorGray}
+                                placeholderTextColor='#CCC'
                                 value={state.repLastName}
                                 onChangeText={str => dispatch({ type: 'repLastName', payload: str })}
                             />
@@ -439,7 +439,7 @@ const Register = ({ navigation }) => {
                             <TextInput
                                 style={GlobalStyles.textInput}
                                 placeholder="Ingrese correo aqui"
-                                placeholderTextColor={Colors.$colorGray}
+                                placeholderTextColor='#CCC'
                                 keyboardType='email-address'
                                 value={state.repEmail}
                                 onChangeText={str => dispatch({ type: 'repEmail', payload: str })}
@@ -451,13 +451,13 @@ const Register = ({ navigation }) => {
 
                             <View style={styles.rowPhoneNumber}>
                                 <TouchableOpacity style={[GlobalStyles.textInput, { marginRight: 10, justifyContent: "center" }]} onPress={_ => setModalCountry(true)}>
-                                    <Text style={{ color: Colors.$colorGray }}>{state.country.phoneCode}</Text>
+                                    <Text style={{ color: '#CCC' }}>{state.country.phoneCode}</Text>
                                 </TouchableOpacity>
 
                                 <TextInput
                                     style={[GlobalStyles.textInput, { flex: 1 }]}
                                     placeholder="Ingrese numero de telefono"
-                                    placeholderTextColor={Colors.$colorGray}
+                                    placeholderTextColor='#CCC'
                                     value={state.repPhone}
                                     autoCorrect={false}
                                     keyboardType="numeric"
@@ -547,7 +547,6 @@ const Register = ({ navigation }) => {
                             </TouchableOpacity>
                         </View>
                     </ViewAnimation>
-
                 </View>
             </ScrollView>
 
@@ -595,7 +594,7 @@ const Register = ({ navigation }) => {
                         keyExtractor={(_, i) => i.toString()} />
                 </View>
             </Modal>
-        </Container >
+        </KeyboardAvoidingView>
     )
 }
 
@@ -603,9 +602,12 @@ const styles = StyleSheet.create({
     scrollView: {
         flex: 1,
     },
-
+    container1: {
+        alignItems: 'center',
+        backgroundColor: Colors.$colorMain,
+        flex: 1,
+    },
     container: {
-        backgroundColor: Colors.$colorBlack,
         alignItems: "center",
         paddingHorizontal: "5%",
         flexDirection: "column",

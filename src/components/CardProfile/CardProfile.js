@@ -15,7 +15,7 @@ const CadProfile = () => {
     const { global } = store.getState()
     const [source, setSource] = useState(null)
 
-    // ???????
+    // Funcion que permite extraer la imagen para visualizarla
     const read = async () => {
         const blog = global.profile_picture_commerce
 
@@ -62,7 +62,7 @@ const CadProfile = () => {
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        backgroundColor: Colors.$colorBlack,
         borderRadius: 5,
         borderWidth: 2,
         borderColor: "rgba(255, 255, 255, 0.2)",

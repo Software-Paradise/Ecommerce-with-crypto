@@ -118,8 +118,6 @@ const Login = ({ navigation }) => {
   }, [navigation]);
 
   return (
-    <Container hideNavbar >
-
       <KeyboardAvoidingView style={styles.container}>
         <ScrollView
           contentContainerStyle={{ flexGrow: 1 }}
@@ -181,14 +179,13 @@ const Login = ({ navigation }) => {
         <Loader isVisible={showLoader} />
         <ButtonSupport />
       </KeyboardAvoidingView>
-    </Container >
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    backgroundColor: Colors.$colorBlack,
+    backgroundColor: Colors.$colorMain,
     flex: 1,
   },
   subContainer: {

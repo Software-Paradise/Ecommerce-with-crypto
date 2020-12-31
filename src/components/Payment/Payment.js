@@ -46,10 +46,6 @@ const Payment = () => {
         <Container showLogo>
             <Card />
             <View style={styles.container}>
-                {/* <View style={{ alignItems: 'center' }}>
-                <Image source={Logo} style={styles.logo} />
-            </View> */}
-
                 <View style={styles.containerTitle}>
                     <Text style={styles.legendTitle}>Facturar transaccion</Text>
                 </View>
@@ -85,6 +81,7 @@ const styles = StyleSheet.create({
     container: {
         width: "100%",
         paddingHorizontal: RFValue(10),
+        padding:10
     },
     containerTitle: {
         flexDirection: "row",
