@@ -43,8 +43,7 @@ const Payment = () => {
     }, [])
 
     return (
-        <Container showLogo>
-            <Card />
+        <Container>
             <View style={styles.container}>
                 <View style={styles.containerTitle}>
                     <Text style={styles.legendTitle}>Facturar transaccion</Text>

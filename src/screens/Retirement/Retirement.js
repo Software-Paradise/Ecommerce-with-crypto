@@ -1,33 +1,49 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native'
 
-import { RFValue, Colors, GlobalStyles, http, getHeaders, showNotification, errorMessage, successMessage } from '../../utils/constants.util'
-import { View as ViewAnimation, Text as TextAnimation } from 'react-native-animatable'
+import { RFValue, Colors, GlobalStyles, http, errorMessage, serverSpeedtradingsURL } from '../../utils/constants.util'
+
+// import components
+import Card from '../../components/CardProfile/CardProfile'
 import Lottie from 'lottie-react-native'
 import Modal from 'react-native-modal'
 import QRCodeScanner from 'react-native-qrcode-scanner'
-import { RNCamera } from 'react-native-camera'
 import { Picker } from '@react-native-community/picker'
+import { View as ViewAnimation } from 'react-native-animatable'
 
+// import constanst and functions
+import Axios from 'axios'
+import { RNCamera } from 'react-native-camera'
+import _ from "lodash"
+
+// import assets and styles
 import QR from '../../animations/scan-qr.json'
 import Logo from '../../assets/img/logo.png'
+
 // Import redux store
 import store from '../../store'
-const Retirements = () => {
+import Container from '../../components/Container/Container'
 
-    const [walletAddress, setWalletAddress] = useState('');
+const Retirements = () => {
     const { global } = store.getState();
+
+    const [amountSatochi, setTotalAmountSatochi] = useState(0)
+    const [walletAddress, setWalletAddress] = useState('');
     const [amount, setAmount] = useState('');
     const [showScanner, setShowScanner] = useState(false);
-    const [coin, setCoin] = useState('ALY');
+    const [coinIndexSelected, setCoin] = useState(0);
     const [coinList, setCoinList] = useState([]);
+
     const isMounted = useRef(null);
     const toggleScan = () => setShowScanner(!showScanner);
+
+    ///?????
     const onReadCodeQR = ({ data }) => {
         toggleScan();
         setWalletAddress(data);
     };
 
+    // ????
     const _handleSubmit = async () => {
         const { data } = await http.post(
             '/api/ecommerce/wallet/retirement',
@@ -35,7 +51,7 @@ const Retirements = () => {
                 wallet: walletAddress,
                 id_wallet: global.wallet_commerce,
                 amount: parseFloat(amount),
-                symbol: coin,
+                symbol: coinList[coinIndexSelected].symbol,
             },
             {
                 headers: {
@@ -43,35 +59,37 @@ const Retirements = () => {
                 },
             },
         );
-        console.log(data);
+
+        // verificamos si hay algun error
         if (data.error) {
             errorMessage(data.message);
         }
 
-        if (data.response === 'success') {
-            showMessage({
-                type: 'success',
-                message: 'Alypay E-commerce',
-                description: 'Tu petición esta siendo procesada',
-            });
-            navigation.pop();
-        }
+        showMessage({
+            type: 'success',
+            message: 'Alypay E-commerce',
+            description: 'Tu petición esta en proceso',
+        });
+
+        // retornamos a la vista anterios
+        navigation.pop();
     };
 
+    // metodo que se ejecuta cuando se carga la vista
     const ConfigureComponent = async () => {
         try {
-            const coinsResponse = await http.get(
-                'https://ardent-medley-272823.appspot.com/collection/prices/minimal',
-            );
-            if (isMounted.current) {
-                setCoinList(Object.values(coinsResponse.data));
-            }
+            // obtenemos los precios de las monedas principales
+            const { data } = await Axios.get(`${serverSpeedtradingsURL}/collection/prices/minimal`);
+
+
+            console.log(data)
+
+            // convertimos el objeto en array
+            const arrayCoins = Object.values(data)
+
+            setCoinList(arrayCoins)
         } catch (e) {
             errorMessage(e.message);
-        } finally {
-            if (isMounted.current) {
-                console.log('Coins', coinList[0]);
-            }
         }
     };
 
@@ -82,76 +100,104 @@ const Retirements = () => {
             isMounted.current = false;
         };
     }, []);
+
+    useEffect(() => {
+        if (amount.trim()) {
+
+            // total de dolares escritos por el usuario
+            const totalAmount = parseFloat(amount)
+
+            const { price } = coinList[coinIndexSelected].quote.USD
+
+
+            const satochiNakamotoXD = (totalAmount / price)
+
+            setTotalAmountSatochi(_.floor(satochiNakamotoXD, 8))
+        } else {
+            setTotalAmountSatochi(0)
+        }
+    }, [amount, coinIndexSelected])
+
+
     return (
-        <ViewAnimation style={styles.container} animation='fadeIn'>
-            <Image source={Logo} style={styles.logo} />
+        <Container>
+            <ViewAnimation style={styles.container} animation='fadeIn'>
+                <Image source={Logo} style={styles.logo} />
 
-            <View style={styles.row}>
+                <Card />
+
+                <View style={styles.row}>
+                    <View style={styles.col}>
+                        <Text style={styles.legend}>Dirección de billetera</Text>
+
+                        <View style={styles.rowInput}>
+                            <TextInput
+                                style={[GlobalStyles.textInput, { flex: 1 }]}
+                                value={walletAddress}
+                                onChangeText={setWalletAddress}
+                                returnKeyLabel="next"
+                            />
+
+                            <TouchableOpacity onPress={toggleScan} style={styles.buttonScan}>
+                                <Lottie source={QR} style={styles.lottieQRAnimation} autoPlay loop />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+
+                <View style={styles.row}>
+                    <View style={styles.colSelectionCoin}>
+                        <Text style={styles.legend}>Moneda</Text>
+
+                        <View style={GlobalStyles.containerPicker}>
+                            <Picker style={GlobalStyles.picker}
+                                selectedValue={coinIndexSelected}
+                                onValueChange={(value) => setCoin(value)}>
+                                {
+                                    coinList.map((item, index) => (
+                                        <Picker.Item enabled={true} key={index} label={item.symbol} value={index} />))
+                                }
+                            </Picker>
+                        </View>
+                    </View>
+
+                    <View style={styles.col}>
+                        <Text style={styles.legend}>Mondo a retirar</Text>
+
+                        <View style={styles.rowInput}>
+                            <TextInput
+                                style={[GlobalStyles.textInput, { flex: 1 }]}
+                                value={amount}
+                                onChangeText={(value) => setAmount(value)}
+                                keyboardType="numeric"
+                                placeholderTextColor={Colors.$colorGray}
+                                placeholder="0.00 (USD)"
+                                returnKeyType="done"
+                            />
+                        </View>
+                    </View>
+                </View>
+
                 <View style={styles.col}>
-                    <Text style={styles.legend}>Dirección de billetera</Text>
+                    <Text style={styles.totalSatochi}>{amountSatochi} {coinList[coinIndexSelected]?.symbol}</Text>
+                </View>
 
-                    <View style={styles.rowInput}>
-                        <TextInput
-                            style={[GlobalStyles.textInput, { flex: 1 }]}
-                            value={walletAddress}
-                            onChangeText={setWalletAddress}
+                <View style={{ padding: 15 }}>
+                    <TouchableOpacity onPress={_handleSubmit} style={GlobalStyles.buttonPrimary}>
+                        <Text style={GlobalStyles.textButton}>Retirar fondos</Text>
+                    </TouchableOpacity>
+                </View>
+
+                <Modal backdropOpacity={0.9} animationIn='fadeIn' onBackButtonPress={toggleScan} onBackdropPress={toggleScan} animationOut='fadeOut' isVisible={showScanner} >
+                    <View style={styles.constainerQR}>
+                        <QRCodeScanner
+                            onRead={onReadCodeQR}
+                            flashMode={RNCamera.Constants.FlashMode.auto}
                         />
-
-                        <TouchableOpacity onPress={toggleScan} style={styles.buttonScan}>
-                            <Lottie source={QR} style={styles.lottieQRAnimation} autoPlay loop />
-                        </TouchableOpacity>
                     </View>
-                </View>
-            </View>
-
-            <View style={styles.row}>
-                <View style={styles.col}>
-                    <Text style={styles.legend}>Mondo a retirar</Text>
-
-                    <View style={styles.rowInput}>
-                        <TextInput
-                            style={[GlobalStyles.textInput, { flex: 1 }]}
-                            value={amount}
-                            onChangeText={(value) => setAmount(value)}
-                            keyboardType="numeric"
-                            returnKeyType="done"
-                        />
-                    </View>
-                </View>
-            </View>
-
-            <View style={styles.row}>
-                <View style={styles.col}>
-                    <Text style={styles.legend}>Moneda</Text>
-
-                    <View style={GlobalStyles.containerPicker}>
-                        <Picker style={GlobalStyles.picker}
-                            selectedValue={coin}
-                            onValueChange={(value) => setCoin(value)}>
-                            {
-                                coinList.map((item, index) => (
-                                    <Picker.Item enabled={true} key={index} label={item.name} value={item.symbol} />))
-                            }
-                        </Picker>
-                    </View>
-                </View>
-            </View>
-
-            <View style={{ padding: 15 }}>
-                <TouchableOpacity onPress={_handleSubmit} style={GlobalStyles.buttonPrimary}>
-                    <Text style={GlobalStyles.textButton}>Retirar fondos</Text>
-                </TouchableOpacity>
-            </View>
-
-            <Modal backdropOpacity={0.9} animationIn='fadeIn' onBackButtonPress={toggleScan} onBackdropPress={toggleScan} animationOut='fadeOut' isVisible={showScanner} >
-                <View style={styles.constainerQR}>
-                    <QRCodeScanner
-                        onRead={onReadCodeQR}
-                        flashMode={RNCamera.Constants.FlashMode.auto}
-                    />
-                </View>
-            </Modal>
-        </ViewAnimation>
+                </Modal>
+            </ViewAnimation>
+        </Container>
     )
 }
 
@@ -168,6 +214,12 @@ const styles = StyleSheet.create({
         marginHorizontal: RFValue(10),
     },
 
+    colSelectionCoin: {
+        // flex: 1,
+        width: "30%",
+        marginHorizontal: RFValue(10),
+    },
+
     row: {
         flexDirection: "row",
         justifyContent: "space-between",
@@ -179,6 +231,7 @@ const styles = StyleSheet.create({
     },
 
     rowInput: {
+        position: "relative",
         alignItems: "center",
         flexDirection: "row"
     },
@@ -186,7 +239,7 @@ const styles = StyleSheet.create({
     buttonScan: {
         backgroundColor: Colors.$colorYellow,
         borderRadius: RFValue(5),
-        padding: RFValue(5),
+        // padding: RFValue(-),
         marginLeft: RFValue(10),
         zIndex: 1000,
     },
@@ -257,6 +310,12 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
         height: RFValue(160),
         width: RFValue(380),
+    },
+    totalSatochi: {
+        alignSelf: "center",
+        color: Colors.$colorYellow,
+        fontSize: RFValue(24),
+        marginVertical: RFValue(10),
     }
 })
 

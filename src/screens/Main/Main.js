@@ -42,7 +42,8 @@ const Main = () => {
     return (
         <Container showLogo>
             <KeyboardAvoidingView enabled>
-                    
+                <ScrollView>
+                    <Image source={Logo} resizeMode="contain" style={{ alignSelf: "center", height: RFValue(128) }} />
 
                     <Card />
 
@@ -62,6 +63,7 @@ const Main = () => {
                         stateView === TYPE_VIEW.HISTORY &&
                         <History />
                     }
+                </ScrollView>
             </KeyboardAvoidingView>
         </Container>
     )

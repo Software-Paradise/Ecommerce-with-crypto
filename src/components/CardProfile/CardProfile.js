@@ -50,7 +50,7 @@ const CadProfile = () => {
                         <Text style={[styles.textHeaderTable, { alignSelf: "flex-start" }]}>Dirección</Text>
                     </View>
                     <View style={styles.bodyRowTable}>
-                        <Text style={styles.textRowTable}>{global.amount_wallet_commerce} {global.name_coin}</Text>
+                        <Text style={styles.textRowTable}>{global.amount_wallet_commerce} <Text style={{ fontSize: RFValue(9) }}>USD</Text></Text>
                         <Text style={styles.textHeaderTable}>Saldo total</Text>
                     </View>
 
