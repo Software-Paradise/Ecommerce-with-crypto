@@ -13,11 +13,7 @@ import store from '../../store'
 
 const CadProfile = () => {
     const { global } = store.getState()
-<<<<<<< Updated upstream
     const [source, setSource] = useState(null)
-=======
-    const [source, setSource] = useState('')
->>>>>>> Stashed changes
 
     // ???????
     const read = async () => {
@@ -45,14 +41,7 @@ const CadProfile = () => {
                     <Text style={styles.textHeaderTableTitle}>{global.name_commerce}</Text>
                 </View>
 
-<<<<<<< Updated upstream
                 <View style={styles.lineTitle} />
-=======
-                <View style={{ flexDirection: 'column', width: '75%', paddingLeft: 5 }}>
-                    <View style={styles.headerTableTitle}>
-                        <Text style={styles.textHeaderTableTitle}>{global.name_commerce}</Text>
-                    </View>
->>>>>>> Stashed changes
 
                 <View style={styles.dataDetailsInfoContainer}>
                     <View style={styles.headerTable}>
@@ -80,17 +69,6 @@ const styles = StyleSheet.create({
         marginHorizontal: RFValue(10),
         padding: RFValue(10),
         flexDirection: 'row',
-<<<<<<< Updated upstream
-=======
-        width: '100%',
-        height: RFValue(90)
-    },
-    containerBackground: {
-        height: '100%',
-        width: '25%',
-        overflow: 'hidden',
-        // padding: 10,
->>>>>>> Stashed changes
     },
     logo: {
         borderRadius: 10,
@@ -122,11 +100,7 @@ const styles = StyleSheet.create({
     },
     textHeaderTable: {
         textAlign: 'right',
-<<<<<<< Updated upstream
         fontSize: RFValue(10),
-=======
-        fontSize: RFValue(14),
->>>>>>> Stashed changes
         color: Colors.$colorYellow
     },
     bodyRowTable: {
@@ -135,12 +109,7 @@ const styles = StyleSheet.create({
     },
     textRowTable: {
         color: "#FFF",
-<<<<<<< Updated upstream
         fontSize: RFValue(13),
-=======
-        fontSize: RFValue(12),
-        // justifyContent: "center"
->>>>>>> Stashed changes
     },
     lineTitle: {
         borderBottomColor: Colors.$colorYellow,

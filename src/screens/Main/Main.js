@@ -41,10 +41,8 @@ const Main = () => {
 
     return (
         <Container showLogo>
-<<<<<<< Updated upstream
-            <KeyboardAvoidingView enabled >
-                <ScrollView>
-                    <Image source={Logo} resizeMode="contain" style={{ alignSelf: "center", height: RFValue(128) }} />
+            <KeyboardAvoidingView enabled>
+                    
 
                     <Card />
 
@@ -54,25 +52,16 @@ const Main = () => {
                         stateView === TYPE_VIEW.PAY &&
                         <PayComponent />
                     }
-=======
-            <KeyboardAvoidingView enabled>
-                <Card />
-                <Switch onSwitch={setStateView} items={switchItems} indexActive={state.idexTabActive} />
-                {
-                    stateView === TYPE_VIEW.PAY &&
-                    <PayComponent />
-                }
->>>>>>> Stashed changes
 
-                {
-                    stateView === TYPE_VIEW.SEND &&
-                    <SendComponent />
-                }
+                    {
+                        stateView === TYPE_VIEW.SEND &&
+                        <SendComponent />
+                    }
 
-                {
-                    stateView === TYPE_VIEW.HISTORY &&
-                    <History />
-                }
+                    {
+                        stateView === TYPE_VIEW.HISTORY &&
+                        <History />
+                    }
             </KeyboardAvoidingView>
         </Container>
     )
