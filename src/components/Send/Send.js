@@ -6,11 +6,12 @@ import { useNavigation } from "@react-navigation/native"
 import Lottie from 'lottie-react-native'
 import Modal from 'react-native-modal'
 import QRCodeScanner from 'react-native-qrcode-scanner'
-import { RFValue, Colors, GlobalStyles, http, getHeaders, showNotification, errorMessage, successMessage } from '../../utils/constants.util'
+import { RFValue, Colors, GlobalStyles, http, getHeaders, showNotification, errorMessage, successMessage, getFeePercentage } from '../../utils/constants.util'
 import { RNCamera } from 'react-native-camera'
 import { View as ViewAnimation } from 'react-native-animatable'
 import Container from '../Container/Container'
 import Card from '../../components/CardProfile/CardProfile'
+import Loader from '../../components/Loader/Loader'
 
 // Import Assets
 import QR from '../../animations/scan-qr.json'
@@ -20,12 +21,11 @@ import defaultAvatar from '../../assets/img/profile-default.png'
 // Import redux store
 import store from '../../store'
 
-
-
 const initialState = {
     amountFraction: "",
     amountUSD: "",
     walletAdress: "",
+    fee: '00',
 
     dataWallet: null,
     walletAccepted: false,
@@ -61,7 +61,7 @@ const sentComponent = () => {
             const dataSent = {
                 amount: parseFloat(state.amountFraction),
                 wallet: state.walletAdress,
-                id_wallet: global.wallet_commerce,
+                id: global.wallet_commerce,
             }
             console.log("dataSent", dataSent)
 
@@ -82,6 +82,9 @@ const sentComponent = () => {
                 // limpiamos la direccion de wallet
                 dispatch({ type: "walletAdress", payload: "" })
                 dispatch({ type: "walletAccepted", payload: false })
+
+                // limpiamos el fee
+                dispatch({type:'fee', payload:'00'})
             } else {
                 throw String("Tu transacción no se ha compeltado, contacte a soporte")
             }
@@ -144,15 +147,22 @@ const sentComponent = () => {
         dispatch({ type: 'walletAdress', payload: data })
     }
 
-    const toggleScan = () => setShowScanner(!showScanner)
+    const onChangeAmount = (str) => {
+        dispatch({ type: 'amountFraction', payload: str })
 
+        const { fee } = getFeePercentage(str, 1, global.fee)
+        dispatch({ type: 'fee', payload: fee * str })
+    }
+
+    const toggleScan = () => setShowScanner(!showScanner)
 
     useEffect(() => {
         configureComponent()
     }, [])
 
     return (
-        <Container showLogo onRefreshEnd={configureComponent}>
+        <Container showLogo >
+            <Loader isVisible={loader} />
             <Card />
             <View style={styles.container}>
                 <View style={styles.containerTitle}>
@@ -185,10 +195,19 @@ const sentComponent = () => {
                             <TextInput
                                 style={[GlobalStyles.textInput, { flex: 1 }]}
                                 value={state.amountFraction}
-                                onChangeText={str => dispatch({ type: 'amountFraction', payload: str })}
+                                onChangeText={onChangeAmount}
                                 keyboardType="numeric"
                                 returnKeyType="done"
                             />
+
+                        </View>
+                    </View>
+                    <View style={[styles.col, { justifyContent: 'center' }]}>
+                        <View style={styles.rowInput}>
+                            <Text style={styles.legend}>Fee</Text>
+                        </View>
+                        <View style={styles.rowInput}>
+                            <Text style={{ color: '#FFF', fontSize: RFValue(24) }}>{state.fee} USD</Text>
                         </View>
                     </View>
                 </View>
@@ -218,7 +237,6 @@ const sentComponent = () => {
                         <TouchableOpacity onPress={onRetirement}>
                             <Text style={styles.retirementText}>Retirar fondos</Text>
                         </TouchableOpacity>
-
                         <TouchableOpacity onPress={onComprobateWallet} style={[GlobalStyles.buttonPrimary, { flex: 1, marginLeft: 25 }]}>
                             <Text style={GlobalStyles.textButton}>siguiente</Text>
                         </TouchableOpacity>
@@ -249,7 +267,7 @@ const styles = StyleSheet.create({
     container: {
         width: "100%",
         paddingHorizontal: RFValue(10),
-        padding:10
+        padding: 10
     },
     containerTitle: {
         flexDirection: "row",
@@ -273,12 +291,14 @@ const styles = StyleSheet.create({
     },
 
     legend: {
-        color: Colors.$colorYellow
+        color: Colors.$colorYellow,
+        fontSize: RFValue(14)
     },
 
     rowInput: {
         alignItems: "center",
-        flexDirection: "row"
+        flexDirection: "row",
+        justifyContent: "center"
     },
 
     buttonScan: {
@@ -311,7 +331,7 @@ const styles = StyleSheet.create({
     },
     retirementContainer: {
         alignItems: "center",
-        justifyContent: "space-evenly",
+        /* justifyContent: "space-evenly", */
         flexDirection: "row",
         marginHorizontal: RFValue(10),
     },

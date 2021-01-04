@@ -1,167 +1,165 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigation } from '@react-navigation/native'
-import { View, Text, StyleSheet, TouchableOpacity, Platform, Image } from 'react-native'
 
-// Import Component
-import Modal from 'react-native-modal'
-import Lottie from 'lottie-react-native'
-import { isIphoneX } from "react-native-iphone-x-helper"
-import { RFValue } from 'react-native-responsive-fontsize'
-import { Colors, deleteStorage } from '../../utils/constants.util'
+// Import components
+import Icon from 'react-native-vector-icons/AntDesign'
+import { StyleSheet, View, TouchableOpacity, Keyboard, Image, Platform, Alert } from 'react-native'
+import { BlurView } from "@react-native-community/blur"
 
-// Import Storege
-import storeRedux from '../../store/index'
-import { DELETESTORAGE, SETFUNCTION } from '../../store/actionTypes'
+// Import funtions and constanst
+import { RFValue, logOutApp, OpenSupport } from '../../utils/constants.util'
+import { useNavigation, StackActions } from '@react-navigation/native'
 
 // Import Assets
-import Logo from '../../assets/img/logo.png'
-import more from '../../assets/img/more.png'
-import Home from '../../animations/home.json'
-import Transaction from '../../animations/transaction.json'
-import LogOut from '../../animations/logout.json'
+import Facturar from '../../assets/img/facturar.png'
+import Enviar from '../../assets/img/enviar.png'
+import Historial from '../../assets/img/history.png'
+import Support from '../../assets/img/support.png'
+import Exit from '../../assets/img/exit.png'
 
-const NavBar = ({ config = {} }) => {
-    const { logoSource, colorNavBar, backgroundMore, logoScale } = config
+iconSize = RFValue(32)
 
-    const scale = logoScale ? logoScale : 1
-    const navigation = useNavigation()
+const Navbar = () => {
+    const [hidden, setHidden] = useState(false)
+    const { dispatch, navigate } = useNavigation()
 
-    const { global } = storeRedux.getState()
-
-    const [showModal, setShowModal] = useState(false)
-
-    // const goToMain = () => {
-    //     navigation.navigate("Main")
-    //     setShowModal(false)
-    // }
-
-    const logOut = async () => {
-        await deleteStorage()
-
-        storeRedux.dispatch({
-            type: DELETESTORAGE
-        })
-
-        navigation.popToTop()
+    const toggleMenu = () => {
+        Alert.alert("Cerrar Sesion", "Esta apunto de cerrar sesion en Alypay Ecommerce", [
+            {
+                text: "Cancelar",
+                onPress: () => { }
+            },
+            {
+                text: "Cerrar Sesion",
+                onPress: logOut
+            }
+        ])
     }
 
-    const styles = StyleSheet.create({
-        container: {
-            alignItems: "center",
-            backgroundColor: colorNavBar ? colorNavBar : "rgba(0, 0, 0, 0.5)",
-            paddingHorizontal: 10,
-            paddingTop: (Platform.OS === "ios" && isIphoneX()) ? RFValue(25) : 0,
-            flexDirection: "row",
-            width: "100%",
-            justifyContent: "space-between"
-        },
-
-        logo: {
-            resizeMode: "contain",
-            height: RFValue(60 * scale),
-            width: RFValue(120 * scale),
-        },
-
-        buttonMore: {
-            opacity: 1,
-            borderRadius: 25,
-            backgroundColor: backgroundMore ? backgroundMore : 'rgba(250, 250, 250, 0.2)',
-            padding: 5,
-        },
-
-        imageMore: {
-            resizeMode: "contain",
-            height: RFValue(16)
-        },
-
-        containerModal: {
-            backgroundColor: "rgba(0, 0, 0, 1)",
-            marginTop: "8%",
-            padding: 15,
-            borderRadius: 10,
-            width: "75%",
-        },
-
-        line: {
-            borderBottomColor: Colors.$colorYellow,
-            borderBottomWidth: 1,
-            marginVertical: 10,
-        },
-
-        titleModal: {
-            fontSize: RFValue(16),
-            color: Colors.$colorYellow,
-        },
-
-        selectionMenu: {
-            position: "relative",
-            alignItems: "center",
-            flexDirection: "row",
-            paddingVertical: 10,
-        },
-
-        textSelection: {
-            fontSize: RFValue(14),
-            color: "#FFF",
-            marginLeft: 10,
-        },
-
-        imageItem: {
-            height: RFValue(25),
-            width: RFValue(25),
-        },
-
-        textCommingSoon: {
-            // marginLeft: 10,
-            color: "#FFF",
-            fontSize: RFValue(10),
-            padding: 5,
-            borderRadius: 5,
-            backgroundColor: Colors.$colorRed,
-            position: "absolute",
-            right: 0,
+    const goToTop = () => {
+        try {
+            dispatch(StackActions.popToTop())
+        } catch (error) {
+            console.log(error)
         }
-    })
+    }
 
-    const logged = (Object.values({ ...global }).length > 0)
+    const logOut = async () => {
+        try {
+            await logOutApp()
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
-    return (
-        <>
+    /**
+     * Funcion que me permite navegar a la vista de enviar
+     */
+    const onSend = () => {
+        navigate('Send')
+    }
+
+    const onHistory = () => {
+        navigate('History')
+    }
+
+    useEffect(() => {
+        // Ocultamos el menu cuando el teclado se active
+        const eventShowKeyboard = Keyboard.addListener('keyboardDidShow', () => setHidden(true))
+
+        // Mostramos el menu cuando el teclado se oculte
+        const eventHideKeyboard = Keyboard.addListener('keyboardDidHide', () => setHidden(false))
+
+        return () => {
+            // Removemos los eventos cuando el componente se desmonte
+            eventShowKeyboard.remove()
+            eventHideKeyboard.remove()
+        }
+    }, [])
+
+    if (!hidden) {
+        return (
             <View style={styles.container}>
-                <Image source={logoSource ? logoSource : Logo} style={styles.logo} />
+                <View style={styles.subContainer}>
+                    <BlurView style={styles.absolute} blurType="dark" />
 
-                <TouchableOpacity style={styles.buttonMore} onPress={_ => setShowModal(true)}>
-                    <Image source={more} style={styles.imageMore} />
-                </TouchableOpacity>
-            </View>
+                    <View style={styles.containerButtons}>
 
-            <Modal
-                animationOut="fadeOutDown"
-                backdropOpacity={0}
-                style={{ justifyContent: 'flex-start', alignItems: 'flex-end' }}
-                isVisible={showModal}
-                onBackdropPress={_ => setShowModal(false)}
-                onBackButtonPress={_ => setShowModal(false)}
-            >
-                <View style={styles.containerModal}>
+                        <TouchableOpacity onPress={goToTop} style={styles.button}>
+                            <Image source={Facturar} style={styles.imageProfile} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={onSend} style={styles.button}>
+                            <Image source={Enviar} style={styles.imageProfile} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={onHistory} style={styles.button}>
+                            <Image source={Historial} style={styles.imageProfile} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={OpenSupport} style={styles.button}>
+                            <Image source={Support} style={styles.imageProfile} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={toggleMenu} style={styles.button}>
+                            <Image source={Exit} style={styles.imageProfile} />
+                        </TouchableOpacity>
+                    </View>
+
                     {
-                        logged &&
-                        <>
-                            {/* <TouchableOpacity onPress={goToMain} style={styles.selectionMenu}>
-                                <Lottie style={styles.imageItem} source={Home} autoPlay loop={false} />
-                                <Text style={styles.textSelection}>Ir a Inicio</Text>
-                            </TouchableOpacity> */}
-
-                            <TouchableOpacity onPress={logOut} style={styles.selectionMenu}>
-                                <Lottie style={styles.imageItem} source={LogOut} autoPlay loop={false} />
-
-                                <Text style={styles.textSelection}>Cerrar Sesión</Text>
-                            </TouchableOpacity>
-                        </>
+                        Platform.OS === "ios" &&
+                        <View style={{ height: 20 }} />
                     }
                 </View>
-            </Modal>
-        </>
-    )
+            </View>
+        )
+    } else {
+        return null
+    }
 }
-export default NavBar
+
+
+const styles = StyleSheet.create({
+    container: {
+        // backgroundColor: Colors.colorYellow,
+        overflow: "hidden",
+        position: "absolute",
+        bottom: 0,
+        width: "100%",
+        zIndex: 100,
+    },
+
+    absolute: {
+        ...StyleSheet.absoluteFillObject
+    },
+
+    subContainer: {
+        position: "relative",
+        flex: 1,
+    },
+
+    containerButtons: {
+        alignSelf: "center",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        width: "100%",
+    },
+
+    button: {
+        justifyContent: "center",
+        alignSelf: "center",
+        flexDirection: "row",
+        // backgroundColor: "rgba(255, 255, 255, 0.1)",
+        padding: RFValue(10),
+        flex: 1,
+    },
+
+    imageProfile: {
+        borderRadius: iconSize * 2,
+        resizeMode: "contain",
+        width: iconSize,
+        height: iconSize,
+    },
+})
+
+export default Navbar

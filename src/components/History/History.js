@@ -7,7 +7,7 @@ import Search from '../Search/Search'
 import HistorElement from '../HistoryElement/HistoryElement'
 import Lottie from 'lottie-react-native'
 import EmptyBox from '../../animations/empty-state.json'
-import { View as ViewAnimation } from 'react-native-animatable'
+import Container from '../../components/Container/Container'
 import { useNavigation } from '@react-navigation/native'
 
 // Import Constants and Functions
@@ -45,27 +45,30 @@ const History = () => {
 
     return (
         <>
-            <View style={styles.container}>
-                <Loader isVisible={loader} />
-                <View style={styles.containerTitle}>
-                    <Text style={styles.legendTitle}>Historial de transacciones</Text>
+            <Container showLogo >
+                <View style={styles.container}>
+                    <Loader isVisible={loader} />
+                    <View style={styles.containerTitle}>
+                        <Text style={styles.legendTitle}>Historial de transacciones</Text>
+                    </View>
+                    <Search />
+                    
+                    {
+                        (transaction.length > 0)
+                            ?
+                            <FlatList
+                                keyExtractor={(_, key) => (key = key.toString())}
+                                data={transaction}
+                                renderItem={({ item, index }) => <HistorElement navigate={navigate} item={item} index={index} />}
+                            />
+                            :
+                            <View>
+                                <Lottie source={EmptyBox} autoPlay loop={false} style={styles.empty} />
+                                <Text style={styles.titleText}>No hay transacciones realizadas</Text>
+                            </View>
+                    }
                 </View>
-                <Search />
-                {
-                    (transaction.length > 0)
-                        ?
-                        <FlatList
-                            keyExtractor={(_, key) => (key = key.toString())}
-                            data={transaction}
-                            renderItem={({ item, index }) => <HistorElement navigate={navigate} item={item} index={index} />}
-                        />
-                        :
-                        <View>
-                            <Lottie source={EmptyBox} autoPlay loop={false} style={styles.empty} />
-                            <Text style={styles.titleText}>No hay transacciones realizadas</Text>
-                        </View>
-                }
-            </View>
+            </Container>
         </>
     )
 }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native'
 
 // Import Constants
-import { Colors, RFValue, GlobalStyles, showNotification } from '../../utils/constants.util'
+import { Colors, RFValue, GlobalStyles, showNotification, setStorage, http } from '../../utils/constants.util'
 import Loader from '../../components/Loader/Loader'
 import { useNavigation } from '@react-navigation/native';
 
@@ -10,10 +10,12 @@ import { useNavigation } from '@react-navigation/native';
 import Container from '../Container/Container'
 import Card from '../../components/CardProfile/CardProfile'
 
-// Import Assets
-// import Logo from '../../assets/img/logo.png'
+// Import redux store
+import store from '../../store'
+import { SETSTORAGE } from '../../store/actionTypes'
 
 const Payment = () => {
+    const { global } = store.getState()
     const navigation = useNavigation()
     const [amount, setAmount] = useState('')
     const [loader, setLoader] = useState(false)
@@ -34,7 +36,27 @@ const Payment = () => {
         }
     }
 
+    const feesPercentage = async () => {
+        try {
+            setLoader(true)
+
+            const { data } = await http.get('/fees-percentage')
+
+            if (Object.values(data).length > 0) {
+                store.dispatch({ type: SETSTORAGE, payload: { ...global.data, fee: data} })
+
+                setStorage(data)
+            }
+
+        } catch (error) {
+            showNotification(error.toString())
+        } finally {
+            setLoader(false)
+        }
+    }
+
     useEffect(() => {
+        feesPercentage()
         const onSubscribe = navigation.addListener('focus', () => {
             setAmount('')
         })
@@ -43,7 +65,9 @@ const Payment = () => {
     }, [])
 
     return (
-        <Container>
+        <Container showLogo onRefreshEnd={feesPercentage}>
+            <Loader isVisible={loader} />
+            <Card />
             <View style={styles.container}>
                 <View style={styles.containerTitle}>
                     <Text style={styles.legendTitle}>Facturar transaccion</Text>
@@ -80,7 +104,7 @@ const styles = StyleSheet.create({
     container: {
         width: "100%",
         paddingHorizontal: RFValue(10),
-        padding:10
+        padding: 10
     },
     containerTitle: {
         flexDirection: "row",

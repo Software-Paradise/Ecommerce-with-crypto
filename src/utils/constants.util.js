@@ -5,7 +5,7 @@ import TouchID from 'react-native-touch-id'
 import Toast from 'react-native-simple-toast'
 import RNFetchBlob from 'rn-fetch-blob'
 import store from '../store/index'
-import { Platform, StyleSheet, StatusBar, Dimensions, Alert } from 'react-native'
+import { Platform, StyleSheet, StatusBar, Dimensions, Alert, Linking } from 'react-native'
 import { check, PERMISSIONS, RESULTS, request } from 'react-native-permissions'
 import { SETPERMISSIONS, DELETESTORAGE, SETLOADER } from '../store/actionTypes'
 import { showMessage } from 'react-native-flash-message'
@@ -298,13 +298,13 @@ export const showNotification = (message = "", type = "info" | "error" | "warnin
 
 const PORT = '3085';
 
-// export const serverAddress = Platform.OS === 'ios' ? `http://localhost:${PORT}` : `http://192.168.0.119:${PORT}`;
+export const serverAddress = Platform.OS === 'ios' ? `http://localhost:${PORT}` : `http://192.168.0.120:${PORT}`;
 
 export const serverSpeedtradingsURL = "https://ardent-medley-272823.appspot.com";
 
-export const serverAddress = 'http://staging.root-anvil-299019.appspot.com/';
-// export const socketAddress = serverAddress;
-export const socketAddress = 'http://staging.root-anvil-299019.appspot.com/'
+/* export const serverAddress = 'http://staging.root-anvil-299019.appspot.com/'; */
+export const socketAddress = serverAddress;
+//export const socketAddress = 'http://staging.root-anvil-299019.appspot.com/'
 
 
 export const CopyClipboard = async (text = '') => {
@@ -312,7 +312,7 @@ export const CopyClipboard = async (text = '') => {
   Toast.show('Copiado a portapeles', Toast.LONG);
 };
 
-/// ?????? ????
+// Convierete un blog en un archivo previsaulizable
 export const readFile = (fileId) => new Promise(async (resolve, _) => {
   const { headers } = getHeaders()
 
@@ -322,6 +322,37 @@ export const readFile = (fileId) => new Promise(async (resolve, _) => {
   const base64 = await response.base64()
   resolve(`data:image/jpeg;base64,${base64}`)
 })
+
+/**
+* Obtiene el porcentaje del fee según el monto ingresado y el tipo de fee a verificar
+* @param {Number} amount - Monto actual
+* @param {Number} feeType - tipo de fee (1=transacción, 2=retiro, 3=exchange)
+*/
+export const getFeePercentage = (amount, feeType, fees) => {
+  const enableFees = {
+    1: 'transaction',
+    2: 'retirement',
+    3: 'exchange'
+  }
+
+  const currentFeeType = enableFees[feeType]
+
+  const [firstFee, secondFee, lastFee] = fees[currentFeeType]
+
+  // Se verifica sí el monto está dentro del primer rango
+  if (amount <= firstFee.limit) {
+    return firstFee
+  }
+  // Se verifica sí el monto está dentro del segundo rango
+  if (amount > firstFee.limit && amount <= lastFee.limit) {
+    return secondFee
+  }
+  // Se verifica sí el monto está dentro del último rango
+  if (amount > lastFee.limit) {
+    return lastFee
+  }
+  return {}
+}
 
 
 export const http = axios.create({
@@ -380,3 +411,6 @@ export const checkPermissionCamera = () => new Promise(async (resolve, reject) =
     reject(error)
   }
 })
+
+/**Abre la app de whatsapp para soporte */
+export const OpenSupport = () => Linking.openURL('https://wa.me/+50660727720')
