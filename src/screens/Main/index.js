@@ -50,13 +50,8 @@ const OpenSupport = () => Linking.openURL('https://wa.me/+50660727720')
 
 const Router = () => {
     return (
-<<<<<<< HEAD
         <Tab.Navigator initialRouteName="Payment"
             barStyle={{ backgroundColor: Colors.$colorBlack }}
-=======
-        <Tab.Navigator initialRouteName="Retirements"
-            barStyle={{ backgroundColor: Colors.$colorMain }}
->>>>>>> 66c7b965794d480cd3bb908604547627e55429f6
             activeColor={Colors.$colorYellow}
             inactiveColor={Colors.$colorYellow}
         >
