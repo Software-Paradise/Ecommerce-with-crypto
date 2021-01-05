@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+<<<<<<< HEAD
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { StatusBar } from "react-native"
+=======
+
+>>>>>>> ba88c2995e2da1d5f84e533a3373cf483a123452
 import Login from './src/screens/Login/Login';
 import RegisterScreen from './src/screens/Register/Register';
 import LegalDataScreen from './src/screens/legaldata.screen';
@@ -11,7 +15,7 @@ import WelcomeScreen from './src/screens/welcome.screen';
 import RegisterCommerceScreen from './src/screens/Register Commerce/RegisterCommerce';
 import CommerceList from './src/screens/commerce-list.screen';
 import ProductList from './src/screens/product-list.screen';
-import MainScreen from './src/screens/Main/Main';
+import MainScreen from './src/screens/Main/index';
 
 // Import functions and constants from utils
 import { getStorage } from './src/utils/constants.util';
@@ -26,10 +30,9 @@ import HistoryScreen from './src/components/History/History'
 // Import Componets
 import Description from './src/components/Description/Description'
 
-import Router from './src/screens/Main/index'
 const Stack = createStackNavigator();
 
-const Tab = createBottomTabNavigator();
+
 
 const App = () => {
   const [logged, setLogin] = useState(false)
@@ -78,10 +81,14 @@ const App = () => {
           {
             logged &&
             <>
-              <Stack.Screen name="Main" component={Router}  />
-              <Stack.Screen name="Description" component={Description}  />
-              <Tab.Screen name="Transaction" component={TransactionScreen}  />
-              <Stack.Screen name="Retirements" component={RetirementsScreen}  />
+              <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="Recharge" component={RechargeScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="Retirements" component={RetirementsScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="CommerceList" component={CommerceList} options={{ headerShown: false }} />
+              <Stack.Screen name="ProductList" component={ProductList} options={{ headerShown: false }} />
+              <Stack.Screen name="Transaction" component={TransactionScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="HistoryTransaction" component={HistoryScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="Description" component={Description} options={{ headerShown: false }} />
             </>
           }
 

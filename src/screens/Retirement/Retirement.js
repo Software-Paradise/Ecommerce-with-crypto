@@ -78,11 +78,9 @@ const Retirements = () => {
     // metodo que se ejecuta cuando se carga la vista
     const ConfigureComponent = async () => {
         try {
+
             // obtenemos los precios de las monedas principales
             const { data } = await Axios.get(`${serverSpeedtradingsURL}/collection/prices/minimal`);
-
-
-            console.log(data)
 
             // convertimos el objeto en array
             const arrayCoins = Object.values(data)
@@ -120,11 +118,14 @@ const Retirements = () => {
 
 
     return (
-        <Container>
+        <Container showLogo>
             <ViewAnimation style={styles.container} animation='fadeIn'>
-                <Image source={Logo} style={styles.logo} />
 
                 <Card />
+
+                <View style={styles.containerTitle}>
+                    <Text style={styles.legendTitle}>Facturar transaccion</Text>
+                </View>
 
                 <View style={styles.row}>
                     <View style={styles.col}>
@@ -155,7 +156,7 @@ const Retirements = () => {
                                 onValueChange={(value) => setCoin(value)}>
                                 {
                                     coinList.map((item, index) => (
-                                        <Picker.Item enabled={true} key={index} label={item.symbol} value={index} />))
+                                        <Picker.Item enabled={true} key={index} label={item.symbol} value={index} color={Colors.$colorYellow} />))
                                 }
                             </Picker>
                         </View>
@@ -206,7 +207,6 @@ const styles = StyleSheet.create({
         flex: 1,
         width: "100%",
         paddingHorizontal: RFValue(10),
-        backgroundColor: Colors.$colorMain
     },
 
     col: {
@@ -245,8 +245,8 @@ const styles = StyleSheet.create({
     },
 
     lottieQRAnimation: {
-        height: RFValue(50),
-        width: RFValue(50),
+        height: RFValue(40),
+        width: RFValue(35),
     },
     constainerQR: {
         alignItems: "center",
@@ -316,7 +316,17 @@ const styles = StyleSheet.create({
         color: Colors.$colorYellow,
         fontSize: RFValue(24),
         marginVertical: RFValue(10),
-    }
+    },
+    containerTitle: {
+        flexDirection: "row",
+        justifyContent: "center"
+    },
+    legendTitle: {
+        color: Colors.$colorYellow,
+        fontSize: RFValue(24),
+        textTransform: 'uppercase',
+        marginBottom: 10
+    },
 })
 
 export default Retirements
