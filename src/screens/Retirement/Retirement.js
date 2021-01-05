@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native'
 
-import { RFValue, Colors, GlobalStyles, http, errorMessage, serverSpeedtradingsURL } from '../../utils/constants.util'
+import { RFValue, Colors, GlobalStyles, http, errorMessage, serverSpeedtradingsURL, getFeePercentage, getHeaders, successMessage } from '../../utils/constants.util'
 
 // import components
 import Card from '../../components/CardProfile/CardProfile'
@@ -28,6 +28,8 @@ const Retirements = () => {
     const { global } = store.getState();
 
     const [amountSatochi, setTotalAmountSatochi] = useState(0)
+    const [amountFee, setAmountFee] = useState(0);
+    const [amountFeeUSD, setAmountFeeUSD] = useState(0);
     const [walletAddress, setWalletAddress] = useState('');
     const [amount, setAmount] = useState('');
     const [showScanner, setShowScanner] = useState(false);
@@ -37,42 +39,42 @@ const Retirements = () => {
     const isMounted = useRef(null);
     const toggleScan = () => setShowScanner(!showScanner);
 
-    ///?????
+    // Funcion que permite escanear el QR
     const onReadCodeQR = ({ data }) => {
         toggleScan();
         setWalletAddress(data);
     };
 
-    // ????
+    // Hacemos la peticon al server para hacer el retiro
     const _handleSubmit = async () => {
-        const { data } = await http.post(
-            '/api/ecommerce/wallet/retirement',
-            {
+        try {
+
+            const dataSent = {
                 wallet: walletAddress,
                 id_wallet: global.wallet_commerce,
-                amount: parseFloat(amount),
+                amount: amountSatochi,
                 symbol: coinList[coinIndexSelected].symbol,
-            },
-            {
-                headers: {
-                    'x-auth-token': global.token,
-                },
-            },
-        );
+            }
 
-        // verificamos si hay algun error
-        if (data.error) {
-            errorMessage(data.message);
+            const { data: response } = await http.post('/api/ecommerce/wallet/retirement', dataSent, getHeaders())
+
+            if (response.error) {
+                throw String(response.error)
+            } else if (response.response === 'success') {
+                successMessage('Tu solicitud de retiro esta en proceso')
+
+                // Limpiamos todos los campos
+                setWalletAddress('')
+                onChangeAmountFee('')
+            } else {
+                errorMessage('Tu solicitud de retiro no se ha podido procesar, contacte a soporte')
+            }
+
+            // retornamos a la vista anterios
+            navigation.pop();
+        } catch (error) {
+            errorMessage(error.toString());
         }
-
-        showMessage({
-            type: 'success',
-            message: 'Alypay E-commerce',
-            description: 'Tu petición esta en proceso',
-        });
-
-        // retornamos a la vista anterios
-        navigation.pop();
     };
 
     // metodo que se ejecuta cuando se carga la vista
@@ -80,7 +82,7 @@ const Retirements = () => {
         try {
 
             // obtenemos los precios de las monedas principales
-            const { data } = await Axios.get(`${serverSpeedtradingsURL}/collection/prices/minimal`);
+            const { data } = await http.get(`${serverSpeedtradingsURL}/collection/prices`);
 
             // convertimos el objeto en array
             const arrayCoins = Object.values(data)
@@ -90,6 +92,28 @@ const Retirements = () => {
             errorMessage(e.message);
         }
     };
+
+
+    const onChangeAmountFee = (value) => {
+        if (coinList.length === 0) {
+            return
+        }
+
+        setAmount(value)
+
+        const { fee, fee_aly } = getFeePercentage(amount, 2, global.fee)
+        const { price } = coinList[coinIndexSelected].quote.USD
+        let _amountFeeUSD = 0
+
+        if (coinList[coinIndexSelected] === 'ALY') {
+            _amountFeeUSD = _.floor((value * fee_aly), 8)
+
+        } else {
+            _amountFeeUSD = _.floor((value * fee), 8)
+        }
+
+        setAmountFeeUSD(_amountFeeUSD)
+    }
 
     useEffect(() => {
         isMounted.current = true;
@@ -107,10 +131,17 @@ const Retirements = () => {
 
             const { price } = coinList[coinIndexSelected].quote.USD
 
+            const { fee, fee_aly } = getFeePercentage(totalAmount, 2, global.fee)
 
-            const satochiNakamotoXD = (totalAmount / price)
+            const satochi = (totalAmount)
 
-            setTotalAmountSatochi(_.floor(satochiNakamotoXD, 8))
+            if (coinList[coinIndexSelected] === 'ALY') {
+                setAmountFee(_.floor(satochi * fee_aly, 8))
+            } else {
+                setAmountFee(_.floor(satochi * fee, 8))
+            }
+
+            setTotalAmountSatochi(_.floor(satochi, 8))
         } else {
             setTotalAmountSatochi(0)
         }
@@ -124,7 +155,7 @@ const Retirements = () => {
                 <Card />
 
                 <View style={styles.containerTitle}>
-                    <Text style={styles.legendTitle}>Facturar transaccion</Text>
+                    <Text style={styles.legendTitle}>Retiro de fondos</Text>
                 </View>
 
                 <View style={styles.row}>
@@ -169,9 +200,9 @@ const Retirements = () => {
                             <TextInput
                                 style={[GlobalStyles.textInput, { flex: 1 }]}
                                 value={amount}
-                                onChangeText={(value) => setAmount(value)}
+                                onChangeText={onChangeAmountFee}
                                 keyboardType="numeric"
-                                placeholderTextColor={Colors.$colorGray}
+                                placeholderTextColor="#FFF"
                                 placeholder="0.00 (USD)"
                                 returnKeyType="done"
                             />
@@ -179,8 +210,23 @@ const Retirements = () => {
                     </View>
                 </View>
 
+                <View style={styles.totalFees}>
+                    <View style={styles.containerPrinc}>
+                        <View style={styles.containerTitleFee}>
+                            <Text style={styles.legend}>Monto</Text>
+                            <Text style={styles.legend}>Fee</Text>
+                            <Text style={styles.legend}>Fee (USD)</Text>
+                        </View>
+
+                        <View style={styles.containerTitleFee}>
+                            <Text style={styles.legendSubtitle}>{amountSatochi}</Text>
+                            <Text style={styles.legendSubtitle}>{amountFee}</Text>
+                            <Text style={styles.legendSubtitle}>{amountFeeUSD}</Text>
+                        </View>
+                    </View>
+                </View>
                 <View style={styles.col}>
-                    <Text style={styles.totalSatochi}>{amountSatochi} {coinList[coinIndexSelected]?.symbol}</Text>
+                    <Text style={styles.totalSatochi}>{_.floor(amountSatochi + amountFee, 8)} {coinList[coinIndexSelected]?.symbol}</Text>
                 </View>
 
                 <View style={{ padding: 15 }}>
@@ -245,7 +291,7 @@ const styles = StyleSheet.create({
     },
 
     lottieQRAnimation: {
-        height: RFValue(40),
+        height: RFValue(50),
         width: RFValue(35),
     },
     constainerQR: {
@@ -327,6 +373,27 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
         marginBottom: 10
     },
+    totalFees: {
+        borderTopWidth: 2,
+        borderBottomWidth: 2,
+        borderTopColor: Colors.$colorYellow,
+        borderBottomColor: Colors.$colorYellow,
+        marginHorizontal: RFValue(10),
+    },
+    containerTitleFee: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginVertical: RFValue(5),
+    },
+    containerPrinc: {
+        flexDirection: "column",
+        justifyContent: "space-between",
+        marginBottom: 20,
+    },
+    legendSubtitle: {
+        color: "#FFF",
+        fontSize: RFValue(16)
+    }
 })
 
 export default Retirements

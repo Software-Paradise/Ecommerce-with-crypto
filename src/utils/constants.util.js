@@ -302,7 +302,7 @@ export const serverAddress = Platform.OS === 'ios' ? `http://localhost:${PORT}` 
 
 export const serverSpeedtradingsURL = "https://ardent-medley-272823.appspot.com";
 
-/* export const serverAddress = 'http://staging.root-anvil-299019.appspot.com/'; */
+//export const serverAddress = 'http://staging.root-anvil-299019.appspot.com/'; 
 export const socketAddress = serverAddress;
 //export const socketAddress = 'http://staging.root-anvil-299019.appspot.com/'
 

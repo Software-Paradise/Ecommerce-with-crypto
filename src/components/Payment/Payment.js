@@ -3,16 +3,19 @@ import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'reac
 
 // Import Constants
 import { Colors, RFValue, GlobalStyles, showNotification, setStorage, http } from '../../utils/constants.util'
-import Loader from '../../components/Loader/Loader'
 import { useNavigation } from '@react-navigation/native';
 
 // Import component
 import Container from '../Container/Container'
 import Card from '../../components/CardProfile/CardProfile'
+import Loader from '../../components/Loader/Loader'
 
 // Import redux store
 import store from '../../store'
 import { SETSTORAGE } from '../../store/actionTypes'
+
+// Import assets 
+import Logo from '../../assets/img/aly-system-by.png'
 
 const Payment = () => {
     const { global } = store.getState()
@@ -43,7 +46,7 @@ const Payment = () => {
             const { data } = await http.get('/fees-percentage')
 
             if (Object.values(data).length > 0) {
-                store.dispatch({ type: SETSTORAGE, payload: { ...global.data, fee: data} })
+                store.dispatch({ type: SETSTORAGE, payload: { ...global.data, fee: data } })
 
                 setStorage(data)
             }
@@ -94,6 +97,10 @@ const Payment = () => {
                         <Text style={GlobalStyles.textButton}>Procesar transaccion</Text>
                     </TouchableOpacity>
                 </View>
+
+                <View style={styles.positionLogo}>
+                    <Image source={Logo} style={styles.logo} />
+                </View>
                 <Loader isVisible={loader} />
             </View>
         </Container>
@@ -136,9 +143,15 @@ const styles = StyleSheet.create({
     },
     logo: {
         width: RFValue(300),
-        height: RFValue(100),
+        height: RFValue(90),
         marginBottom: RFValue(40),
     },
+    positionLogo: {
+        flex:1,
+        alignItems: "center",
+        justifyContent: "center",
+        padding:20
+    }
 
 })
 

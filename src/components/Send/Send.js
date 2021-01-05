@@ -161,7 +161,7 @@ const sentComponent = () => {
     }, [])
 
     return (
-        <Container showLogo >
+        <Container showLogo onRefreshEnd >
             <Loader isVisible={loader} />
             <Card />
             <View style={styles.container}>
@@ -310,8 +310,8 @@ const styles = StyleSheet.create({
     },
 
     lottieQRAnimation: {
-        height: RFValue(30),
-        width: RFValue(35),
+        height: RFValue(40),
+        width: RFValue(40),
     },
     constainerQR: {
         alignItems: "center",

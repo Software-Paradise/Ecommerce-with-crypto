@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react'
 
 // Import components
 import Icon from 'react-native-vector-icons/AntDesign'
-import { StyleSheet, View, TouchableOpacity, Keyboard, Image, Platform, Alert } from 'react-native'
+import { StyleSheet, View, TouchableOpacity, Keyboard, Image, Platform, Alert, Text } from 'react-native'
 import { BlurView } from "@react-native-community/blur"
 
 // Import funtions and constanst
-import { RFValue, logOutApp, OpenSupport } from '../../utils/constants.util'
+import { RFValue, logOutApp, OpenSupport, Colors } from '../../utils/constants.util'
 import { useNavigation, StackActions } from '@react-navigation/native'
 
 // Import Assets
@@ -85,23 +85,38 @@ const Navbar = () => {
                     <View style={styles.containerButtons}>
 
                         <TouchableOpacity onPress={goToTop} style={styles.button}>
-                            <Image source={Facturar} style={styles.imageProfile} />
+                            <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+                                <Image source={Facturar} style={styles.imageProfile} />
+                                <Text style={styles.legend}>Facturar</Text>
+                            </View>
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={onSend} style={styles.button}>
-                            <Image source={Enviar} style={styles.imageProfile} />
+                            <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+                                <Image source={Enviar} style={styles.imageProfile} />
+                                <Text style={styles.legend}>Enviar</Text>
+                            </View>
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={onHistory} style={styles.button}>
-                            <Image source={Historial} style={styles.imageProfile} />
+                            <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+                                <Image source={Historial} style={styles.imageProfile} />
+                                <Text style={styles.legend}>Historial</Text>
+                            </View>
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={OpenSupport} style={styles.button}>
-                            <Image source={Support} style={styles.imageProfile} />
+                            <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+                                <Image source={Support} style={styles.imageProfile} />
+                                <Text style={styles.legend}>Soporte</Text>
+                            </View>
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={toggleMenu} style={styles.button}>
-                            <Image source={Exit} style={styles.imageProfile} />
+                            <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+                                <Image source={Exit} style={styles.imageProfile} />
+                                <Text style={styles.legend}>Salir</Text>
+                            </View>
                         </TouchableOpacity>
                     </View>
 
@@ -149,7 +164,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignSelf: "center",
         flexDirection: "row",
-        // backgroundColor: "rgba(255, 255, 255, 0.1)",
         padding: RFValue(10),
         flex: 1,
     },
@@ -159,6 +173,10 @@ const styles = StyleSheet.create({
         resizeMode: "contain",
         width: iconSize,
         height: iconSize,
+    },
+    legend: {
+        color: Colors.$colorYellow,
+        fontSize: RFValue(13)
     },
 })
 

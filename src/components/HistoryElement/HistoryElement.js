@@ -21,17 +21,35 @@ const HistoryElement = ({ item, index, navigate }) => {
         <View key={index}>
             <TouchableOpacity onPress={_ => proccessData(item.hash)} style={styles.container}>
                 <View style={styles.subContainer}>
-                    <Text style={styles.textTitle}>{item.description || 'Transacción'}</Text>
-                    <Text style={styles.textHash}> {item.hash.substr(0, 15) || ''}</Text>
-
-                    <View style={styles.detailsContain}>
+                    <View style={{
+                        borderBottomColor: Colors.$colorYellow,
+                        borderBottomWidth: 2,
+                        borderRadius: 3,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between'
+                    }}>
+                        <Text style={styles.textTitle}>{item.description || 'Transacción'}</Text>
                         <Text style={styles.textId}># {item.id}</Text>
-                        <Text style={styles.textDate}>{moment(item.date_create).format('DD/MM/YY | HH:mm a')}</Text>
+                    </View>
+
+                    <View style={{flexDirection:'row', alignItems:'center'}}>
+                        <Text style={styles.legend}>Hash: </Text>
+                        <Text style={styles.textHash}>{item.hash.substr(0, 25) || ''}</Text>
+                    </View>
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <View style={styles.detailsContain}>
+                            <Text style={styles.legend}>Fecha: </Text>
+                            <Text style={styles.textDate}>{moment(item.date_create).format('DD/MM/YY - HH:mm a')}</Text>
+                        </View>
+
+                        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                            <Icon name={item.debit ? 'arrow-expand-up' : 'arrow-collapse-down'} color={item.debit ? Colors.$colorRed : Colors.$colorGreen} size={RFValue(12)} />
+                            <Text style={[styles.amount, item.debit ? styles.debitAmount : styles.creditAmount]}>{item.amount} {item.symbol}</Text>
+                        </View>
                     </View>
                 </View>
 
-                <Icon name={item.debit ? 'arrow-expand-up' : 'arrow-collapse-down'} color={item.debit ? Colors.$colorRed : Colors.$colorGreen} size={RFValue(12)} />
-                <Text style={[styles.amount, item.debit ? styles.debitAmount : styles.creditAmount]}>{item.amount} {item.symbol}</Text>
             </TouchableOpacity>
         </View>
     )
@@ -39,7 +57,7 @@ const HistoryElement = ({ item, index, navigate }) => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'rgba(0,0,0,0.5)',
+        backgroundColor: Colors.$colorBlack,
         alignItems: 'center',
         borderBottomWidth: 1,
         borderRadius: RFValue(10),
@@ -74,8 +92,8 @@ const styles = StyleSheet.create({
     detailsContain: {
         alignItems: 'center',
         flexDirection: 'row',
-        justifyContent: 'flex-start',
-        width: '100%',
+        // justifyContent: 'flex-start',
+        // width: '100%',
     },
     amount: {
         fontSize: RFValue(16),
@@ -88,6 +106,10 @@ const styles = StyleSheet.create({
     creditAmount: {
         color: Colors.$colorGreen,
     },
+    legend: {
+        color: Colors.$colorYellow,
+        fontSize: RFValue(13)
+    }
 })
 
 export default HistoryElement

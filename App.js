@@ -78,7 +78,6 @@ const App = () => {
             <>
               <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
               <Stack.Screen name="Recharge" component={RechargeScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="Retirements" component={RetirementsScreen} options={{ headerShown: false }} />
               <Stack.Screen name="CommerceList" component={CommerceList} options={{ headerShown: false }} />
               <Stack.Screen name="ProductList" component={ProductList} options={{ headerShown: false }} />
               <Stack.Screen name="Transaction" component={TransactionScreen} options={{ headerShown: false }} />
@@ -89,7 +88,6 @@ const App = () => {
 
           {!logged && (
             <>
-              <Stack.Screen name="Retirements" component={RetirementsScreen} options={{ headerShown: false }} />
               <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
               <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
               <Stack.Screen name="LegalData" component={LegalDataScreen} options={{ headerShown: false }} />

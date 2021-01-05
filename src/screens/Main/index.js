@@ -7,6 +7,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import Payment from '../../components/Payment/Payment'
 import Send from '../../components/Send/Send'
 import History from '../../components/History/History'
+import Retirement from '../Retirement/Retirement'
 
 
 // Import components
@@ -29,6 +30,7 @@ const index = ({ navigtion }) => {
                 <Stack.Screen name='Payment' component={Payment} />
                 <Stack.Screen name='Send' component={Send} />
                 <Stack.Screen name='History' component={History} />
+                <Stack.Screen name='Retirements' component={Retirement} />
             </Stack.Navigator>
 
             <Navbar />
