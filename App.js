@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-
+import { StatusBar } from "react-native"
 import Login from './src/screens/Login/Login';
 import RegisterScreen from './src/screens/Register/Register';
 import LegalDataScreen from './src/screens/legaldata.screen';
@@ -14,8 +14,8 @@ import MainScreen from './src/screens/Main/index';
 
 // Import functions and constants from utils
 import { getStorage } from './src/utils/constants.util';
-import reduxStore from './src/store/index';
 import { SETSTORAGE, DELETESTORAGE } from './src/store/actionTypes';
+import reduxStore from './src/store/index';
 import FlashMessage from 'react-native-flash-message';
 import TransactionScreen from './src/screens/transaction.screen';
 import RetirementsScreen from './src/screens/Retirement/Retirement';
@@ -62,8 +62,6 @@ const App = () => {
     })
   }
 
-
-
   useEffect(() => {
     // ConfigureLocation()
     ConfigurateComponent()
@@ -71,8 +69,10 @@ const App = () => {
 
   return (
     <>
+      <StatusBar translucent={true} hidden={true} />
+
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login" screenOptions={{}}>
+        <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
           {
             logged &&
             <>
@@ -88,12 +88,21 @@ const App = () => {
 
           {!logged && (
             <>
+<<<<<<< HEAD
               <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
               <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
               <Stack.Screen name="LegalData" component={LegalDataScreen} options={{ headerShown: false }} />
               <Stack.Screen name="LegalImages" component={LegalImagesScreen} options={{ headerShown: false }} />
               <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
               <Stack.Screen name="RegisterCommerce" component={RegisterCommerceScreen} options={{ headerShown: false }} />
+=======
+              <Stack.Screen name="Login" component={Login}  />
+              <Stack.Screen name="Register" component={RegisterScreen}  />
+              <Stack.Screen name="LegalData" component={LegalDataScreen}  />
+              <Stack.Screen name="LegalImages" component={LegalImagesScreen}  />
+              <Stack.Screen name="Welcome" component={WelcomeScreen}  />
+              <Stack.Screen name="RegisterCommerce" component={RegisterCommerceScreen}  />
+>>>>>>> ba13bffe95d7a01b21bf95bdd3004465d163c3f9
             </>
           )}
         </Stack.Navigator>
