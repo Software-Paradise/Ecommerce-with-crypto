@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-<<<<<<< HEAD
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { StatusBar } from "react-native"
-=======
-
->>>>>>> ba88c2995e2da1d5f84e533a3373cf483a123452
 import Login from './src/screens/Login/Login';
 import RegisterScreen from './src/screens/Register/Register';
 import LegalDataScreen from './src/screens/legaldata.screen';
