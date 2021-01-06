@@ -296,7 +296,7 @@ export const showNotification = (message = "", type = "info" | "error" | "warnin
   })
 }
 
-const PORT = '3085';
+const PORT = '3000';
 
 export const serverAddress = Platform.OS === 'ios' ? `http://localhost:${PORT}` : `http://192.168.0.120:${PORT}`;
 
@@ -363,7 +363,8 @@ export const http = axios.create({
       Alert.alert('AlyPay', 'Tu sesion ha caducado', [
         {
           text: 'OK',
-          onPress: () => logOutApp()
+          onPress: () => { }
+          // onPress: () => logOutApp()
         },
       ]);
       return true;

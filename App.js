@@ -27,8 +27,6 @@ import Description from './src/components/Description/Description'
 
 const Stack = createStackNavigator();
 
-
-
 const App = () => {
   const [logged, setLogin] = useState(false)
 

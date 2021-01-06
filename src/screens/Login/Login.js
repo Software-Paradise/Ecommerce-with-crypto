@@ -94,8 +94,8 @@ const Login = ({ navigation }) => {
   const getDeviceInfo = async () => {
     try {
 
-      const device = await getBrand();
-      const deviceId = await getDeviceId();
+      const device = getBrand();
+      const deviceId = getDeviceId();
 
       dispatch({ type: 'device', payload: `${device} - ${deviceId}` });
 
@@ -103,7 +103,7 @@ const Login = ({ navigation }) => {
         dispatch({ type: 'macAddress', payload }),
       );
 
-      const systemVersion = await getSystemName();
+      const systemVersion = getSystemName();
 
       dispatch({ type: 'systemName', payload: systemVersion });
     } catch (error) {
@@ -134,7 +134,7 @@ const Login = ({ navigation }) => {
                 value={state.email}
                 keyboardType="email-address"
                 onChangeText={(payload) => dispatch({ type: 'email', payload })}
-                placeholderTextColor={Colors.$colorGray}
+                placeholderTextColor="#CCC"
                 placeholder="Correo electrónico"
                 style={GlobalStyles.textInput}
               />
@@ -152,7 +152,7 @@ const Login = ({ navigation }) => {
                   placeholderTextColor={Colors.$colorGray}
                   style={styles.textInputCol}
                 />
-                <TouchableOpacity onPress={(e) => setShowPassword(!showPassword)} style={styles.touchableCol}>
+                <TouchableOpacity onPress={_ => setShowPassword(!showPassword)} style={styles.touchableCol}>
                   <Icon name={showPassword ? 'visibility-off' : 'visibility'} color={Colors.$colorYellow} size={18} />
                 </TouchableOpacity>
               </View>

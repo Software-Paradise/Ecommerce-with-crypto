@@ -25,7 +25,7 @@ const initialState = {
     amountFraction: "",
     amountUSD: "",
     walletAdress: "",
-    fee: '00',
+    fee: '0',
 
     dataWallet: null,
     walletAccepted: false,
@@ -84,7 +84,7 @@ const sentComponent = () => {
                 dispatch({ type: "walletAccepted", payload: false })
 
                 // limpiamos el fee
-                dispatch({type:'fee', payload:'00'})
+                dispatch({ type: 'fee', payload: '00' })
             } else {
                 throw String("Tu transacción no se ha compeltado, contacte a soporte")
             }
@@ -92,18 +92,6 @@ const sentComponent = () => {
             errorMessage(error.toString())
         } finally {
             setLoader(false)
-        }
-    }
-
-    const configureComponent = async () => {
-        try {
-
-            const { data } = await http.get(`/api/ecommerce/wallet/details/${global.wallet_commerce}`, getHeaders())
-
-            setDetails(data.information)
-
-        } catch (error) {
-            showNotification(error.toString())
         }
     }
 
@@ -156,14 +144,12 @@ const sentComponent = () => {
 
     const toggleScan = () => setShowScanner(!showScanner)
 
-    useEffect(() => {
-        configureComponent()
-    }, [])
-
     return (
         <Container showLogo >
             <Loader isVisible={loader} />
+
             <Card />
+
             <View style={styles.container}>
                 <View style={styles.containerTitle}>
                     <Text style={styles.legendTitle}>Enviar fondos</Text>
@@ -177,6 +163,7 @@ const sentComponent = () => {
                             <TextInput
                                 style={[GlobalStyles.textInput, { flex: 1 }]}
                                 value={state.walletAdress}
+                                returnKeyType="done"
                                 onChangeText={payload => dispatch({ type: "walletAdress", payload })}
                             />
 
@@ -265,9 +252,9 @@ const sentComponent = () => {
 
 const styles = StyleSheet.create({
     container: {
-        width: "100%",
         paddingHorizontal: RFValue(10),
-        padding: 10
+        padding: 10,
+        width: "100%",
     },
     containerTitle: {
         flexDirection: "row",

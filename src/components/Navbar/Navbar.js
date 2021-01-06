@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react'
 
 // Import components
-import Icon from 'react-native-vector-icons/AntDesign'
-import { StyleSheet, View, TouchableOpacity, Keyboard, Image, Platform, Alert } from 'react-native'
+import { StyleSheet, View, TouchableOpacity, Keyboard, Image, Platform, Alert, Text } from 'react-native'
 import { BlurView } from "@react-native-community/blur"
 
 // Import funtions and constanst
-import { RFValue, logOutApp, OpenSupport } from '../../utils/constants.util'
+import { RFValue, logOutApp, OpenSupport, Colors } from '../../utils/constants.util'
 import { useNavigation, StackActions } from '@react-navigation/native'
 
 // Import Assets
@@ -80,28 +79,36 @@ const Navbar = () => {
         return (
             <View style={styles.container}>
                 <View style={styles.subContainer}>
-                    <BlurView style={styles.absolute} blurType="dark" />
+                    {
+                        Platform.OS === "ios" &&
+                        <BlurView style={styles.absolute} blurType="dark" />
+                    }
 
                     <View style={styles.containerButtons}>
 
                         <TouchableOpacity onPress={goToTop} style={styles.button}>
                             <Image source={Facturar} style={styles.imageProfile} />
+                            <Text style={styles.text}>Facturar</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={onSend} style={styles.button}>
                             <Image source={Enviar} style={styles.imageProfile} />
+                            <Text style={styles.text}>Enviar</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={onHistory} style={styles.button}>
                             <Image source={Historial} style={styles.imageProfile} />
+                            <Text style={styles.text}>Historial</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={OpenSupport} style={styles.button}>
                             <Image source={Support} style={styles.imageProfile} />
+                            <Text style={styles.text}>Soporte</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={toggleMenu} style={styles.button}>
                             <Image source={Exit} style={styles.imageProfile} />
+                            <Text style={styles.text}>Salir</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -133,6 +140,7 @@ const styles = StyleSheet.create({
     },
 
     subContainer: {
+        backgroundColor: Platform.OS === "ios" ? "transparent" : Colors.$colorBlack,
         position: "relative",
         flex: 1,
     },
@@ -147,11 +155,17 @@ const styles = StyleSheet.create({
 
     button: {
         justifyContent: "center",
-        alignSelf: "center",
-        flexDirection: "row",
+        alignItems: "center",
+        flexDirection: "column",
         // backgroundColor: "rgba(255, 255, 255, 0.1)",
-        padding: RFValue(10),
+        padding: RFValue(5),
         flex: 1,
+    },
+
+    text: {
+        color: Colors.$colorYellow,
+        marginTop: 5,
+        fontSize: RFValue(9)
     },
 
     imageProfile: {

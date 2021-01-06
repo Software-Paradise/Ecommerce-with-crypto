@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native'
 
-import { RFValue, Colors, GlobalStyles, http, errorMessage, serverSpeedtradingsURL } from '../../utils/constants.util'
+import { RFValue, Colors, GlobalStyles, http, errorMessage, serverSpeedtradingsURL, getFeePercentage } from '../../utils/constants.util'
 
 // import components
 import Card from '../../components/CardProfile/CardProfile'
@@ -23,6 +23,7 @@ import Logo from '../../assets/img/logo.png'
 // Import redux store
 import store from '../../store'
 import Container from '../../components/Container/Container'
+import { useHasSystemFeature } from 'react-native-device-info'
 
 const Retirements = () => {
     const { global } = store.getState();
@@ -33,6 +34,8 @@ const Retirements = () => {
     const [showScanner, setShowScanner] = useState(false);
     const [coinIndexSelected, setCoin] = useState(0);
     const [coinList, setCoinList] = useState([]);
+    // estado que guarda el fee de la transaccion
+    const [fee, setFee] = useState("0")
 
     const isMounted = useRef(null);
     const toggleScan = () => setShowScanner(!showScanner);
@@ -89,7 +92,16 @@ const Retirements = () => {
         } catch (e) {
             errorMessage(e.message);
         }
-    };
+    }
+
+    const onChangeAmount = str => {
+        setAmount(str)
+
+        // obtenemos el fee
+        const { fee } = getFeePercentage(str, 2, global.fee)
+
+        setFee(fee * str)
+    }
 
     useEffect(() => {
         isMounted.current = true;
@@ -124,12 +136,12 @@ const Retirements = () => {
                 <Card />
 
                 <View style={styles.containerTitle}>
-                    <Text style={styles.legendTitle}>Facturar transaccion</Text>
+                    <Text style={styles.legendTitle}>Retirar Fondos</Text>
                 </View>
 
                 <View style={styles.row}>
                     <View style={styles.col}>
-                        <Text style={styles.legend}>Dirección de billetera</Text>
+                        <Text style={styles.legend}>Dirección de billetera externa</Text>
 
                         <View style={styles.rowInput}>
                             <TextInput
@@ -153,6 +165,7 @@ const Retirements = () => {
                         <View style={GlobalStyles.containerPicker}>
                             <Picker style={GlobalStyles.picker}
                                 selectedValue={coinIndexSelected}
+                                itemStyle={{ height: RFValue(35), backgroundColor: "transparent" }}
                                 onValueChange={(value) => setCoin(value)}>
                                 {
                                     coinList.map((item, index) => (
@@ -163,13 +176,13 @@ const Retirements = () => {
                     </View>
 
                     <View style={styles.col}>
-                        <Text style={styles.legend}>Mondo a retirar</Text>
+                        <Text style={styles.legend}>Monto a retirar (USD)</Text>
 
                         <View style={styles.rowInput}>
                             <TextInput
                                 style={[GlobalStyles.textInput, { flex: 1 }]}
                                 value={amount}
-                                onChangeText={(value) => setAmount(value)}
+                                onChangeText={onChangeAmount}
                                 keyboardType="numeric"
                                 placeholderTextColor={Colors.$colorGray}
                                 placeholder="0.00 (USD)"
@@ -180,7 +193,13 @@ const Retirements = () => {
                 </View>
 
                 <View style={styles.col}>
-                    <Text style={styles.totalSatochi}>{amountSatochi} {coinList[coinIndexSelected]?.symbol}</Text>
+                    <Text style={styles.totalSatochi}>
+                        {amountSatochi} {coinList[coinIndexSelected]?.symbol}
+                    </Text>
+
+                    <Text style={styles.totalSatochiFee}>
+                        Fee {_.floor((fee / coinList[coinIndexSelected].quote.USD.price), 8)} {coinList[coinIndexSelected]?.symbol}
+                    </Text>
                 </View>
 
                 <View style={{ padding: 15 }}>
@@ -317,7 +336,14 @@ const styles = StyleSheet.create({
         fontSize: RFValue(24),
         marginVertical: RFValue(10),
     },
+    totalSatochiFee: {
+        alignSelf: "center",
+        color: Colors.$colorYellow,
+        fontSize: RFValue(12),
+        marginVertical: RFValue(10),
+    },
     containerTitle: {
+        marginTop: RFValue(10),
         flexDirection: "row",
         justifyContent: "center"
     },
