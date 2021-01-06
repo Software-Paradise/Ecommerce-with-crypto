@@ -542,7 +542,7 @@ const Register = ({ navigation }) => {
                             </TouchableOpacity>
 
 
-                            <TouchableOpacity onPress={onSubmitInformation} disabled={!state.companyName} style={state.companyName ? GlobalStyles.buttonPrimary : GlobalStyles.button}>
+                            <TouchableOpacity onPress={_ => setModalSuccess(true)} disabled={!state.companyName} style={state.companyName ? GlobalStyles.buttonPrimary : GlobalStyles.button}>
                                 <Text style={[GlobalStyles.textButton, { opacity: state.companyName ? 1 : 0.5 }]}>Guardar</Text>
                             </TouchableOpacity>
                         </View>
@@ -621,7 +621,7 @@ const styles = StyleSheet.create({
     },
     containerModalSuccess: {
         alignSelf: "center",
-        backgroundColor: Colors.$colorMain,
+        backgroundColor: Colors.$colorBlack,
         borderRadius: 10,
         padding: 10,
         height: "80%",
@@ -694,6 +694,14 @@ const styles = StyleSheet.create({
         color: Colors.$colorYellow,
         textTransform: "uppercase",
         fontSize: RFValue(16)
+    },
+    itemCountry: {
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        borderRadius: 5,
+        padding: 10,
+        marginVertical: 5,
     },
 })
 

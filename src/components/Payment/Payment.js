@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native'
 
 // Import Constants
-import { Colors, RFValue, GlobalStyles, showNotification, setStorage, http } from '../../utils/constants.util'
+import { Colors, RFValue, GlobalStyles, showNotification, setStorage, http, getStorage } from '../../utils/constants.util'
 import { useNavigation } from '@react-navigation/native';
 
 // Import component
@@ -19,6 +19,7 @@ import Logo from '../../assets/img/aly-system-by.png'
 
 const Payment = () => {
     const { global } = store.getState()
+    console.log('global',global)
     const navigation = useNavigation()
     const [amount, setAmount] = useState('')
     const [loader, setLoader] = useState(false)
@@ -46,9 +47,7 @@ const Payment = () => {
             const { data } = await http.get('/fees-percentage')
 
             if (Object.values(data).length > 0) {
-                store.dispatch({ type: SETSTORAGE, payload: { ...global.data, fee: data } })
-
-                setStorage(data)
+                store.dispatch({ type: SETSTORAGE, payload: { ...global.data, fee: data } } )
             }
 
         } catch (error) {
