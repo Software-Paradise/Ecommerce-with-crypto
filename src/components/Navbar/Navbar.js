@@ -174,6 +174,10 @@ const styles = StyleSheet.create({
         width: iconSize,
         height: iconSize,
     },
+    legend: {
+        color: Colors.$colorYellow,
+        fontSize: RFValue(13)
+    },
 })
 
 export default Navbar

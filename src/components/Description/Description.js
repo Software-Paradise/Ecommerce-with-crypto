@@ -20,6 +20,8 @@ const Description = ({ route }) => {
             setLoader(true)
 
             const { data } = await http.get(`/blockchain/transaction/${hash}`)
+
+            console.log('Detalle', data)
             if (data.error) {
                 throw String(data.message)
             }
@@ -36,7 +38,7 @@ const Description = ({ route }) => {
         getAllDetails()
     }, [])
     return (
-        <Container>
+        <Container showLogo>
             <Loader isVisible={loader} />
             <ScrollView>
                 <View style={styles.containerTitlePrincipal}>
@@ -50,7 +52,7 @@ const Description = ({ route }) => {
                             <Icon name="ios-copy" size={15} color="#877E7C" />
                         </View>
                         <View style={styles.containertitle}>
-                            <Text style={styles.subtitle}>{(details.hash ? details.hash.substr(0, 36) : "")}...</Text>
+                            <Text style={styles.subtitle}>{(details.hash ? details.hash.substr(0, 36) : "")}</Text>
                         </View>
                     </View>
                 </TouchableOpacity>
@@ -58,6 +60,19 @@ const Description = ({ route }) => {
                 <View style={[styles.facePost, styles.text]}>
                     <View style={styles.containerPrinc}>
 
+                        <View style={styles.containertitle}>
+                            <Text style={styles.title}>Fecha</Text>
+                            <Text style={styles.title}>Hora</Text>
+                        </View>
+
+                        <View style={styles.containertitle}>
+                            <Text style={styles.subtitle}>{(details.date_create ? moment(details.date_create).format("DD/MM/YYYY") : "")}</Text>
+                            <Text style={styles.subtitle}>{(details.date_create ? moment(details.date_create).format("HH:mm a") : "")}</Text>
+                        </View>
+                    </View>
+
+
+                    <View style={styles.containerPrinc}>
                         <View style={styles.containertitle}>
                             <Text style={styles.title}>Monto de Transacción</Text>
                             <Text style={styles.title}>Monto (USD)</Text>
@@ -68,31 +83,25 @@ const Description = ({ route }) => {
                             <Text style={styles.subtitle}>{(details.amount_usd ? details.amount_usd : "")}</Text>
                         </View>
                     </View>
-                    <View style={styles.containerPrinc}>
 
+                    <View style={styles.containerPrinc}>
                         <View style={styles.containertitle}>
                             <Text style={styles.title}>Moneda</Text>
-                            <Text style={styles.title}>Descripcion</Text>
+                            <Text style={styles.title}>Fee</Text>
                         </View>
 
                         <View style={styles.containertitle}>
                             <Text style={styles.subtitle}>{(details.name_coin_transaction ? details.name_coin_transaction : "")}</Text>
-                            <Text style={styles.subtitle}>{(details.transaction_tail ? details.transaction_tail : "None")}</Text>
+                            <Text style={styles.subtitle}>{(`${details.amount_fee}  ${details.coin_fee}` ? `${details.amount_fee_usd}  ${details.coin_fee}` : "")}</Text>
                         </View>
-
                     </View>
 
-                    <View style={styles.containerPrinc}>
-                        <View style={styles.containertitle}>
-                            <Text style={styles.title}>Fee</Text>
-                            <Text style={styles.title}>Fecha</Text>
-                        </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                        <Text style={styles.titleTotal}>Total: </Text>
 
-                        <View style={styles.containertitle}>
-                            <Text style={styles.subtitle}>{(details.amount_fee && details.coin_fee ? details.amount_fee && details.coin_fee : "")}</Text>
-                            <Text style={styles.subtitle}>{(details.date_create ? moment(details.date_create).format("DD/MM/YY - HH:mm") : "")}</Text>
+                        <View style={{ justifyContent: 'center' }}>
+                            <Text style={{ color: '#FFF', fontSize: RFValue(20) }}>{details.amount - details.amount_fee_usd}</Text>
                         </View>
-
                     </View>
                 </View>
 
@@ -106,7 +115,7 @@ const Description = ({ route }) => {
                         <View style={styles.containertitle}>
                             {
                                 details.wallet_to
-                                    ? <Text style={styles.subtitle}>{details.wallet_to.substr(0, 36)}...</Text>
+                                    ? <Text style={styles.subtitle}>{details.wallet_to.substr(0, 36)}</Text>
                                     : <Text style={styles.textInfoEmpty}>SIN DATOS</Text>
                             }
 
@@ -123,7 +132,7 @@ const Description = ({ route }) => {
                         </View>
 
                         <View style={styles.containertitle}>
-                            <Text style={styles.subtitle}>{(details.wallet_from ? details.wallet_from.substr(0, 36) : "")}...</Text>
+                            <Text style={styles.subtitle}>{(details.wallet_from ? details.wallet_from.substr(0, 36) : "")}</Text>
                         </View>
                     </View>
                 </TouchableOpacity>
@@ -138,7 +147,6 @@ const styles = StyleSheet.create({
     titlePrincipal: {
         color: Colors.$colorYellow,
         fontSize: RFValue(24),
-        //margin:5,
         padding: RFValue(5)
     },
     //Secciones de los detalles
@@ -190,6 +198,11 @@ const styles = StyleSheet.create({
         fontSize: RFValue(18),
         textAlign: "center",
         marginVertical: RFValue(10),
+    },
+    titleTotal: {
+        color: Colors.$colorYellow,
+        fontSize: RFValue(20),
+        padding: RFValue(5)
     }
 })
 

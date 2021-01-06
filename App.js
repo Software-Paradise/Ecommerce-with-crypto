@@ -76,7 +76,6 @@ const App = () => {
             <>
               <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
               <Stack.Screen name="Recharge" component={RechargeScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="Retirements" component={RetirementsScreen} options={{ headerShown: false }} />
               <Stack.Screen name="CommerceList" component={CommerceList} options={{ headerShown: false }} />
               <Stack.Screen name="ProductList" component={ProductList} options={{ headerShown: false }} />
               <Stack.Screen name="Transaction" component={TransactionScreen} options={{ headerShown: false }} />
@@ -87,12 +86,12 @@ const App = () => {
 
           {!logged && (
             <>
-              <Stack.Screen name="Login" component={Login}  />
-              <Stack.Screen name="Register" component={RegisterScreen}  />
-              <Stack.Screen name="LegalData" component={LegalDataScreen}  />
-              <Stack.Screen name="LegalImages" component={LegalImagesScreen}  />
-              <Stack.Screen name="Welcome" component={WelcomeScreen}  />
-              <Stack.Screen name="RegisterCommerce" component={RegisterCommerceScreen}  />
+              <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+              <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="LegalData" component={LegalDataScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="LegalImages" component={LegalImagesScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="RegisterCommerce" component={RegisterCommerceScreen} options={{ headerShown: false }} />
             </>
           )}
         </Stack.Navigator>
