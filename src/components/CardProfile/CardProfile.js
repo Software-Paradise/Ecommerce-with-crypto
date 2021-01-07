@@ -11,6 +11,7 @@ import Container from '../Container/Container'
 
 // import assets 
 import avatar from "../../assets/img/ecommerce-avatar.png"
+import tether from '../../assets/img/tether.png'
 
 // Import redux store
 import store from '../../store'
@@ -39,8 +40,6 @@ const CadProfile = () => {
         // verificamos si hay foto
         if (blog) {
             const file = await readFile(blog)
-
-            console.log('file', file)
             setSource(file)
         }
     }
@@ -64,19 +63,19 @@ const CadProfile = () => {
                 <View style={styles.cardInformation}>
                     <View style={styles.headerTableTitle}>
                         <Text style={styles.textHeaderTableTitle}>{information.name}</Text>
+                        <Image source={tether} style={styles.icon} />
                     </View>
 
                     <View style={styles.lineTitle} />
 
                     <View style={styles.dataDetailsInfoContainer}>
                         <View style={styles.headerTable}>
-                            <Text style={styles.textRowTable}>{information.physical_address}</Text>
-
                             <Text style={[styles.textHeaderTable, { alignSelf: "flex-start" }]}>Dirección</Text>
+                            <Text style={styles.textRowTable}>{information.physical_address}</Text>
                         </View>
                         <View style={styles.bodyRowTable}>
+                            <Text style={styles.textHeaderTable}>Balance</Text>
                             <Text style={styles.textRowTable}>{_.floor(information.amount_wallet, 2)}<Text style={{ fontSize: RFValue(9) }}>{information.symbol_wallet}</Text></Text>
-                            <Text style={styles.textHeaderTable}>Saldo total</Text>
                         </View>
 
                     </View>
@@ -111,7 +110,7 @@ const styles = StyleSheet.create({
     headerTableTitle: {
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "flex-start",
+        justifyContent: 'space-between',
     },
     headerTable: {
         flexDirection: 'column',
@@ -125,7 +124,7 @@ const styles = StyleSheet.create({
     },
     textHeaderTable: {
         textAlign: 'right',
-        fontSize: RFValue(10),
+        fontSize: RFValue(13),
         color: Colors.$colorYellow
     },
     bodyRowTable: {
@@ -146,6 +145,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
+    icon:{
+        width:RFValue(30),
+        height:RFValue(30)
+    }
 })
 
 export default CadProfile
