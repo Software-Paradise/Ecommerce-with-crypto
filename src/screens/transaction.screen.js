@@ -4,7 +4,9 @@ import {
     Text,
     Modal,
     StyleSheet,
+    BackHandler,
     TouchableOpacity,
+    ActivityIndicator,
     Image,
     Alert
 } from 'react-native'
@@ -19,7 +21,6 @@ import Navbar from "../components/Navbar/Navbar"
 import { RFValue } from 'react-native-responsive-fontsize'
 import { Colors, socketAddress } from '../utils/constants.util'
 import { useRoute } from '@react-navigation/native'
-import { GlobalStyles } from '../styles/global.style'
 import socketIO from 'socket.io-client'
 import * as CryptoJS from 'react-native-crypto-js'
 
@@ -29,7 +30,6 @@ import store from '../store'
 // import assets
 import logoImage from "./../assets/img/logo.png"
 import logoAlyCoinImage from "./../assets/img/aly-coin.png"
-import loaderAnimation from "./../animations/loader.json"
 import successAnimation from "./../animations/yellow-success.json"
 import errorAnimation from "./../animations/error_animation.json.json"
 
@@ -98,7 +98,15 @@ const TransactionScreen = ({ navigation }) => {
                 }
             }
         ])
+
+        return true
     }
+
+    useEffect(() => {
+        const backHanldedEvent = BackHandler.addEventListener("hardwareBackPress", goBack)
+
+        return backHanldedEvent.remove()
+    }, [])
 
     useEffect(() => {
         const _unsubscribe = navigation.addListener('focus', () => {
@@ -175,8 +183,8 @@ const TransactionScreen = ({ navigation }) => {
         <>
             <Container showLogo>
                 <View style={TransactionStyles.statusRow}>
-                    <Text style={[TransactionStyles.mediumText, { color: Colors.$colorYellow }]}>
-                        Orden # {transaction}
+                    <Text style={[TransactionStyles.orderNumber, { color: Colors.$colorYellow }]}>
+                        Orden #<Text style={{ fontWeight: "bold" }}>{transaction}</Text>
                     </Text>
 
                     <Text style={TransactionStyles.amountText}>
@@ -200,7 +208,7 @@ const TransactionScreen = ({ navigation }) => {
                     </TouchableOpacity>
 
                     <View style={TransactionStyles.waitingPayment}>
-                        <LottieAnimationView autoPlay={true} loop={true} source={loaderAnimation} style={TransactionStyles.loader} />
+                        <ActivityIndicator color={Colors.$colorGray} size={RFValue(16)} />
                         <Text style={TransactionStyles.status}>Esperando Pago</Text>
                     </View>
                 </View>
@@ -302,6 +310,7 @@ const TransactionStyles = StyleSheet.create({
     status: {
         color: Colors.$colorGray,
         fontSize: RFValue(16),
+        marginLeft: 5,
     },
     cancelText: {
         color: Colors.$colorRed,

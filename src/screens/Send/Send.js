@@ -49,7 +49,6 @@ const sentComponent = () => {
     const [details, setDetails] = useState(null);
     const [showScanner, setShowScanner] = useState(false)
 
-    // Hacemos la peticion al server para confirmar la transaccion
     const submit = async () => {
         try {
 
@@ -64,9 +63,11 @@ const sentComponent = () => {
                 wallet: state.walletAdress,
                 id: global.wallet_commerce,
             }
+            console.log("dataSent", dataSent)
 
             const { data } = await http.post('ecommerce/transaction', dataSent, getHeaders())
 
+            console.log("DataSent", data)
             if (data.error) {
                 errorMessage(data.message)
             }
@@ -83,7 +84,7 @@ const sentComponent = () => {
                 dispatch({ type: "walletAccepted", payload: false })
 
                 // limpiamos el fee
-                dispatch({ type: 'fee', payload: '0' })
+                dispatch({ type: 'fee', payload: '00' })
             } else {
                 throw String("Tu transacción no se ha compeltado, contacte a soporte")
             }
@@ -94,26 +95,9 @@ const sentComponent = () => {
         }
     }
 
-    // Verificamos los datos del comercio
-    const configureComponent = async () => {
-        try {
-            setLoader(true)
-            const { data } = await http.get(`/api/ecommerce/wallet/details/${global.wallet_commerce}`, getHeaders())
-
-            setDetails(data.information)
-
-        } catch (error) {
-            showNotification(error.toString())
-        } finally {
-            setLoader(false)
-        }
-    }
-
-    // Comprobamos la direccion de la wallet
     const onComprobateWallet = async () => {
         try {
 
-            setLoader(true)
             if (state.walletAdress.length < 90) {
                 throw String("Dirección de billetera incorrecta")
             }
@@ -137,25 +121,19 @@ const sentComponent = () => {
 
             // clear data if is necesary
             dispatch({ type: "dataWallet", payload: null })
-
-        } finally {
-            setLoader(false)
         }
     }
 
-    // Navegamos a la vista de retiro
     const onRetirement = () => {
         navigate("Retirements", { wallet: global.wallet_commerce })
     }
 
-    // Funcion que permite habrir la camara para scanear el QR
     const onReadCodeQR = ({ data }) => {
         toggleScan()
 
         dispatch({ type: 'walletAdress', payload: data })
     }
 
-    // Funcion que calcula el Fee del monto ingresado
     const onChangeAmount = (str) => {
         dispatch({ type: 'amountFraction', payload: str })
 
@@ -166,12 +144,11 @@ const sentComponent = () => {
     const toggleScan = () => setShowScanner(!showScanner)
 
     return (
-        <Container showLogo onRefreshEnd={configureComponent} >
-
+        <Container showLogo onRefreshEnd >
             <Loader isVisible={loader} />
 
             <Card />
-            
+
             <View style={styles.container}>
                 <View style={styles.containerTitle}>
                     <Text style={styles.legendTitle}>Enviar fondos</Text>

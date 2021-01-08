@@ -4,9 +4,9 @@ import React, { useEffect } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 
 // Import Views
-import Payment from '../../components/Payment/Payment'
-import Send from '../../components/Send/Send'
-import History from '../../components/History/History'
+import Payment from '../Payment/Payment'
+import Send from '../Send/Send'
+import History from '../History/History'
 import Retirement from '../Retirement/Retirement'
 
 

@@ -364,8 +364,8 @@ export const http = axios.create({
       Alert.alert('AlyPay', 'Tu sesion ha caducado', [
         {
           text: 'OK',
-          onPress: () => { }
-          // onPress: () => logOutApp()
+          // onPress: () => { }
+          onPress: () => logOutApp()
         },
       ]);
       return true;
