@@ -297,7 +297,7 @@ export const showNotification = (message = "", type = "info" | "error" | "warnin
   })
 }
 
-const PORT = '3000';
+const PORT = '3085';
 
 // export const serverAddress = Platform.OS === 'ios' ? `http://localhost:${PORT}` : `http://192.168.0.120:${PORT}`;
 

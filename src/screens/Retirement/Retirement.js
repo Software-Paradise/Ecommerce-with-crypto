@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native'
 
-import { RFValue, Colors, GlobalStyles, http, errorMessage, serverSpeedtradingsURL, getFeePercentage } from '../../utils/constants.util'
+import { RFValue, Colors, GlobalStyles, http, errorMessage, serverSpeedtradingsURL, getFeePercentage, getHeaders, successMessage } from '../../utils/constants.util'
 
 // import components
 import Card from '../../components/CardProfile/CardProfile'
@@ -25,7 +25,7 @@ import store from '../../store'
 import Container from '../../components/Container/Container'
 import { useHasSystemFeature } from 'react-native-device-info'
 
-const Retirements = () => {
+const Retirements = ({ navigation }) => {
     const { global } = store.getState();
 
     const [amountSatochi, setTotalAmountSatochi] = useState(0)
@@ -36,8 +36,6 @@ const Retirements = () => {
     const [showScanner, setShowScanner] = useState(false);
     const [coinIndexSelected, setCoin] = useState(0);
     const [coinList, setCoinList] = useState([]);
-    // estado que guarda el fee de la transaccion
-    const [fee, setFee] = useState("0")
 
     const isMounted = useRef(null);
     const toggleScan = () => setShowScanner(!showScanner);
@@ -56,10 +54,13 @@ const Retirements = () => {
                 wallet: walletAddress,
                 id_wallet: global.wallet_commerce,
                 amount: amountSatochi,
+                amountOriginal: parseFloat(amount),
                 symbol: coinList[coinIndexSelected].symbol,
             }
 
-            const { data: response } = await http.post('/api/ecommerce/wallet/retirement', dataSent, getHeaders())
+            console.log('DataSent',dataSent)
+
+            const { data: response } = await http.post('ecommerce/transaction/retirement', dataSent, getHeaders())
 
             if (response.error) {
                 throw String(response.error)
@@ -105,9 +106,7 @@ const Retirements = () => {
         setAmount(value)
 
         const { fee, fee_aly } = getFeePercentage(amount, 2, global.fee)
-        
-        const { price } = coinList[coinIndexSelected].quote.USD
-        
+
         let _amountFeeUSD = 0
 
         if (coinList[coinIndexSelected] === 'ALY') {
@@ -138,7 +137,7 @@ const Retirements = () => {
 
             const { fee, fee_aly } = getFeePercentage(totalAmount, 2, global.fee)
 
-            const satochi = (totalAmount)
+            const satochi = (totalAmount / price)
 
             if (coinList[coinIndexSelected] === 'ALY') {
                 setAmountFee(_.floor(satochi * fee_aly, 8))
@@ -171,6 +170,8 @@ const Retirements = () => {
                             <TextInput
                                 style={[GlobalStyles.textInput, { flex: 1 }]}
                                 value={walletAddress}
+                                placeholder='Ingrese billetera'
+                                placeholderTextColor='#CCC'
                                 onChangeText={setWalletAddress}
                                 returnKeyLabel="next"
                             />
@@ -193,7 +194,7 @@ const Retirements = () => {
                                 onValueChange={(value) => setCoin(value)}>
                                 {
                                     coinList.map((item, index) => (
-                                        <Picker.Item enabled={true} key={index} label={item.symbol} value={index} color={Colors.$colorYellow} />))
+                                        <Picker.Item enabled={true} key={index} label={item.symbol} value={index} color={Colors.$colorMain} />))
                                 }
                             </Picker>
                         </View>
@@ -233,7 +234,7 @@ const Retirements = () => {
                 </View>
                 <View style={styles.col}>
                     <Text style={styles.totalSatochi}>
-                        {amountSatochi} {coinList[coinIndexSelected]?.symbol}
+                        {amountSatochi + amountFee} {coinList[coinIndexSelected]?.symbol}
                     </Text>
                 </View>
 

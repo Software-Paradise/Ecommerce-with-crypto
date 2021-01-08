@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from 'react'
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, FlatList, Platform } from 'react-native'
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, FlatList, Platform, KeyboardAvoidingView } from 'react-native'
 
 // Import Component
 import Container from '../../components/Container/Container'
@@ -211,7 +211,7 @@ const RegisterCommerce = ({ route, navigation }) => {
     }, [])
 
     return (
-        <Container>
+        <KeyboardAvoidingView style={styles.container1}>
             <ScrollView keyboardShouldPersistTaps='always' style={styles.scrollView}>
                 <View style={styles.container}>
                     <Image style={styles.logo} source={Logo} />
@@ -231,7 +231,7 @@ const RegisterCommerce = ({ route, navigation }) => {
                             <TextInput
                                 style={GlobalStyles.textInput}
                                 placeholder="Ingrese nombre de la compañía aqui"
-                                placeholderTextColor={Colors.$colorGray}
+                                placeholderTextColor='#CCC'
                                 value={state.companyName}
                                 onChangeText={str => dispatch({ type: 'companyName', payload: str })}
                             />
@@ -245,7 +245,7 @@ const RegisterCommerce = ({ route, navigation }) => {
                             <TextInput
                                 style={GlobalStyles.textInput}
                                 placeholder="Ingrese correo aqui"
-                                placeholderTextColor={Colors.$colorGray}
+                                placeholderTextColor='#CCC'
                                 value={state.email}
                                 keyboardType='email-address'
                                 onChangeText={str => dispatch({ type: 'email', payload: str })}
@@ -262,7 +262,7 @@ const RegisterCommerce = ({ route, navigation }) => {
                                     value={state.password}
                                     onChangeText={(payload) => dispatch({ type: 'password', payload })}
                                     placeholder="Contraseña"
-                                    placeholderTextColor={Colors.$colorGray}
+                                    placeholderTextColor='#CCC'
                                     style={styles.textInputCol}
                                 />
                                 <TouchableOpacity onPress={(e) => setShowPassword(!showPassword)} style={styles.touchableCol}>
@@ -281,7 +281,7 @@ const RegisterCommerce = ({ route, navigation }) => {
                                     value={confirmPassword}
                                     onChangeText={value => setConfirmPassword(value)}
                                     placeholder="Contraseña"
-                                    placeholderTextColor={Colors.$colorGray}
+                                    placeholderTextColor='#CCC'
                                     style={styles.textInputCol}
                                 />
                                 <TouchableOpacity onPress={(e) => setShowConfirmPassword(!showConfirmPassword)} style={styles.touchableCol}>
@@ -301,7 +301,7 @@ const RegisterCommerce = ({ route, navigation }) => {
                                 <TextInput
                                     style={[GlobalStyles.textInput, { flex: 1 }]}
                                     placeholder="Ingrese numero de telefono"
-                                    placeholderTextColor={Colors.$colorGray}
+                                    placeholderTextColor='#CCC'
                                     value={state.phoneCommerce}
                                     autoCorrect={false}
                                     keyboardType="numeric"
@@ -355,7 +355,7 @@ const RegisterCommerce = ({ route, navigation }) => {
                             <TextInput
                                 style={GlobalStyles.textInput}
                                 placeholder="Ingrese un punto de referencia del comercio"
-                                placeholderTextColor={Colors.$colorGray}
+                                placeholderTextColor='#CCC'
                                 value={state.physicalAddress}
                                 onChangeText={str => dispatch({ type: 'physicalAddress', payload: str })}
                             />
@@ -434,7 +434,7 @@ const RegisterCommerce = ({ route, navigation }) => {
                         keyExtractor={(_, i) => i.toString()} />
                 </View>
             </Modal>
-        </Container >
+        </KeyboardAvoidingView>
     )
 
 }
@@ -443,9 +443,13 @@ const styles = StyleSheet.create({
     scrollView: {
         flex: 1,
     },
+    container1: {
+        alignItems: 'center',
+        backgroundColor: Colors.$colorMain,
+        flex: 1,
+    },
 
     container: {
-        backgroundColor: Colors.$colorBlack,
         alignItems: "center",
         paddingHorizontal: "5%",
         flexDirection: "column",
@@ -467,7 +471,7 @@ const styles = StyleSheet.create({
     },
     containerModal: {
         alignSelf: "center",
-        backgroundColor: Colors.$colorMain,
+        backgroundColor: Colors.$colorBlack,
         borderRadius: 10,
         padding: 10,
         height: "80%",
@@ -562,6 +566,14 @@ const styles = StyleSheet.create({
         position: "relative",
         marginBottom: 5,
         flexDirection: "row",
+    },
+    itemCountry: {
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        borderRadius: 5,
+        padding: 10,
+        marginVertical: 5,
     },
 })
 

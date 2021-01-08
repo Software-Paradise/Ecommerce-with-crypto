@@ -2,61 +2,85 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, Image } from 'react-native'
 
 // Import constants
-import { RFValue, Colors, readFile } from '../../utils/constants.util'
+import { RFValue, Colors, readFile, http, getHeaders, showNotification } from '../../utils/constants.util'
+import _ from "lodash"
 
-// import assets and styles
+// Import Components
+import Loader from '../Loader/Loader'
+import Container from '../Container/Container'
+
+// import assets 
 import avatar from "../../assets/img/ecommerce-avatar.png"
+import tether from '../../assets/img/tether.png'
 
 // Import redux store
 import store from '../../store'
+import { SETFUNCTION } from '../../store/actionTypes'
 
 
 const CadProfile = () => {
-    const { global } = store.getState()
     const [source, setSource] = useState(null)
+    const [information, setInformation] = useState(false)
+
+    const informationCommerce = async () => {
+        try {
+
+            const { data } = await http.get('/ecommerce/info', getHeaders())
+            setInformation(data)
+
+        } catch (error) {
+            showNotification(error.toString())
+        }
+    }
 
     // Funcion que permite extraer la imagen para visualizarla
     const read = async () => {
-        const blog = global.profile_picture_commerce
+        const blog = information.profile_picture
 
         // verificamos si hay foto
-        if (blog !== null) {
+        if (blog) {
             const file = await readFile(blog)
-
-            // y si hay foto hay video
             setSource(file)
         }
     }
 
     useEffect(() => {
         read()
+        informationCommerce()
+
+        store.dispatch({
+            type: SETFUNCTION,
+            payload: {
+                reloadWallets: informationCommerce
+            }
+        })
     }, [])
 
     return (
-        <View style={styles.card}>
-            <Image source={source === null ? avatar : { uri: source }} style={styles.logo} />
+            <View style={styles.card}>
+                <Image source={source === null ? avatar : { uri: source }} style={styles.logo} />
 
-            <View style={styles.cardInformation}>
-                <View style={styles.headerTableTitle}>
-                    <Text style={styles.textHeaderTableTitle}>{global.name_commerce}</Text>
-                </View>
-
-                <View style={styles.lineTitle} />
-
-                <View style={styles.dataDetailsInfoContainer}>
-                    <View style={styles.headerTable}>
-                        <Text style={styles.textRowTable}>{global.physical_address}</Text>
-
-                        <Text style={[styles.textHeaderTable, { alignSelf: "flex-start" }]}>Dirección</Text>
-                    </View>
-                    <View style={styles.bodyRowTable}>
-                        <Text style={styles.textRowTable}>{global.amount_wallet_commerce} <Text style={{ fontSize: RFValue(9) }}>USD</Text></Text>
-                        <Text style={styles.textHeaderTable}>Saldo total</Text>
+                <View style={styles.cardInformation}>
+                    <View style={styles.headerTableTitle}>
+                        <Text style={styles.textHeaderTableTitle}>{information.name}</Text>
+                        <Image source={tether} style={styles.icon} />
                     </View>
 
+                    <View style={styles.lineTitle} />
+
+                    <View style={styles.dataDetailsInfoContainer}>
+                        <View style={styles.headerTable}>
+                            <Text style={[styles.textHeaderTable, { alignSelf: "flex-start" }]}>Dirección</Text>
+                            <Text style={styles.textRowTable}>{information.physical_address}</Text>
+                        </View>
+                        <View style={styles.bodyRowTable}>
+                            <Text style={styles.textHeaderTable}>Balance</Text>
+                            <Text style={styles.textRowTable}>{_.floor(information.amount_wallet, 2)}<Text style={{ fontSize: RFValue(9) }}>{information.symbol_wallet}</Text></Text>
+                        </View>
+
+                    </View>
                 </View>
             </View>
-        </View>
     )
 }
 
@@ -86,7 +110,7 @@ const styles = StyleSheet.create({
     headerTableTitle: {
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "flex-start",
+        justifyContent: 'space-between',
     },
     headerTable: {
         flexDirection: 'column',
@@ -100,7 +124,7 @@ const styles = StyleSheet.create({
     },
     textHeaderTable: {
         textAlign: 'right',
-        fontSize: RFValue(10),
+        fontSize: RFValue(13),
         color: Colors.$colorYellow
     },
     bodyRowTable: {
@@ -121,6 +145,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
+    icon:{
+        width:RFValue(30),
+        height:RFValue(30)
+    }
 })
 
 export default CadProfile

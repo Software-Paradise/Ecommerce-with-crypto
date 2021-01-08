@@ -61,8 +61,7 @@ const Login = ({ navigation }) => {
         mac_address: state.macAddress || '',
         system_name: state.systemName || '',
       };
-      console.log(variables);
-
+      
       const response = await http.post('/ecommerce/login', variables);
 
       const { data } = response;
@@ -78,7 +77,6 @@ const Login = ({ navigation }) => {
         }
       }
     } catch (error) {
-      console.log(error);
       showMessage({
         message: error.toString(),
         description: 'Error al autenticar',
