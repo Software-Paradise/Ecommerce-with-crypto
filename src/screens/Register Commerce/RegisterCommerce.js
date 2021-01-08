@@ -211,7 +211,7 @@ const RegisterCommerce = ({ route, navigation }) => {
     }, [])
 
     return (
-        <Container hideNavbar >
+        <Container>
             <ScrollView keyboardShouldPersistTaps='always' style={styles.scrollView}>
                 <View style={styles.container}>
                     <Image style={styles.logo} source={Logo} />
