@@ -1,402 +1,358 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'
 import {
-  View,
-  Text,
-  Modal,
-  Dimensions,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  Alert
-} from 'react-native';
-import LottieAnimationView from 'lottie-react-native';
-import { useRoute } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { GlobalStyles } from '../styles/global.style';
-import { Colors, socketAddress } from '../utils/constants.util';
-import { RFValue } from 'react-native-responsive-fontsize';
-import QRCode from 'react-native-qrcode-svg';
-import * as CryptoJS from 'react-native-crypto-js';
-import store from '../store';
-import socketIO from 'socket.io-client';
+    View,
+    Text,
+    Modal,
+    StyleSheet,
+    TouchableOpacity,
+    Image,
+    Alert
+} from 'react-native'
 
+// import components
+import Container from '../components/Container/Container'
+import LottieAnimationView from 'lottie-react-native'
+import QRCode from 'react-native-qrcode-svg'
+import Navbar from "../components/Navbar/Navbar"
+
+// import constants and functions
+import { RFValue } from 'react-native-responsive-fontsize'
+import { Colors, socketAddress } from '../utils/constants.util'
+import { useRoute } from '@react-navigation/native'
+import { GlobalStyles } from '../styles/global.style'
+import socketIO from 'socket.io-client'
+import * as CryptoJS from 'react-native-crypto-js'
+
+// import redux configurations
+import store from '../store'
+
+// import assets
+import logoImage from "./../assets/img/logo.png"
+import logoAlyCoinImage from "./../assets/img/aly-coin.png"
+import loaderAnimation from "./../animations/loader.json"
+import successAnimation from "./../animations/yellow-success.json"
+import errorAnimation from "./../animations/error_animation.json.json"
+
+/**Vista de transaccion (Esperando pago) */
 const TransactionScreen = ({ navigation }) => {
-  const { global } = store.getState();
-  const [keySecret, setKeySecret] = useState('');
-  const route = useRoute();
-  const [transaction, setTransaction] = useState('');
-  const [amount, setAmount] = useState('');
-  const [roomId, setRoomId] = useState('');
-  const [currency, setCurrency] = useState('(USD)');
-  const [showModal, setShowModal] = useState(false);
-  const [onSuccess, setOnSuccess] = useState(false);
-  const [onSuccessMessage, setOnSuccessMessage] = useState(
-    'Pago realizado con éxito',
-  );
-  const [status, setStatus] = useState('Esperando pago');
-  const [connectionSocket, setConnectionSocket] = useState();
-  const cypherdata = CryptoJS.AES.encrypt(
-    JSON.stringify({
-      id: roomId,
-      orderId: transaction,
-      wallet_commerce: global.wallet_commerce,
-      description: global.description,
-      amount: route.params.amount,
-    }),
-    keySecret,
-  );
 
-  const handleSuccess = () => {
-    setShowModal(!showModal);
-    navigation.goBack();
-  };
+    const route = useRoute()
+    // obtenemos el estado global de redux
+    const { global } = store.getState()
 
-  const handleFail = () => {
-    setShowModal(!showModal);
-  };
+    const [keySecret, setKeySecret] = useState('')
+    // estado que guarda el numero de orden
+    const [transaction, setTransaction] = useState('')
 
-  const cancelButton = () => {
-    goBack()
-    // connectionSocket.emit('disconnect', 'cancel_transaction');
-    connectionSocket.disconnect(true);
-  };
+    // estado que guarda el monto facturado
+    const [amount, setAmount] = useState('')
+    const [roomId, setRoomId] = useState('')
 
-  const goBack = () => {
-    Alert.alert("Estas a punto de cancelar la transaccion", "Realmente quieres ejecutar esta accion", [
-      {
-        text: 'Cancelar',
-        onPress: () => { }
-      },
-      {
-        text: 'Salir',
-        onPress: () => {
-          navigation.pop()
-        }
-      }
-    ])
-  }
+    // Divisa de pago
+    const [currency, setCurrency] = useState('(USD)')
 
-  useEffect(() => {
-    const _unsubscribe = navigation.addListener('focus', () => {
-      connection();
-    });
+    // estado que maneja la presencia de la modal
+    const [showModal, setShowModal] = useState(false)
 
-    setAmount(route.params.amount);
+    // estado que indica si hay un siccess
+    const [onSuccess, setOnSuccess] = useState(false)
 
-    return _unsubscribe;
-  }, [connection, navigation, route.params.amount]);
+    // mensaje de success
+    const [onSuccessMessage, setOnSuccessMessage] = useState('Pago realizado con éxito')
 
-  const connection = useCallback(() => {
-    console.log(
-      transaction,
-      global.wallet_commerce,
-      global.description,
-      amount,
-    );
-    const socket = socketIO(socketAddress, {
-      query: {
-        token: global.token,
-        data: JSON.stringify({
-          id: roomId,
-          orderId: transaction,
-          wallet: global.wallet_commerce,
-          description: global.description,
-          amount: Number(route.params.amount),
+    // estado que almacena la instancia de socket
+    const [connectionSocket, setConnectionSocket] = useState()
+
+    // ????
+    const cypherdata = CryptoJS.AES.encrypt(
+        JSON.stringify({
+            id: roomId,
+            orderId: transaction,
+            wallet_commerce: global.wallet_commerce,
+            description: global.description,
+            amount: route.params.amount,
         }),
-      },
-      forceNew: true,
-      transports: ['websocket'],
-    });
-    // socket.connect();
-    setConnectionSocket(socket);
+        keySecret,
+    )
 
-    socket.on('connect', () => {
-      console.log('connected');
-      socket.send('Im in');
-    });
+    // ???
+    const handleSuccess = () => {
+        setShowModal(!showModal)
 
-    socket.on('reconnect_attempt', (event) => {
-      socket.io.opts.transports = ['websocket'];
-      console.log('Reconnect attempt', event);
-    });
+        // vamos a una vista anterior
+        navigation.goBack()
+    }
 
-    socket.on('disconnect', () => {
-      console.log('Connection lost');
-    });
+    // Metodo se ejecuta cuando un usuaro cancela la orden
+    const goBack = () => {
+        Alert.alert("Estas a punto de cancelar la transaccion", "Realmente quieres ejecutar esta accion", [
+            {
+                text: 'Cancelar',
+                onPress: () => { }
+            },
+            {
+                text: 'Salir',
+                onPress: () => {
+                    connectionSocket.disconnect(true)
+                    navigation.pop()
+                }
+            }
+        ])
+    }
 
-    socket.on('message', (message) => {
-      console.log('Message', message);
-      setKeySecret(message.keysecret);
-      setRoomId(message.id);
-      setTransaction(message.order);
+    useEffect(() => {
+        const _unsubscribe = navigation.addListener('focus', () => {
+            connection()
+        })
 
-      console.log(
-        'On message',
-        transaction,
-        global.wallet_commerce,
-        global.description,
+        setAmount(route.params.amount)
+
+        return _unsubscribe
+    }, [connection, navigation, route.params.amount])
+
+    const connection = useCallback(() => {
+        // instanciamos el nuevo Socket
+        const socket = socketIO(socketAddress, {
+            query: {
+                token: global.token,
+                data: JSON.stringify({
+                    id: roomId,
+                    orderId: transaction,
+                    wallet: global.wallet_commerce,
+                    description: global.description,
+                    amount: Number(route.params.amount),
+                }),
+            },
+            forceNew: true,
+            transports: ['websocket'],
+        })
+
+
+        // Seteamos la instancia de socket en un estado
+        setConnectionSocket(socket)
+
+        // ???
+        socket.on('reconnect_attempt', _ => {
+            socket.io.opts.transports = ['websocket']
+        })
+
+        socket.on('message', (message) => {
+            // seteamos la llave para desencriptar
+            setKeySecret(message.keysecret)
+
+            // seteamos el id del socket message
+            setRoomId(message.id)
+
+            // seteamos el orden de la transaccion
+            setTransaction(message.order)
+        })
+
+        socket.on('status', (response) => {
+            if (response.error) {
+                setShowModal(true)
+                setOnSuccess(false)
+                setOnSuccessMessage(response.message)
+            }
+
+            if (response.success) {
+                setShowModal(true)
+                setOnSuccess(true)
+                setOnSuccessMessage(response.message)
+                socket.disconnect()
+            }
+        })
+    }, [
         amount,
-      );
-    });
+        global.description,
+        global.token,
+        global.wallet_commerce,
+        roomId,
+        route.params.amount,
+        transaction,
+    ])
 
-    socket.on('status', (response) => {
-      console.log('Status', response);
-      if (response.error) {
-        setShowModal(true);
-        setOnSuccess(false);
-        setOnSuccessMessage(response.message);
-      }
+    return (
+        <>
+            <Container showLogo>
+                <View style={TransactionStyles.statusRow}>
+                    <Text style={[TransactionStyles.mediumText, { color: Colors.$colorYellow }]}>
+                        Orden # {transaction}
+                    </Text>
 
-      if (response.success) {
-        setShowModal(true);
-        setOnSuccess(true);
-        setOnSuccessMessage(response.message);
-        socket.disconnect();
-      }
-    });
+                    <Text style={TransactionStyles.amountText}>
+                        {parseFloat(route.params.amount).toFixed(2) || 0.0} {currency}
+                    </Text>
+                </View>
 
-    socket.on('error', (error) => {
-      console.log('Error', error);
-    });
-  }, [
-    amount,
-    global.description,
-    global.token,
-    global.wallet_commerce,
-    roomId,
-    route.params.amount,
-    transaction,
-  ]);
+                <View style={TransactionStyles.qrCodeContainer}>
+                    <QRCode
+                        backgroundColor={Colors.$colorYellow}
+                        logo={logoAlyCoinImage}
+                        size={RFValue(310)}
+                        value={`${cypherdata},${keySecret}`} />
+                </View>
 
-  return (
-    <SafeAreaView
-      style={[
-        GlobalStyles.superContainer,
-        { justifyContent: 'center', alignItems: 'center' },
-      ]}>
-      <Modal animationType="slide" transparent={true} visible={showModal}>
-        <View style={TransactionStyles.modalView}>
-          <View
-            style={{
-              width: 120,
-              height: 100,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Image
-              source={require('./../assets/img/logo.png')}
-              style={TransactionStyles.logo}
-            />
-          </View>
+                <View style={TransactionStyles.statusRow}>
+                    <TouchableOpacity onPress={goBack}>
+                        <Text style={TransactionStyles.cancelText}>
+                            Cancelar
+                        </Text>
+                    </TouchableOpacity>
 
-          <View>
-            <Text
-              style={{
-                color: Colors.$colorGray,
-                fontSize: RFValue(20),
-                textAlign: 'center',
-                textTransform: 'uppercase',
-              }}>
-              ¡Estupendo!
-            </Text>
-          </View>
+                    <View style={TransactionStyles.waitingPayment}>
+                        <LottieAnimationView autoPlay={true} loop={true} source={loaderAnimation} style={TransactionStyles.loader} />
+                        <Text style={TransactionStyles.status}>Esperando Pago</Text>
+                    </View>
+                </View>
 
-          <View style={TransactionStyles.animationContainer}>
-            <LottieAnimationView
-              source={
-                onSuccess
-                  ? require('./../animations/yellow-success.json')
-                  : require('./../animations/error_animation.json.json')
-              }
-              autoPlay
-              autoSize
-              loop={false}
-            />
-          </View>
+                <Modal animationType="slide" transparent={true} visible={showModal}>
+                    <View style={TransactionStyles.modalView}>
+                        <View
+                            style={{
+                                width: 120,
+                                height: 100,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}>
+                            <Image source={logoImage} style={TransactionStyles.logo} />
+                        </View>
 
-          <Text
-            style={[
-              TransactionStyles.textAlertStyle,
-              { color: onSuccess ? Colors.$colorYellow : Colors.$colorRed },
-            ]}>
-            {onSuccessMessage}
-          </Text>
+                        <View>
+                            <Text
+                                style={{
+                                    color: Colors.$colorGray,
+                                    fontSize: RFValue(20),
+                                    textAlign: 'center',
+                                    textTransform: 'uppercase',
+                                }}>
+                                ¡Estupendo!
+                            </Text>
+                        </View>
 
-          {onSuccess ? (
-            <TouchableOpacity
-              onPress={handleSuccess}
-              style={TransactionStyles.handleButton}>
-              <Text
-                style={{
-                  fontSize: RFValue(24),
-                  fontWeight: 'bold',
-                }}>
-                Confirmar
-              </Text>
-            </TouchableOpacity>
-          ) : (
-              <TouchableOpacity
-                onPress={handleFail}
-                style={TransactionStyles.handleButton}>
-                <Text>Confirmar</Text>
-              </TouchableOpacity>
-            )}
-        </View>
-      </Modal>
-      <Image
-        source={require('./../assets/img/logo.png')}
-        style={TransactionStyles.logo}
-      />
-      <Text style={TransactionStyles.mainTitle}>Procesar transaccion</Text>
+                        <View style={TransactionStyles.animationContainer}>
+                            <LottieAnimationView
+                                source={onSuccess ? successAnimation : errorAnimation}
+                                autoPlay
+                                autoSize
+                                loop={false}
+                            />
+                        </View>
 
-      <View style={TransactionStyles.mainContainer}>
-        <View style={TransactionStyles.transactionData}>
-          <Text
-            style={[
-              TransactionStyles.mediumText,
-              { color: Colors.$colorYellow },
-            ]}>
-            Numero de orden: {transaction}
-          </Text>
-          <Text style={TransactionStyles.currencyText}>{currency}</Text>
-          <Text style={TransactionStyles.amountText}>
-            {parseFloat(route.params.amount).toFixed(2) || 0.0}
-          </Text>
-        </View>
+                        <Text
+                            style={[TransactionStyles.textAlertStyle, { color: onSuccess ? Colors.$colorYellow : Colors.$colorRed }]}>
+                            {onSuccessMessage}
+                        </Text>
 
-        <View style={TransactionStyles.qrCodeContainer}>
-          <QRCode
-            logo={require('./../assets/img/aly-coin.png')}
-            size={RFValue(180)}
-            backgroundColor={Colors.$colorYellow}
-            value={`${cypherdata},${keySecret}`}
-          />
-        </View>
+                        {
+                            onSuccess
+                                ?
+                                <TouchableOpacity onPress={handleSuccess} style={TransactionStyles.handleButton}>
+                                    <Text style={{ fontSize: RFValue(24), fontWeight: 'bold' }}>
+                                        Confirmar
+                                    </Text>
+                                </TouchableOpacity>
+                                :
+                                <TouchableOpacity onPress={_ => setShowModal(!showModal)} style={TransactionStyles.handleButton}>
+                                    <Text>Confirmar</Text>
+                                </TouchableOpacity>
+                        }
+                    </View>
+                </Modal>
+            </Container>
 
-        <View style={TransactionStyles.statusRow}>
-          <Text style={TransactionStyles.statusLabel}>Estado: </Text>
-          <Text style={TransactionStyles.status}>{status}</Text>
-        </View>
-
-        <View style={TransactionStyles.cancelContainer}>
-          <TouchableOpacity style={TransactionStyles.cancelButton}>
-            <Text onPress={cancelButton} style={TransactionStyles.cancelText}>
-              Cancelar transaccion
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-      </View>
-    </SafeAreaView>
-  );
-};
+            <Navbar />
+        </>
+    )
+}
 
 const TransactionStyles = StyleSheet.create({
-  mainContainer: {
-    backgroundColor: Colors.$colorBlack,
-    borderRadius: RFValue(20),
-    alignItems: 'center',
-    height: Dimensions.get('window').height - RFValue(180),
-    width: Dimensions.get('window').width - RFValue(75),
-  },
-  mainTitle: {
-    color: Colors.$colorYellow,
-    fontSize: RFValue(18),
-    fontWeight: 'bold',
-    paddingVertical: RFValue(10),
-  },
-  qrCodeContainer: {
-    backgroundColor: Colors.$colorYellow,
-    alignItems: 'center',
-    justifyContent: 'center',
-    // marginHorizontal: RFValue(50),
-    borderRadius: RFValue(10),
-    width: RFValue(210),
-    height: RFValue(210),
-  },
-  mediumText: {
-    color: Colors.$colorGray,
-    fontSize: RFValue(18),
-    textAlign: 'center',
-  },
-  currencyText: {
-    color: Colors.$colorGray,
-    fontSize: RFValue(24),
-    textAlign: 'center',
-  },
-  amountText: {
-    color: Colors.$colorGray,
-    fontSize: RFValue(26),
-    textAlign: 'center',
-  },
-  statusRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: RFValue(20),
-  },
-  statusLabel: {
-    color: Colors.$colorYellow,
-    fontSize: RFValue(16),
-  },
-  status: {
-    color: Colors.$colorGray,
-    fontSize: RFValue(16),
-  },
-  transactionData: {
-    paddingVertical: RFValue(20),
-  },
-  cancelText: {
-    color: Colors.$colorRed,
-    fontSize: RFValue(14),
-    textDecorationLine: 'underline',
-  },
-  cancelButton: {
-    padding: RFValue(10),
-  },
-  cancelContainer: {
-    marginVertical: RFValue(25),
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: Colors.$colorMain,
-    borderWidth: 2,
-    borderColor: Colors.$colorYellow,
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
+    qrCodeContainer: {
+        alignSelf: 'center',
+        alignItems: "center",
+        backgroundColor: Colors.$colorYellow,
+        borderRadius: RFValue(10),
+        borderWidth: 10,
+        borderColor: "rgba(255, 255, 255, 0.2)",
+        justifyContent: 'center',
+        padding: 10,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  handleButton: {
-    backgroundColor: Colors.$colorYellow,
-    borderRadius: 50,
-    marginTop: RFValue(30),
-    padding: RFValue(10),
-  },
-  animationContainer: {
-    height: RFValue(150),
-    width: RFValue(150),
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  textAlertStyle: {
-    fontSize: RFValue(24),
-    fontWeight: 'bold',
-  },
-  logo: {
-    alignContent: 'center',
-    resizeMode: 'contain',
-    height: RFValue(128),
-    width: RFValue(256),
-  },
-});
+    orderNumber: {
+        color: Colors.$colorGray,
+        fontSize: RFValue(18),
+        textAlign: 'center',
+    },
+    currencyText: {
+        color: Colors.$colorGray,
+        fontSize: RFValue(24),
+        textAlign: 'center',
+    },
+    amountText: {
+        color: Colors.$colorGray,
+        fontSize: RFValue(16),
+        textAlign: 'center',
+    },
+    statusRow: {
+        alignSelf: "center",
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: "space-between",
+        marginVertical: RFValue(20),
+        width: "80%",
+    },
+    status: {
+        color: Colors.$colorGray,
+        fontSize: RFValue(16),
+    },
+    cancelText: {
+        color: Colors.$colorRed,
+        fontSize: RFValue(14),
+        textDecorationLine: 'underline',
+    },
+    cancelButton: {
+        padding: RFValue(10),
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: Colors.$colorMain,
+        borderWidth: 2,
+        borderColor: Colors.$colorYellow,
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    handleButton: {
+        backgroundColor: Colors.$colorYellow,
+        borderRadius: 50,
+        marginTop: RFValue(30),
+        padding: RFValue(10),
+    },
+    animationContainer: {
+        height: RFValue(150),
+        width: RFValue(150),
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    textAlertStyle: {
+        fontSize: RFValue(24),
+        fontWeight: 'bold',
+    },
+    loader: {
+        height: RFValue(36),
+        width: RFValue(36),
+    },
+    waitingPayment: {
+        alignItems: "center",
+        flexDirection: "row",
+    }
+})
 
-export default TransactionScreen;
+export default TransactionScreen

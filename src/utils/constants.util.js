@@ -16,6 +16,7 @@ const keyStorage = '@storage';
 export const Colors = {
   $colorMain: "#000",
   $colorBlack: "#1d1d1d",
+  $colorGray: "#CCC",
   $colorSecondary: "#9ed3da",
   $colorYellow: "#ffcb08",
   $colorRed: "#c0392b",
@@ -298,11 +299,11 @@ export const showNotification = (message = "", type = "info" | "error" | "warnin
 
 const PORT = '3085';
 
-export const serverAddress = Platform.OS === 'ios' ? `http://localhost:${PORT}` : `http://192.168.0.120:${PORT}`;
+// export const serverAddress = Platform.OS === 'ios' ? `http://localhost:${PORT}` : `http://192.168.0.120:${PORT}`;
 
 export const serverSpeedtradingsURL = "https://ardent-medley-272823.appspot.com";
 
-//export const serverAddress = 'http://staging.root-anvil-299019.appspot.com/'; 
+export const serverAddress = 'http://staging.root-anvil-299019.appspot.com'; 
 export const socketAddress = serverAddress;
 //export const socketAddress = 'http://staging.root-anvil-299019.appspot.com/'
 
