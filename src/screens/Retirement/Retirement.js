@@ -12,7 +12,6 @@ import { Picker } from '@react-native-community/picker'
 import { View as ViewAnimation } from 'react-native-animatable'
 
 // import constanst and functions
-import Axios from 'axios'
 import { RNCamera } from 'react-native-camera'
 import _ from "lodash"
 
@@ -28,12 +27,19 @@ import { useHasSystemFeature } from 'react-native-device-info'
 const Retirements = ({ navigation }) => {
     const { global } = store.getState();
 
+    // Estados que guardan los montos de las monedas y el fee
+    const [amount, setAmount] = useState('');
     const [amountSatochi, setTotalAmountSatochi] = useState(0)
     const [amountFee, setAmountFee] = useState(0);
     const [amountFeeUSD, setAmountFeeUSD] = useState(0);
+
+    // Estado que guarda la direccion de la billerera
     const [walletAddress, setWalletAddress] = useState('');
-    const [amount, setAmount] = useState('');
+    
+    // Estado que almacena la vista del QR
     const [showScanner, setShowScanner] = useState(false);
+    
+    // Estados que guardan la lista y los precios de las monedas
     const [coinIndexSelected, setCoin] = useState(0);
     const [coinList, setCoinList] = useState([]);
 
@@ -50,6 +56,10 @@ const Retirements = ({ navigation }) => {
     const _handleSubmit = async () => {
         try {
 
+            if (amount < 5) {
+                throw String('El monto minimo a retirar es de 5 USD')
+            }
+
             const dataSent = {
                 wallet: walletAddress,
                 id_wallet: global.wallet_commerce,
@@ -57,8 +67,6 @@ const Retirements = ({ navigation }) => {
                 amountOriginal: parseFloat(amount),
                 symbol: coinList[coinIndexSelected].symbol,
             }
-
-            console.log('DataSent',dataSent)
 
             const { data: response } = await http.post('ecommerce/transaction/retirement', dataSent, getHeaders())
 
@@ -97,7 +105,7 @@ const Retirements = ({ navigation }) => {
         }
     }
 
-    // ????
+    // Calculamos el Fee de la moneda seleccionada
     const onChangeAmountFee = (value) => {
         if (coinList.length === 0) {
             return
@@ -133,12 +141,15 @@ const Retirements = ({ navigation }) => {
             // total de dolares escritos por el usuario
             const totalAmount = parseFloat(amount)
 
+            // Precio de la moneda selecionada
             const { price } = coinList[coinIndexSelected].quote.USD
+
 
             const { fee, fee_aly } = getFeePercentage(totalAmount, 2, global.fee)
 
             const satochi = (totalAmount / price)
 
+            // Verificamos el fee segun la moneda selecionada
             if (coinList[coinIndexSelected] === 'ALY') {
                 setAmountFee(_.floor(satochi * fee_aly, 8))
             } else {
@@ -221,7 +232,7 @@ const Retirements = ({ navigation }) => {
                     <View style={styles.containerPrinc}>
                         <View style={styles.containerTitleFee}>
                             <Text style={styles.legend}>Monto</Text>
-                            <Text style={styles.legend}>Fee</Text>
+                            <Text style={styles.legend}>Fee ({coinList[coinIndexSelected]?.symbol})</Text>
                             <Text style={styles.legend}>Fee (USD)</Text>
                         </View>
 
@@ -234,7 +245,7 @@ const Retirements = ({ navigation }) => {
                 </View>
                 <View style={styles.col}>
                     <Text style={styles.totalSatochi}>
-                        {amountSatochi + amountFee} {coinList[coinIndexSelected]?.symbol}
+                        {_.floor(amountSatochi + amountFee,8)} {coinList[coinIndexSelected]?.symbol}
                     </Text>
                 </View>
 

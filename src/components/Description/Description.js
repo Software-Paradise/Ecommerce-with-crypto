@@ -5,6 +5,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-nati
 import Container from '../Container/Container'
 import Icon from "react-native-vector-icons/Ionicons"
 import Loader from '../Loader/Loader'
+import _ from "lodash"
 
 // Import constants and functions
 import moment from "moment"
@@ -15,13 +16,13 @@ const Description = ({ route }) => {
     const [loader, setLoader] = useState(false)
     const hash = route.params?.hash
 
+    // Hacemos la peticon al server para obtener los detalles de las transacciones
     const getAllDetails = async () => {
         try {
             setLoader(true)
 
             const { data } = await http.get(`/blockchain/transaction/${hash}`)
 
-            console.log('Detalle', data)
             if (data.error) {
                 throw String(data.message)
             }
@@ -100,7 +101,7 @@ const Description = ({ route }) => {
                         <Text style={styles.titleTotal}>Total: </Text>
 
                         <View style={{ justifyContent: 'center' }}>
-                            <Text style={{ color: '#FFF', fontSize: RFValue(20) }}>{details.amount - details.amount_fee_usd}</Text>
+                            <Text style={{ color: '#FFF', fontSize: RFValue(20) }}>{_.floor(details.amount_usd - details.amount_fee_usd,2)}</Text>
                         </View>
                     </View>
                 </View>

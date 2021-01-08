@@ -24,6 +24,7 @@ const Payment = () => {
     const [amount, setAmount] = useState('')
     const [loader, setLoader] = useState(false)
 
+    // Funcion que pasa el monto de para efectuar el pago de la transaccion
     const handleSubmit = async () => {
         try {
             setLoader(true)
@@ -40,6 +41,7 @@ const Payment = () => {
         }
     }
 
+    // Hacemos peticion al server para obtener los fee de las monedas
     const feesPercentage = async () => {
         try {
             setLoader(true)

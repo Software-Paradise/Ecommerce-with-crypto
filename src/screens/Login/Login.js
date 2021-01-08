@@ -147,7 +147,7 @@ const Login = ({ navigation }) => {
                   value={state.password}
                   onChangeText={(payload) => dispatch({ type: 'password', payload })}
                   placeholder="Contraseña"
-                  placeholderTextColor={Colors.$colorGray}
+                  placeholderTextColor="#CCC"
                   style={styles.textInputCol}
                 />
                 <TouchableOpacity onPress={_ => setShowPassword(!showPassword)} style={styles.touchableCol}>

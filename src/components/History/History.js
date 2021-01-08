@@ -30,7 +30,10 @@ const History = () => {
             setLoader(true)
             // Consumimos la api
             const { data } = await http.get(`/api/ecommerce/wallet/details/${global.wallet_commerce}`, getHeaders())
-            setTransaction(data.history)
+
+            if (data.history) {
+                setTransaction(data.history)
+            }
 
         } catch (error) {
             showNotification(error.toString())
@@ -52,7 +55,7 @@ const History = () => {
                         <Text style={styles.legendTitle}>Historial de transacciones</Text>
                     </View>
                     <Search />
-                    
+
                     {
                         (transaction.length > 0)
                             ?
@@ -115,7 +118,7 @@ const styles = StyleSheet.create({
     titleText: {
         fontSize: RFValue(20),
         textAlign: 'center',
-        color: Colors.$colorGray
+        color: Colors.$colorYellow
     }
 })
 

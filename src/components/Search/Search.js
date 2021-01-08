@@ -53,7 +53,8 @@ const Search = () => {
 
 const styles = StyleSheet.create({
     container: {
-        width: "100%",
+        flex:1,
+        margin:RFValue(10)
     },
 
     textInput: {
@@ -82,8 +83,8 @@ const styles = StyleSheet.create({
         borderRadius: RFValue(5),
         padding: RFValue(5),
         marginLeft: RFValue(10),
-        height: RFValue(45),
-        width: RFValue(45),
+        height: RFValue(50),
+        width: RFValue(50),
     },
     lottieQRAnimation: {
         height: RFValue(40),

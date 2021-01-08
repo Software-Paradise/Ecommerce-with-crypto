@@ -47,12 +47,13 @@ const optionsOpenCamera = {
     noData: true,
     maxHeight: 1024,
     maxWidth: 1024,
-    quality: 0.6,
+    quality: 0.5,
     mediaType: "photo",
     storageOptions: {
         skipBackup: true,
         path: 'Pictures/myAppPicture/', //-->this is FUCK neccesary
-        privateDirectory: true
+        privateDirectory: true,
+        cameraRoll: false
     }
 }
 
@@ -158,6 +159,7 @@ const Register = ({ navigation }) => {
                 if (response.error) {
                     throw String(response.error)
                 }
+                console.log('Response',response)
 
                 switch (imageDestination) {
                     case 'operationPermission': {
@@ -304,18 +306,19 @@ const Register = ({ navigation }) => {
         navigation.navigate('RegisterCommerce', { companyId: dataRegister.id })
         setModalSuccess(false)
     }
+    
 
     return (
-        <KeyboardAvoidingView style={styles.container1}>
-            <ScrollView keyboardShouldPersistTaps="always" style={styles.scrollView}>
-                <View style={styles.container}>
-                    <Image source={Logo} style={styles.logo} />
+        <Container showLogo>
+        <KeyboardAvoidingView style={styles.scrollView} >
+                <View style={styles.container1}>
+                    {/* <Image source={Logo} style={styles.logo} /> */}
 
                     <Loader isVisible={loader} />
 
                     <ViewAnimation style={[styles.tab, { paddingBottom: RFValue(20) }]} animations="fadeIn" >
                         <View style={styles.containerTitle}>
-                            <Text style={{ color: Colors.$colorYellow, fontSize: RFValue(20) }}>Compañía</Text>
+                            <Text style={{ color: Colors.$colorYellow, fontSize: RFValue(20) }}>Registro de Compañía</Text>
                         </View>
 
                         <View style={styles.row}>
@@ -542,13 +545,13 @@ const Register = ({ navigation }) => {
                             </TouchableOpacity>
 
 
-                            <TouchableOpacity onPress={_ => setModalSuccess(true)} disabled={!state.companyName} style={state.companyName ? GlobalStyles.buttonPrimary : GlobalStyles.button}>
+                            <TouchableOpacity onPress={onSubmitInformation} disabled={!state.companyName} style={state.companyName ? GlobalStyles.buttonPrimary : GlobalStyles.button}>
                                 <Text style={[GlobalStyles.textButton, { opacity: state.companyName ? 1 : 0.5 }]}>Guardar</Text>
                             </TouchableOpacity>
                         </View>
                     </ViewAnimation>
                 </View>
-            </ScrollView>
+        
 
             <Modal isVisible={modalSuccess} onBackButtonPress={_ => setModalSuccess(false)} onBackdropPress={_ => setModalSuccess(false)}>
                 <View style={styles.containerModalSuccess}>
@@ -595,6 +598,7 @@ const Register = ({ navigation }) => {
                 </View>
             </Modal>
         </KeyboardAvoidingView>
+        </Container>
     )
 }
 
@@ -603,21 +607,24 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     container1: {
-        alignItems: 'center',
-        backgroundColor: Colors.$colorMain,
-        flex: 1,
-    },
-    container: {
         alignItems: "center",
         paddingHorizontal: "5%",
         flexDirection: "column",
         justifyContent: "space-between",
         flex: 1,
     },
+    /* container: {
+        //marginVertical:RFValue(10),
+        alignItems: "center",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        flex: 1,
+    }, */
     containerTitle: {
         flex: 1,
         padding: 10,
-        marginLeft: 10
+        marginLeft: 10,
+        alignItems: "center"
     },
     containerModalSuccess: {
         alignSelf: "center",

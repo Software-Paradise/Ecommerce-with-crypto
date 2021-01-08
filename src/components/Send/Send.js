@@ -83,7 +83,7 @@ const sentComponent = () => {
                 dispatch({ type: "walletAccepted", payload: false })
 
                 // limpiamos el fee
-                dispatch({ type: 'fee', payload: '00' })
+                dispatch({ type: 'fee', payload: '0' })
             } else {
                 throw String("Tu transacción no se ha compeltado, contacte a soporte")
             }
@@ -94,7 +94,7 @@ const sentComponent = () => {
         }
     }
 
-    // Verificamos los datos del docomercio
+    // Verificamos los datos del comercio
     const configureComponent = async () => {
         try {
             setLoader(true)
