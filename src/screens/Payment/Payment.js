@@ -6,7 +6,7 @@ import { Colors, RFValue, GlobalStyles, showNotification, setStorage, http, getS
 import { useNavigation } from '@react-navigation/native';
 
 // Import component
-import Container from '../Container/Container'
+import Container from '../../components/Container/Container'
 import Card from '../../components/CardProfile/CardProfile'
 import Loader from '../../components/Loader/Loader'
 
@@ -19,7 +19,7 @@ import Logo from '../../assets/img/aly-system-by.png'
 
 const Payment = () => {
     const { global } = store.getState()
-    console.log('global',global)
+
     const navigation = useNavigation()
     const [amount, setAmount] = useState('')
     const [loader, setLoader] = useState(false)

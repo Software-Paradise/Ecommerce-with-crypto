@@ -9,7 +9,7 @@ import QRCodeScanner from 'react-native-qrcode-scanner'
 import { RFValue, Colors, GlobalStyles, http, getHeaders, showNotification, errorMessage, successMessage, getFeePercentage } from '../../utils/constants.util'
 import { RNCamera } from 'react-native-camera'
 import { View as ViewAnimation } from 'react-native-animatable'
-import Container from '../Container/Container'
+import Container from '../../components/Container/Container'
 import Card from '../../components/CardProfile/CardProfile'
 import Loader from '../../components/Loader/Loader'
 
