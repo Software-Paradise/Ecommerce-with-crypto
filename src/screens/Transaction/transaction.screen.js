@@ -12,14 +12,13 @@ import {
 } from 'react-native'
 
 // import components
-import Container from '../Container/Container'
+import Container from '../../components/Container/Container'
 import LottieAnimationView from 'lottie-react-native'
 import QRCode from 'react-native-qrcode-svg'
-import Navbar from "../Navbar/Navbar"
+import Navbar from "../../components/Navbar/Navbar"
 
 // import constants and functions
-import { RFValue } from 'react-native-responsive-fontsize'
-import { Colors, socketAddress } from '../../utils/constants.util'
+import { Colors, socketAddress, RFValue } from '../../utils/constants.util'
 import { useRoute } from '@react-navigation/native'
 import socketIO from 'socket.io-client'
 import * as CryptoJS from 'react-native-crypto-js'

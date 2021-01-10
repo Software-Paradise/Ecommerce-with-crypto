@@ -5,8 +5,6 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { Image, View as ViewAnimation } from 'react-native-animatable'
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Colors } from '../../utils/constants.util';
-import ImagePicker from 'react-native-image-picker'
-import Modal from 'react-native-modal'
 
 // Import Assets
 import images from '../../assets/img/Recurso.png'

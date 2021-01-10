@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, FlatList } from 'react-native';
 
 // Import Component
 import Container from '../../components/Container/Container'
-import Loader from '../components/Loader/Loader'
+import Loader from '../../components/Loader/Loader'
 import Search from '../../components/Search/Search'
 import HistorElement from '../../components/HistoryElement/HistoryElement'
 import Lottie from 'lottie-react-native'

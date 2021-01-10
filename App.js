@@ -14,7 +14,7 @@ import { getStorage } from './src/utils/constants.util';
 import { SETSTORAGE, DELETESTORAGE } from './src/store/actionTypes';
 import reduxStore from './src/store/index';
 import FlashMessage from 'react-native-flash-message';
-import TransactionScreen from './src/components/Transaction/transaction.screen';
+import TransactionScreen from './src/screens/Transaction/transaction.screen';
 
 // Import Componets
 import Description from './src/components/Description/Description'
