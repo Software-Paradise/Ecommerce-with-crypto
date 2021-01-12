@@ -20,9 +20,10 @@ import { SETFUNCTION } from '../../store/actionTypes'
 
 const CadProfile = () => {
     const [source, setSource] = useState(null)
-    const [information, setInformation] = useState(false)
+    const { global } = store.getState()
+    //const [information, setInformation] = useState(false)
 
-    const informationCommerce = async () => {
+    /* const informationCommerce = async () => {
         try {
 
             const { data } = await http.get('/ecommerce/info', getHeaders())
@@ -31,11 +32,11 @@ const CadProfile = () => {
         } catch (error) {
             showNotification(error.toString())
         }
-    }
+    } */
 
     // Funcion que permite extraer la imagen para visualizarla
     const read = async () => {
-        const blog = information.profile_picture
+        const blog = global.profile_picture
 
         // verificamos si hay foto
         if (blog) {
@@ -46,41 +47,41 @@ const CadProfile = () => {
 
     useEffect(() => {
         read()
-        informationCommerce()
+        /* informationCommerce() */
 
-        store.dispatch({
+       /*  store.dispatch({
             type: SETFUNCTION,
             payload: {
                 reloadWallets: informationCommerce
             }
-        })
+        }) */
     }, [])
 
     return (
-            <View style={styles.card}>
-                <Image source={source === null ? avatar : { uri: source }} style={styles.logo} />
+        <View style={styles.card}>
+            <Image source={source === null ? avatar : { uri: source }} style={styles.logo} />
 
-                <View style={styles.cardInformation}>
-                    <View style={styles.headerTableTitle}>
-                        <Text style={styles.textHeaderTableTitle}>{information.name}</Text>
-                        <Image source={tether} style={styles.icon} />
+            <View style={styles.cardInformation}>
+                <View style={styles.headerTableTitle}>
+                    <Text style={styles.textHeaderTableTitle}>{global.info?.name}</Text>
+                    <Image source={tether} style={styles.icon} />
+                </View>
+
+                <View style={styles.lineTitle} />
+
+                <View style={styles.dataDetailsInfoContainer}>
+                    <View style={styles.headerTable}>
+                        <Text style={[styles.textHeaderTable, { alignSelf: "flex-start" }]}>Dirección</Text>
+                        <Text style={styles.textRowTable}>{global.info?.physical_address}</Text>
+                    </View>
+                    <View style={styles.bodyRowTable}>
+                        <Text style={styles.textHeaderTable}>Balance</Text>
+                        <Text style={styles.textRowTable}>{_.floor(global.info?.amount_wallet, 2)}<Text style={{ fontSize: RFValue(9) }}>{global.info?.symbol_wallet}</Text></Text>
                     </View>
 
-                    <View style={styles.lineTitle} />
-
-                    <View style={styles.dataDetailsInfoContainer}>
-                        <View style={styles.headerTable}>
-                            <Text style={[styles.textHeaderTable, { alignSelf: "flex-start" }]}>Dirección</Text>
-                            <Text style={styles.textRowTable}>{information.physical_address}</Text>
-                        </View>
-                        <View style={styles.bodyRowTable}>
-                            <Text style={styles.textHeaderTable}>Balance</Text>
-                            <Text style={styles.textRowTable}>{_.floor(information.amount_wallet, 2)}<Text style={{ fontSize: RFValue(9) }}>{information.symbol_wallet}</Text></Text>
-                        </View>
-
-                    </View>
                 </View>
             </View>
+        </View>
     )
 }
 
@@ -145,9 +146,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
-    icon:{
-        width:RFValue(30),
-        height:RFValue(30)
+    icon: {
+        width: RFValue(30),
+        height: RFValue(30)
     }
 })
 

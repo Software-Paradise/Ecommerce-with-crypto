@@ -22,7 +22,7 @@ import Logo from '../../assets/img/logo.png'
 // Import redux store
 import store from '../../store'
 import Container from '../../components/Container/Container'
-import { useHasSystemFeature } from 'react-native-device-info'
+
 
 const Retirements = ({ navigation }) => {
     const { global } = store.getState();

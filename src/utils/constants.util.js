@@ -299,11 +299,11 @@ export const showNotification = (message = "", type = "info" | "error" | "warnin
 
 const PORT = '3085';
 
-// export const serverAddress = Platform.OS === 'ios' ? `http://localhost:${PORT}` : `http://192.168.0.120:${PORT}`;
+export const serverAddress = Platform.OS === 'ios' ? `http://localhost:${PORT}` : `http://192.168.0.120:${PORT}`;
 
 export const serverSpeedtradingsURL = "https://ardent-medley-272823.appspot.com";
 
-export const serverAddress = 'http://staging.root-anvil-299019.appspot.com'; 
+// export const serverAddress = 'http://staging.root-anvil-299019.appspot.com'; 
 export const socketAddress = serverAddress;
 //export const socketAddress = 'http://staging.root-anvil-299019.appspot.com/'
 
@@ -356,7 +356,7 @@ export const getFeePercentage = (amount, feeType, fees) => {
 }
 
 
-export const http = axios.create({
+const http = axios.create({
   baseURL: serverAddress,
   timeout: 10 * 60 * 60,
   validateStatus: (status) => {
@@ -365,7 +365,7 @@ export const http = axios.create({
         {
           text: 'OK',
           // onPress: () => { }
-          onPress: () => logOutApp()
+          //onPress: () => logOutApp()
         },
       ]);
       return true;
@@ -374,6 +374,13 @@ export const http = axios.create({
     }
   },
 });
+
+http.interceptors.request.use(config => {
+  console.log(config.url)
+  return config
+})
+
+export { http }
 
 export const getHeaders = () => {
   const { token } = store.getState().global;

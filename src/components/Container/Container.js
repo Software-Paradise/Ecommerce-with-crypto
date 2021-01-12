@@ -7,7 +7,9 @@ import { GlobalStyles, RFValue } from '../../utils/constants.util'
 // Import assents
 import logo from '../../assets/img/logo.png'
 
-const Container = ({ children, showLogo = false, scrollViewStyles = {}, onRefreshEnd = null }) => {
+import Card from '../CardProfile/CardProfile'
+
+const Container = ({ children, showLogo = false, scrollViewStyles = {}, onRefreshEnd = null, showCard = false }) => {
     const [refreshing, setRefresh] = useState(false)
 
     /**Metodo para recargar pantalla */
@@ -34,6 +36,11 @@ const Container = ({ children, showLogo = false, scrollViewStyles = {}, onRefres
                 {
                     showLogo !== false &&
                     <Image style={styles.logo} source={logo} />
+                }
+
+                {
+                    showCard !== false &&
+                    <Card />
                 }
 
                 {children}

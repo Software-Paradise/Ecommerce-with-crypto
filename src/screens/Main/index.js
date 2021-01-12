@@ -12,6 +12,7 @@ import Retirement from '../Retirement/Retirement'
 
 // Import components
 import Navbar from '../../components/Navbar/Navbar'
+import Card from '../../components/CardProfile/CardProfile'
 
 // Import sotre from redux
 import store from '../../store/index'
@@ -19,9 +20,9 @@ import { SETNAVIGATION } from '../../store/actionTypes'
 
 const Stack = createStackNavigator()
 
-const index = ({ navigtion }) => {
+const index = ({ navigation }) => {
     useEffect(() => {
-        store.dispatch({ type: SETNAVIGATION, payload: navigtion })
+        store.dispatch({ type: SETNAVIGATION, payload: navigation })
     }, [])
 
     return (

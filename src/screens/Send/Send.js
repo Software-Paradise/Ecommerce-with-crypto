@@ -12,6 +12,7 @@ import { View as ViewAnimation } from 'react-native-animatable'
 import Container from '../../components/Container/Container'
 import Card from '../../components/CardProfile/CardProfile'
 import Loader from '../../components/Loader/Loader'
+import _ from "lodash"
 
 // Import Assets
 import QR from '../../animations/scan-qr.json'
@@ -24,7 +25,7 @@ import store from '../../store'
 const initialState = {
     amountFraction: "",
     amountUSD: "",
-    walletAdress: "",
+    walletAdress: "a75b01af04509aad649022583e8b2ba21a83a1af3436166f622c7abb7ca78acb09728059079427a4d4893fd5b81c65a32ff56cc53bfa225c85f5abce63ed730ed93460304820f5178c403b600b7c6f2ca57349a59678e4ab7400817c28a88f38b00b08bf1cce49ed6385180aea7165f4d12b7257f287de6488b51f5d9534a72f9455488b274c981260a3b8e361fb418e",
     fee: '0',
 
     dataWallet: null,
@@ -40,13 +41,12 @@ const reducer = (state, action) => {
 
 const sentComponent = () => {
     const { global } = store.getState()
-
-    const [state, dispatch] = useReducer(reducer, initialState)
+ 
     const { navigate } = useNavigation()
+    const [state, dispatch] = useReducer(reducer, initialState)
 
     const [loader, setLoader] = useState(false)
 
-    const [details, setDetails] = useState(null);
     const [showScanner, setShowScanner] = useState(false)
 
     const submit = async () => {
@@ -63,11 +63,9 @@ const sentComponent = () => {
                 wallet: state.walletAdress,
                 id: global.wallet_commerce,
             }
-            console.log("dataSent", dataSent)
 
             const { data } = await http.post('ecommerce/transaction', dataSent, getHeaders())
 
-            console.log("DataSent", data)
             if (data.error) {
                 errorMessage(data.message)
             }
@@ -137,17 +135,15 @@ const sentComponent = () => {
     const onChangeAmount = (str) => {
         dispatch({ type: 'amountFraction', payload: str })
 
-        const { fee } = getFeePercentage(str, 1, global.fee)
+        const { fee } = getFeePercentage(str, 1, global.fees)
         dispatch({ type: 'fee', payload: fee * str })
     }
 
     const toggleScan = () => setShowScanner(!showScanner)
 
     return (
-        <Container showLogo onRefreshEnd >
+        <Container showLogo onRefreshEnd showCard>
             <Loader isVisible={loader} />
-
-            <Card />
 
             <View style={styles.container}>
                 <View style={styles.containerTitle}>
@@ -193,7 +189,7 @@ const sentComponent = () => {
                             <Text style={styles.legend}>Fee</Text>
                         </View>
                         <View style={styles.rowInput}>
-                            <Text style={{ color: '#FFF', fontSize: RFValue(24) }}>{state.fee} USD</Text>
+                            <Text style={{ color: '#FFF', fontSize: RFValue(24) }}>{_.floor(state.fee, 2)} USD</Text>
                         </View>
                     </View>
                 </View>
@@ -323,7 +319,7 @@ const styles = StyleSheet.create({
     },
     cardInfo: {
         alignItems: "center",
-        backgroundColor: Colors.$colorGreen,
+        backgroundColor: Colors.$colorBlack,
         justifyContent: "space-between",
         padding: RFValue(10),
         borderRadius: RFValue(10),

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native'
 
 // Import Constants
-import { Colors, RFValue, GlobalStyles, showNotification, setStorage, http, getStorage } from '../../utils/constants.util'
+import { Colors, RFValue, GlobalStyles, showNotification, setStorage, http, getStorage, getHeaders } from '../../utils/constants.util'
 import { useNavigation } from '@react-navigation/native';
 
 // Import component
@@ -46,11 +46,27 @@ const Payment = () => {
         try {
             setLoader(true)
 
-            const { data } = await http.get('/fees-percentage')
+            const { data: fees } = await http.get('/fees-percentage')
 
-            if (Object.values(data).length > 0) {
-                store.dispatch({ type: SETSTORAGE, payload: { ...global.data, fee: data } } )
+            const { data: information } = await http.get('/ecommerce/info', getHeaders())
+console.log('global keys', Object.keys(global))
+
+            const dataStorage = {
+                ...global,
+                fees: [],
+                info: {}
             }
+
+            if (Object.values(fees).length > 0) {
+                dataStorage.fees = fees
+            }
+
+            if (Object.values(information).length > 0) {
+                dataStorage.info = information
+            }
+
+            console.log('dataStorage', dataStorage)
+            store.dispatch({ type: SETSTORAGE, payload: dataStorage})
 
         } catch (error) {
             showNotification(error.toString())
@@ -69,9 +85,9 @@ const Payment = () => {
     }, [])
 
     return (
-        <Container showLogo onRefreshEnd={feesPercentage}>
+        <Container showLogo onRefreshEnd={feesPercentage} showCard >
             <Loader isVisible={loader} />
-            <Card />
+
             <View style={styles.container}>
                 <View style={styles.containerTitle}>
                     <Text style={styles.legendTitle}>Facturar transaccion</Text>
@@ -148,10 +164,10 @@ const styles = StyleSheet.create({
         marginBottom: RFValue(40),
     },
     positionLogo: {
-        flex:1,
+        flex: 1,
         alignItems: "center",
         justifyContent: "center",
-        padding:20
+        padding: 20
     }
 
 })
