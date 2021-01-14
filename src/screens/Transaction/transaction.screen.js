@@ -163,22 +163,21 @@ const TransactionScreen = ({ navigation }) => {
         transaction,
     ])
 
-    useEffect(() => {
-        const backHanldedEvent = BackHandler.addEventListener("hardwareBackPress", goBack)
-
-        return backHanldedEvent.remove()
-    }, [])
 
     useEffect(() => {
+        const backHanldedEvent = BackHandler.addEventListener('hardwareBackPress', goBack)
         const _unsubscribe = navigation.addListener('focus', () => {
             connection()
         })
 
         setAmount(route.params.amount)
 
-        return _unsubscribe
-    }, [connection, navigation, route.params.amount])
+        return () => {
+            _unsubscribe
+            backHanldedEvent.remove()
+        }
 
+    }, [connection, navigation, route.params.amount])
 
     return (
         <>

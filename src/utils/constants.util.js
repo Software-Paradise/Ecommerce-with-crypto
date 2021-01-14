@@ -366,7 +366,7 @@ const http = axios.create({
         {
           text: 'OK',
           // onPress: () => { }
-          //onPress: () => logOutApp()
+          onPress: () => logOutApp()
         },
       ]);
       return true;
