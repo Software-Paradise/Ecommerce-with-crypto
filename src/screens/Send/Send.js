@@ -24,7 +24,7 @@ import store from '../../store'
 const initialState = {
     amountFraction: "",
     amountUSD: "",
-    walletAdress: "a75b01af04509aad649022583e8b2ba21a83a1af3436166f622c7abb7ca78acb09728059079427a4d4893fd5b81c65a32ff56cc53bfa225c85f5abce63ed730ed93460304820f5178c403b600b7c6f2ca57349a59678e4ab7400817c28a88f38b00b08bf1cce49ed6385180aea7165f4d12b7257f287de6488b51f5d9534a72f9455488b274c981260a3b8e361fb418e",
+    walletAdress: "",
     fee: '0',
 
     dataWallet: null,
