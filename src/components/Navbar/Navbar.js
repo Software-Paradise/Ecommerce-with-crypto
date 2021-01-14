@@ -19,7 +19,7 @@ iconSize = RFValue(32)
 
 const Navbar = () => {
     const [hidden, setHidden] = useState(false)
-    const { dispatch, navigate } = useNavigation()
+    const { navigate } = useNavigation()
 
     const toggleMenu = () => {
         Alert.alert("Cerrar Sesion", "Esta apunto de cerrar sesion en Alypay Ecommerce", [
@@ -35,11 +35,7 @@ const Navbar = () => {
     }
 
     const goToTop = () => {
-        try {
-            dispatch(StackActions.popToTop())
-        } catch (error) {
-            console.log(error)
-        }
+        navigate('Payment')
     }
 
     const logOut = async () => {
@@ -120,7 +116,7 @@ const Navbar = () => {
                 </View>
             </View>
         )
-    } 
+    }
     return null
 }
 

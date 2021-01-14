@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native'
 
 // Import Constants
-import { Colors, RFValue, GlobalStyles, showNotification, setStorage, http, getStorage, getHeaders } from '../../utils/constants.util'
+import { Colors, RFValue, GlobalStyles, showNotification, http, getHeaders } from '../../utils/constants.util'
 import { useNavigation } from '@react-navigation/native';
 
 // Import component
 import Container from '../../components/Container/Container'
-import Card from '../../components/CardProfile/CardProfile'
 import Loader from '../../components/Loader/Loader'
+import Card from '../../components/CardProfile/CardProfile'
 
 // Import redux store
 import store from '../../store'
@@ -17,12 +17,13 @@ import { SETSTORAGE } from '../../store/actionTypes'
 // Import assets 
 import Logo from '../../assets/img/aly-system-by.png'
 
+
 const Payment = () => {
     const { global } = store.getState()
-
     const navigation = useNavigation()
     const [amount, setAmount] = useState('')
     const [loader, setLoader] = useState(false)
+    const [updateCard, setUpdateCard] = useState(false)
 
     // Funcion que pasa el monto de para efectuar el pago de la transaccion
     const handleSubmit = async () => {
@@ -41,7 +42,7 @@ const Payment = () => {
         }
     }
 
-    // Hacemos peticion al server para obtener los fee de las monedas
+    // Hacemos peticion al server para obtener los fee de las monedas y la informacion del comercio
     const feesPercentage = async () => {
         try {
             setLoader(true)
@@ -49,7 +50,6 @@ const Payment = () => {
             const { data: fees } = await http.get('/fees-percentage')
 
             const { data: information } = await http.get('/ecommerce/info', getHeaders())
-console.log('global keys', Object.keys(global))
 
             const dataStorage = {
                 ...global,
@@ -65,8 +65,7 @@ console.log('global keys', Object.keys(global))
                 dataStorage.info = information
             }
 
-            console.log('dataStorage', dataStorage)
-            store.dispatch({ type: SETSTORAGE, payload: dataStorage})
+            store.dispatch({ type: SETSTORAGE, payload: dataStorage })
 
         } catch (error) {
             showNotification(error.toString())
@@ -79,13 +78,14 @@ console.log('global keys', Object.keys(global))
         feesPercentage()
         const onSubscribe = navigation.addListener('focus', () => {
             setAmount('')
+            setUpdateCard(!updateCard)
         })
 
         return onSubscribe
     }, [])
 
     return (
-        <Container showLogo onRefreshEnd={feesPercentage} showCard >
+        <Container showLogo showCard>
             <Loader isVisible={loader} />
 
             <View style={styles.container}>

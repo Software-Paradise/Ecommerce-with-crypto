@@ -1,18 +1,14 @@
 import React, { useEffect } from 'react'
 
-// Import Components
-import { createStackNavigator } from '@react-navigation/stack'
-
 // Import Views
 import Payment from '../Payment/Payment'
 import Send from '../Send/Send'
 import History from '../History/History'
 import Retirement from '../Retirement/Retirement'
 
-
 // Import components
 import Navbar from '../../components/Navbar/Navbar'
-import Card from '../../components/CardProfile/CardProfile'
+import { createStackNavigator } from '@react-navigation/stack'
 
 // Import sotre from redux
 import store from '../../store/index'

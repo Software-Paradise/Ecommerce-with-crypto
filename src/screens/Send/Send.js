@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useRef, useReducer } from 'react'
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native'
 import { useNavigation } from "@react-navigation/native"
 
 // Import components
 import Lottie from 'lottie-react-native'
 import Modal from 'react-native-modal'
 import QRCodeScanner from 'react-native-qrcode-scanner'
-import { RFValue, Colors, GlobalStyles, http, getHeaders, showNotification, errorMessage, successMessage, getFeePercentage } from '../../utils/constants.util'
+import { RFValue, Colors, GlobalStyles, http, getHeaders, errorMessage, successMessage, getFeePercentage } from '../../utils/constants.util'
 import { RNCamera } from 'react-native-camera'
 import { View as ViewAnimation } from 'react-native-animatable'
 import Container from '../../components/Container/Container'
-import Card from '../../components/CardProfile/CardProfile'
 import Loader from '../../components/Loader/Loader'
 import _ from "lodash"
 
@@ -41,7 +40,7 @@ const reducer = (state, action) => {
 
 const sentComponent = () => {
     const { global } = store.getState()
- 
+
     const { navigate } = useNavigation()
     const [state, dispatch] = useReducer(reducer, initialState)
 
@@ -82,7 +81,7 @@ const sentComponent = () => {
                 dispatch({ type: "walletAccepted", payload: false })
 
                 // limpiamos el fee
-                dispatch({ type: 'fee', payload: '00' })
+                dispatch({ type: 'fee', payload: '0' })
             } else {
                 throw String("Tu transacción no se ha compeltado, contacte a soporte")
             }
@@ -142,7 +141,7 @@ const sentComponent = () => {
     const toggleScan = () => setShowScanner(!showScanner)
 
     return (
-        <Container showLogo onRefreshEnd showCard>
+        <Container showLogo showCard>
             <Loader isVisible={loader} />
 
             <View style={styles.container}>

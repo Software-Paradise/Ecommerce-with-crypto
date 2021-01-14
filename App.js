@@ -1,32 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { StatusBar } from "react-native"
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { StatusBar } from "react-native"
 
 // Import Views
 import Login from './src/screens/Login/Login';
 import RegisterScreen from './src/screens/Register/Register';
 import RegisterCommerceScreen from './src/screens/Register Commerce/RegisterCommerce';
 import MainScreen from './src/screens/Main/index';
+import TransactionScreen from './src/screens/Transaction/transaction.screen';
 
 // Import functions and constants from utils
 import { getStorage, socketAddress } from './src/utils/constants.util';
 import { SETSTORAGE, DELETESTORAGE } from './src/store/actionTypes';
 import reduxStore from './src/store/index';
 import FlashMessage from 'react-native-flash-message';
-import TransactionScreen from './src/screens/Transaction/transaction.screen';
 
 // Import Componets
 import Description from './src/components/Description/Description'
 import socketIO from 'socket.io-client'
 import store from './src/store/index';
-import { useCallback } from 'react';
 
 const Stack = createStackNavigator();
 
 const App = () => {
   const { global } = store.getState()
-  console.log('Globla', global)
   const [logged, setLogin] = useState(false)
 
   const ConfigurateComponent = useCallback(async () => {
@@ -58,43 +56,39 @@ const App = () => {
     })
   }, [])
 
-  const Connection = useCallback(() => {
-      const socket = socketIO(socketAddress, {
-        path: '/socket-user',
-        query: {
-          token: global.token,
-        },
-        forceNew: true,
-        transports: ['websocket']
-      })
+  /**Funcion que actualiza el storage con el nuevo balance del comercio */
+  const udpdateWalletAmount = (data) => {
+    const { global: Storage } = store.getState()
 
-      console.log('Socket Conet')
+    const dataStorage = {
+      ...Storage,
+      info: {
+        ...Storage.info,
+        amount_wallet: data.balance
+      }
+    }
+    store.dispatch({ type: SETSTORAGE, payload: dataStorage })
+  }
 
-      socket.on('connect', () => {
-        console.log('Conectado')
-      })
+  /**Funcion que conecta al socket para obtener el balance del comercio */
+  const Connection = _ => {
+    const socket = socketIO(socketAddress, {
+      path: '/socket-user',
+      query: {
+        token: global.token,
+      },
+      forceNew: true,
+      transports: ['websocket']
+    })
 
-      socket.on('BALANCEREFRESH', (data) => {
-        console.log('Data', data)
-        console.log('Global Info', Object.keys(global))
-        const dataaStorage = {
-          ...global,
-          info: {
-            ...global.info,
-            amount_wallet: data.balance
-          }
-        }
+    socket.on('connect', () => {
+      console.log('Conectado')
+    })
 
-        store.dispatch({ type: SETSTORAGE, payload: dataaStorage })
-      })
+    socket.on('BALANCEREFRESH', udpdateWalletAmount)
+  }
 
-      /* socket.disconnect('disconnect', () => { 
-        console.log('Desconectado')
-      }) */
-    },[],
-  )
-
-  useEffect(_ => {
+  useEffect(() => {
     ConfigurateComponent()
   }, [])
 

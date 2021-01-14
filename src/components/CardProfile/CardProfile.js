@@ -15,28 +15,15 @@ import tether from '../../assets/img/tether.png'
 
 // Import redux store
 import store from '../../store'
-import { SETFUNCTION } from '../../store/actionTypes'
 
 
 const CadProfile = () => {
     const [source, setSource] = useState(null)
-    const { global } = store.getState()
-    //const [information, setInformation] = useState(false)
-
-    /* const informationCommerce = async () => {
-        try {
-
-            const { data } = await http.get('/ecommerce/info', getHeaders())
-            setInformation(data)
-
-        } catch (error) {
-            showNotification(error.toString())
-        }
-    } */
+    const [data, setData] = useState({})
 
     // Funcion que permite extraer la imagen para visualizarla
     const read = async () => {
-        const blog = global.profile_picture
+        const blog = data?.profile_picture
 
         // verificamos si hay foto
         if (blog) {
@@ -46,16 +33,20 @@ const CadProfile = () => {
     }
 
     useEffect(() => {
-        read()
-        /* informationCommerce() */
+        const { global } = store.getState()
 
-       /*  store.dispatch({
-            type: SETFUNCTION,
-            payload: {
-                reloadWallets: informationCommerce
-            }
-        }) */
+        setData(global.info)
+
+        store.subscribe(_ => {
+            const { global: newGlobal } = store.getState()
+
+            setData(newGlobal.info)
+        })
     }, [])
+
+    useEffect(() => {
+        read()
+    }, [data])
 
     return (
         <View style={styles.card}>
@@ -63,7 +54,7 @@ const CadProfile = () => {
 
             <View style={styles.cardInformation}>
                 <View style={styles.headerTableTitle}>
-                    <Text style={styles.textHeaderTableTitle}>{global.info?.name}</Text>
+                    <Text style={styles.textHeaderTableTitle}>{data?.name}</Text>
                     <Image source={tether} style={styles.icon} />
                 </View>
 
@@ -72,11 +63,11 @@ const CadProfile = () => {
                 <View style={styles.dataDetailsInfoContainer}>
                     <View style={styles.headerTable}>
                         <Text style={[styles.textHeaderTable, { alignSelf: "flex-start" }]}>Dirección</Text>
-                        <Text style={styles.textRowTable}>{global.info?.physical_address}</Text>
+                        <Text style={styles.textRowTable}>{data?.physical_address}</Text>
                     </View>
                     <View style={styles.bodyRowTable}>
                         <Text style={styles.textHeaderTable}>Balance</Text>
-                        <Text style={styles.textRowTable}>{_.floor(global.info?.amount_wallet, 2)}<Text style={{ fontSize: RFValue(9) }}>{global.info?.symbol_wallet}</Text></Text>
+                        <Text style={styles.textRowTable}>{_.floor(data?.amount_wallet, 2)}<Text style={{ fontSize: RFValue(9) }}>{data?.symbol_wallet}</Text></Text>
                     </View>
 
                 </View>
