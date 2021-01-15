@@ -69,7 +69,6 @@ const Login = ({ navigation }) => {
       if (data.error) {
         throw String(data.message);
       } else {
-        console.log('Success');
         if (Object.values(data).length > 0) {
           store.dispatch({ type: SETSTORAGE, payload: data });
 

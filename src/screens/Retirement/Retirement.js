@@ -25,7 +25,6 @@ import Container from '../../components/Container/Container'
 
 const Retirements = ({ navigation }) => {
     const { global } = store.getState();
-    console.log('Fees', global.fees)
 
     // Estados que guardan los montos de las monedas y el fee
     const [amount, setAmount] = useState('');
