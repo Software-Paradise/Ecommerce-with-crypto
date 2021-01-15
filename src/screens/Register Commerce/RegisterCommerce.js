@@ -160,7 +160,6 @@ const RegisterCommerce = ({ route, navigation }) => {
                 latitude: state.latitude,
                 longitude: state.longitude
             }
-            console.log('DataSent', dataSent)
 
             const { data } = await http.post('/ecommerce/company/commerce', createForData(dataSent))
 

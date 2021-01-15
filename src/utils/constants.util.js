@@ -301,7 +301,7 @@ const PORT = '3000';
 
 // export const serverAddress = Platform.OS === 'ios' ? `http://localhost:${PORT}` : `http://192.168.0.118:${PORT}`;
 
-export const serverAddress = 'https://staging.root-anvil-299019.appspot.com'
+export const serverAddress = 'https://root-anvil-299019.uc.r.appspot.com'
 export const socketAddress = serverAddress;
 
 // export const serverAddress = 'http://staging.root-anvil-299019.appspot.com'; 
@@ -331,6 +331,7 @@ export const readFile = (fileId) => new Promise(async (resolve, _) => {
 * @param {Number} feeType - tipo de fee (1=transacción, 2=retiro, 3=exchange)
 */
 export const getFeePercentage = (amount, feeType, fees) => {
+  console.log("FeeConst",fees)
   const enableFees = {
     1: 'transaction',
     2: 'retirement',
@@ -357,7 +358,7 @@ export const getFeePercentage = (amount, feeType, fees) => {
 }
 
 
-export const http = axios.create({
+const http = axios.create({
   baseURL: serverAddress,
   timeout: 10 * 60 * 60,
   validateStatus: (status) => {
@@ -375,6 +376,13 @@ export const http = axios.create({
     }
   },
 });
+
+http.interceptors.request.use(config => {
+  console.log(config.url)
+  return config
+})
+
+export { http }
 
 export const getHeaders = () => {
   const { token } = store.getState().global;

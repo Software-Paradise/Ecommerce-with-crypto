@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native'
 
 // Import Constants
-import { Colors, RFValue, GlobalStyles, showNotification, setStorage, http, getStorage } from '../../utils/constants.util'
+import { Colors, RFValue, GlobalStyles, showNotification, http, getHeaders } from '../../utils/constants.util'
 import { useNavigation } from '@react-navigation/native';
 
 // Import component
-import Container from '../Container/Container'
-import Card from '../../components/CardProfile/CardProfile'
+import Container from '../../components/Container/Container'
 import Loader from '../../components/Loader/Loader'
+import Card from '../../components/CardProfile/CardProfile'
 
 // Import redux store
 import store from '../../store'
@@ -17,12 +17,13 @@ import { SETSTORAGE } from '../../store/actionTypes'
 // Import assets 
 import Logo from '../../assets/img/aly-system-by.png'
 
+
 const Payment = () => {
     const { global } = store.getState()
-    console.log('global',global)
     const navigation = useNavigation()
     const [amount, setAmount] = useState('')
     const [loader, setLoader] = useState(false)
+    const [updateCard, setUpdateCard] = useState(false)
 
     // Funcion que pasa el monto de para efectuar el pago de la transaccion
     const handleSubmit = async () => {
@@ -41,16 +42,30 @@ const Payment = () => {
         }
     }
 
-    // Hacemos peticion al server para obtener los fee de las monedas
+    // Hacemos peticion al server para obtener los fee de las monedas y la informacion del comercio
     const feesPercentage = async () => {
         try {
             setLoader(true)
 
-            const { data } = await http.get('/fees-percentage')
+            const { data: fees } = await http.get('/fees-percentage')
 
-            if (Object.values(data).length > 0) {
-                store.dispatch({ type: SETSTORAGE, payload: { ...global.data, fee: data } } )
+            const { data: information } = await http.get('/ecommerce/info', getHeaders())
+
+            const dataStorage = {
+                ...global,
+                fees: [],
+                info: {}
             }
+
+            if (Object.values(fees).length > 0) {
+                dataStorage.fees = fees
+            }
+
+            if (Object.values(information).length > 0) {
+                dataStorage.info = information
+            }
+
+            store.dispatch({ type: SETSTORAGE, payload: dataStorage })
 
         } catch (error) {
             showNotification(error.toString())
@@ -63,15 +78,16 @@ const Payment = () => {
         feesPercentage()
         const onSubscribe = navigation.addListener('focus', () => {
             setAmount('')
+            setUpdateCard(!updateCard)
         })
 
         return onSubscribe
     }, [])
 
     return (
-        <Container showLogo onRefreshEnd={feesPercentage}>
+        <Container showLogo showCard>
             <Loader isVisible={loader} />
-            <Card />
+
             <View style={styles.container}>
                 <View style={styles.containerTitle}>
                     <Text style={styles.legendTitle}>Facturar transaccion</Text>
@@ -148,10 +164,10 @@ const styles = StyleSheet.create({
         marginBottom: RFValue(40),
     },
     positionLogo: {
-        flex:1,
+        flex: 1,
         alignItems: "center",
         justifyContent: "center",
-        padding:20
+        padding: 20
     }
 
 })

@@ -19,7 +19,7 @@ iconSize = RFValue(32)
 
 const Navbar = () => {
     const [hidden, setHidden] = useState(false)
-    const { dispatch, navigate } = useNavigation()
+    const { navigate } = useNavigation()
 
     const toggleMenu = () => {
         Alert.alert("Cerrar Sesion", "Esta apunto de cerrar sesion en Alypay Ecommerce", [
@@ -35,11 +35,7 @@ const Navbar = () => {
     }
 
     const goToTop = () => {
-        try {
-            dispatch(StackActions.popToTop())
-        } catch (error) {
-            console.log(error)
-        }
+        navigate('Payment')
     }
 
     const logOut = async () => {
@@ -69,6 +65,7 @@ const Navbar = () => {
         const eventHideKeyboard = Keyboard.addListener('keyboardDidHide', () => setHidden(false))
 
         return () => {
+            console.log('Return')
             // Removemos los eventos cuando el componente se desmonte
             eventShowKeyboard.remove()
             eventHideKeyboard.remove()
@@ -119,9 +116,8 @@ const Navbar = () => {
                 </View>
             </View>
         )
-    } else {
-        return null
     }
+    return null
 }
 
 

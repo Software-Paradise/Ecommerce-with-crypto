@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useRef, useReducer } from 'react'
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native'
 import { useNavigation } from "@react-navigation/native"
 
 // Import components
 import Lottie from 'lottie-react-native'
 import Modal from 'react-native-modal'
 import QRCodeScanner from 'react-native-qrcode-scanner'
-import { RFValue, Colors, GlobalStyles, http, getHeaders, showNotification, errorMessage, successMessage, getFeePercentage } from '../../utils/constants.util'
+import { RFValue, Colors, GlobalStyles, http, getHeaders, errorMessage, successMessage, getFeePercentage } from '../../utils/constants.util'
 import { RNCamera } from 'react-native-camera'
 import { View as ViewAnimation } from 'react-native-animatable'
-import Container from '../Container/Container'
-import Card from '../../components/CardProfile/CardProfile'
+import Container from '../../components/Container/Container'
 import Loader from '../../components/Loader/Loader'
+import _ from "lodash"
 
 // Import Assets
 import QR from '../../animations/scan-qr.json'
@@ -41,12 +41,11 @@ const reducer = (state, action) => {
 const sentComponent = () => {
     const { global } = store.getState()
 
-    const [state, dispatch] = useReducer(reducer, initialState)
     const { navigate } = useNavigation()
+    const [state, dispatch] = useReducer(reducer, initialState)
 
     const [loader, setLoader] = useState(false)
 
-    const [details, setDetails] = useState(null);
     const [showScanner, setShowScanner] = useState(false)
 
     const submit = async () => {
@@ -63,11 +62,9 @@ const sentComponent = () => {
                 wallet: state.walletAdress,
                 id: global.wallet_commerce,
             }
-            console.log("dataSent", dataSent)
 
             const { data } = await http.post('ecommerce/transaction', dataSent, getHeaders())
 
-            console.log("DataSent", data)
             if (data.error) {
                 errorMessage(data.message)
             }
@@ -84,7 +81,7 @@ const sentComponent = () => {
                 dispatch({ type: "walletAccepted", payload: false })
 
                 // limpiamos el fee
-                dispatch({ type: 'fee', payload: '00' })
+                dispatch({ type: 'fee', payload: '0' })
             } else {
                 throw String("Tu transacción no se ha compeltado, contacte a soporte")
             }
@@ -137,17 +134,15 @@ const sentComponent = () => {
     const onChangeAmount = (str) => {
         dispatch({ type: 'amountFraction', payload: str })
 
-        const { fee } = getFeePercentage(str, 1, global.fee)
+        const { fee } = getFeePercentage(str, 1, global.fees)
         dispatch({ type: 'fee', payload: fee * str })
     }
 
     const toggleScan = () => setShowScanner(!showScanner)
 
     return (
-        <Container showLogo onRefreshEnd >
+        <Container showLogo showCard>
             <Loader isVisible={loader} />
-
-            <Card />
 
             <View style={styles.container}>
                 <View style={styles.containerTitle}>
@@ -193,7 +188,7 @@ const sentComponent = () => {
                             <Text style={styles.legend}>Fee</Text>
                         </View>
                         <View style={styles.rowInput}>
-                            <Text style={{ color: '#FFF', fontSize: RFValue(24) }}>{state.fee} USD</Text>
+                            <Text style={{ color: '#FFF', fontSize: RFValue(24) }}>{_.floor(state.fee, 2)} USD</Text>
                         </View>
                     </View>
                 </View>
@@ -323,7 +318,7 @@ const styles = StyleSheet.create({
     },
     cardInfo: {
         alignItems: "center",
-        backgroundColor: Colors.$colorGreen,
+        backgroundColor: Colors.$colorBlack,
         justifyContent: "space-between",
         padding: RFValue(10),
         borderRadius: RFValue(10),

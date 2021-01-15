@@ -1,36 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { StatusBar } from "react-native"
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { StatusBar } from "react-native"
+
+// Import Views
 import Login from './src/screens/Login/Login';
 import RegisterScreen from './src/screens/Register/Register';
-import LegalDataScreen from './src/screens/legaldata.screen';
-import LegalImagesScreen from './src/screens/legalimages.screen';
-import WelcomeScreen from './src/screens/welcome.screen';
 import RegisterCommerceScreen from './src/screens/Register Commerce/RegisterCommerce';
-import CommerceList from './src/screens/commerce-list.screen';
-import ProductList from './src/screens/product-list.screen';
 import MainScreen from './src/screens/Main/index';
+import TransactionScreen from './src/screens/Transaction/transaction.screen';
 
 // Import functions and constants from utils
-import { getStorage } from './src/utils/constants.util';
+import { getStorage, socketAddress } from './src/utils/constants.util';
 import { SETSTORAGE, DELETESTORAGE } from './src/store/actionTypes';
 import reduxStore from './src/store/index';
 import FlashMessage from 'react-native-flash-message';
-import TransactionScreen from './src/screens/transaction.screen';
-import RetirementsScreen from './src/screens/Retirement/Retirement';
-import RechargeScreen from './src/screens/recharge.screen';
-import HistoryScreen from './src/components/History/History'
 
 // Import Componets
 import Description from './src/components/Description/Description'
+import socketIO from 'socket.io-client'
+import store from './src/store/index';
 
 const Stack = createStackNavigator();
 
 const App = () => {
+  const { global } = store.getState()
   const [logged, setLogin] = useState(false)
 
-  const ConfigurateComponent = async () => {
+  const ConfigurateComponent = useCallback(async () => {
     const payload = await getStorage()
 
     if (Object.keys(payload).length > 0) {
@@ -41,7 +38,6 @@ const App = () => {
       })
 
       setLogin(true)
-
     } else {
       setLogin(false)
 
@@ -58,12 +54,49 @@ const App = () => {
         setLogin(false)
       }
     })
+  }, [])
+
+  /**Funcion que actualiza el storage con el nuevo balance del comercio */
+  const udpdateWalletAmount = (data) => {
+    const { global: Storage } = store.getState()
+
+    const dataStorage = {
+      ...Storage,
+      info: {
+        ...Storage.info,
+        amount_wallet: data.balance
+      }
+    }
+    store.dispatch({ type: SETSTORAGE, payload: dataStorage })
+  }
+
+  /**Funcion que conecta al socket para obtener el balance del comercio */
+  const Connection = _ => {
+    const socket = socketIO(socketAddress, {
+      path: '/socket-user',
+      query: {
+        token: global.token,
+      },
+      forceNew: true,
+      transports: ['websocket']
+    })
+
+    socket.on('connect', () => {
+      console.log('Conectado')
+    })
+
+    socket.on('BALANCEREFRESH', udpdateWalletAmount)
   }
 
   useEffect(() => {
-    // ConfigureLocation()
     ConfigurateComponent()
   }, [])
+
+  useEffect(() => {
+    if (logged) {
+      Connection()
+    }
+  }, [logged])
 
   return (
     <>
@@ -75,11 +108,7 @@ const App = () => {
             logged &&
             <>
               <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="Recharge" component={RechargeScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="CommerceList" component={CommerceList} options={{ headerShown: false }} />
-              <Stack.Screen name="ProductList" component={ProductList} options={{ headerShown: false }} />
               <Stack.Screen name="Transaction" component={TransactionScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="HistoryTransaction" component={HistoryScreen} options={{ headerShown: false }} />
               <Stack.Screen name="Description" component={Description} options={{ headerShown: false }} />
             </>
           }
@@ -88,9 +117,6 @@ const App = () => {
             <>
               <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
               <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="LegalData" component={LegalDataScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="LegalImages" component={LegalImagesScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
               <Stack.Screen name="RegisterCommerce" component={RegisterCommerceScreen} options={{ headerShown: false }} />
             </>
           )}

@@ -12,26 +12,24 @@ import {
 } from 'react-native'
 
 // import components
-import Container from '../components/Container/Container'
+import Container from '../../components/Container/Container'
 import LottieAnimationView from 'lottie-react-native'
 import QRCode from 'react-native-qrcode-svg'
-import Navbar from "../components/Navbar/Navbar"
+import Navbar from "../../components/Navbar/Navbar"
 
 // import constants and functions
-import { RFValue } from 'react-native-responsive-fontsize'
-import { Colors, socketAddress } from '../utils/constants.util'
+import { Colors, socketAddress, RFValue, GlobalStyles } from '../../utils/constants.util'
 import { useRoute } from '@react-navigation/native'
 import socketIO from 'socket.io-client'
 import * as CryptoJS from 'react-native-crypto-js'
 
 // import redux configurations
-import store from '../store'
+import store from '../../store'
 
 // import assets
-import logoImage from "./../assets/img/logo.png"
-import logoAlyCoinImage from "./../assets/img/aly-coin.png"
-import successAnimation from "./../animations/yellow-success.json"
-import errorAnimation from "./../animations/error_animation.json.json"
+import logoAlyCoinImage from "../../assets/img/aly-coin.png"
+import successAnimation from "../../animations/success.json"
+import errorAnimation from "../../animations/error.json"
 
 /**Vista de transaccion (Esperando pago) */
 const TransactionScreen = ({ navigation }) => {
@@ -58,7 +56,7 @@ const TransactionScreen = ({ navigation }) => {
     const [onSuccess, setOnSuccess] = useState(false)
 
     // mensaje de success
-    const [onSuccessMessage, setOnSuccessMessage] = useState('Pago realizado con éxito')
+    const [onSuccessMessage, setOnSuccessMessage] = useState('')
 
     // estado que almacena la instancia de socket
     const [connectionSocket, setConnectionSocket] = useState()
@@ -85,6 +83,7 @@ const TransactionScreen = ({ navigation }) => {
 
     // Metodo se ejecuta cuando un usuaro cancela la orden
     const goBack = () => {
+        //setShowModal(!showModal)
         Alert.alert("Estas a punto de cancelar la transaccion", "Realmente quieres ejecutar esta accion", [
             {
                 text: 'Cancelar',
@@ -102,22 +101,7 @@ const TransactionScreen = ({ navigation }) => {
         return true
     }
 
-    useEffect(() => {
-        const backHanldedEvent = BackHandler.addEventListener("hardwareBackPress", goBack)
-
-        return backHanldedEvent.remove()
-    }, [])
-
-    useEffect(() => {
-        const _unsubscribe = navigation.addListener('focus', () => {
-            connection()
-        })
-
-        setAmount(route.params.amount)
-
-        return _unsubscribe
-    }, [connection, navigation, route.params.amount])
-
+    // Coneccion al socket para hacer el pago al comercio
     const connection = useCallback(() => {
         // instanciamos el nuevo Socket
         const socket = socketIO(socketAddress, {
@@ -179,20 +163,33 @@ const TransactionScreen = ({ navigation }) => {
         transaction,
     ])
 
+
+    useEffect(() => {
+        const backHanldedEvent = BackHandler.addEventListener('hardwareBackPress', goBack)
+        const _unsubscribe = navigation.addListener('focus', () => {
+            connection()
+        })
+
+        setAmount(route.params.amount)
+
+        return () => {
+            _unsubscribe
+            backHanldedEvent.remove()
+        }
+
+    }, [connection, navigation, route.params.amount])
+
     return (
         <>
             <Container showLogo>
-                <View style={TransactionStyles.statusRow}>
-                    <Text style={[TransactionStyles.orderNumber, { color: Colors.$colorYellow }]}>
+                <View style={styles.statusRow}>
+                    <Text style={[styles.orderNumber, { color: Colors.$colorYellow }]}>
                         Orden #<Text style={{ fontWeight: "bold" }}>{transaction}</Text>
                     </Text>
-
-                    <Text style={TransactionStyles.amountText}>
-                        {parseFloat(route.params.amount).toFixed(2) || 0.0} {currency}
-                    </Text>
+                    <Text style={styles.amountText}>{parseFloat(route.params.amount).toFixed(2) || 0.0} {currency}</Text>
                 </View>
 
-                <View style={TransactionStyles.qrCodeContainer}>
+                <View style={styles.qrCodeContainer}>
                     <QRCode
                         backgroundColor={Colors.$colorYellow}
                         logo={logoAlyCoinImage}
@@ -200,80 +197,64 @@ const TransactionScreen = ({ navigation }) => {
                         value={`${cypherdata},${keySecret}`} />
                 </View>
 
-                <View style={TransactionStyles.statusRow}>
+                <View style={styles.statusRow}>
                     <TouchableOpacity onPress={goBack}>
-                        <Text style={TransactionStyles.cancelText}>
+                        <Text style={styles.cancelText}>
                             Cancelar
                         </Text>
                     </TouchableOpacity>
 
-                    <View style={TransactionStyles.waitingPayment}>
+                    <View style={styles.waitingPayment}>
                         <ActivityIndicator color={Colors.$colorGray} size={RFValue(16)} />
-                        <Text style={TransactionStyles.status}>Esperando Pago</Text>
+                        <Text style={styles.status}>Esperando Pago</Text>
                     </View>
                 </View>
-
-                <Modal animationType="slide" transparent={true} visible={showModal}>
-                    <View style={TransactionStyles.modalView}>
-                        <View
-                            style={{
-                                width: 120,
-                                height: 100,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}>
-                            <Image source={logoImage} style={TransactionStyles.logo} />
-                        </View>
-
-                        <View>
-                            <Text
-                                style={{
-                                    color: Colors.$colorGray,
-                                    fontSize: RFValue(20),
-                                    textAlign: 'center',
-                                    textTransform: 'uppercase',
-                                }}>
-                                ¡Estupendo!
-                            </Text>
-                        </View>
-
-                        <View style={TransactionStyles.animationContainer}>
-                            <LottieAnimationView
-                                source={onSuccess ? successAnimation : errorAnimation}
-                                autoPlay
-                                autoSize
-                                loop={false}
-                            />
-                        </View>
-
-                        <Text
-                            style={[TransactionStyles.textAlertStyle, { color: onSuccess ? Colors.$colorYellow : Colors.$colorRed }]}>
-                            {onSuccessMessage}
-                        </Text>
-
-                        {
-                            onSuccess
-                                ?
-                                <TouchableOpacity onPress={handleSuccess} style={TransactionStyles.handleButton}>
-                                    <Text style={{ fontSize: RFValue(24), fontWeight: 'bold' }}>
-                                        Confirmar
-                                    </Text>
-                                </TouchableOpacity>
-                                :
-                                <TouchableOpacity onPress={_ => setShowModal(!showModal)} style={TransactionStyles.handleButton}>
-                                    <Text>Confirmar</Text>
-                                </TouchableOpacity>
-                        }
-                    </View>
-                </Modal>
             </Container>
+
+            <Modal animationType="slide" transparent={true} visible={showModal}>
+                <View style={{ flex: 1, justifyContent: 'center' }}>
+                    <View style={styles.modalView}>
+
+                        <View style={{ alignItems: 'center' }}>
+                            <View style={[styles.row, { alignItems: 'center' }]}>
+                                <View style={{ padding: 20 }}>
+                                    <Text style={styles.title}> {onSuccess ? '¡Estupendo!' : '¡Error!'}</Text>
+                                </View>
+
+                                <LottieAnimationView
+                                    style={styles.animation}
+                                    source={onSuccess ? successAnimation : errorAnimation}
+                                    autoPlay
+                                    loop={false}
+                                />
+                            </View>
+                            <Text style={[styles.textAlertStyle, { color: onSuccess ? Colors.$colorYellow : Colors.$colorRed }]}>{onSuccessMessage}</Text>
+                        </View>
+
+
+                        <View style={{ alignItems: 'center', padding: 20 }}>
+                            {
+                                onSuccess
+                                    ?
+                                    <TouchableOpacity onPress={handleSuccess} style={[GlobalStyles.buttonPrimary, { paddingHorizontal: RFValue(60) }]}>
+                                        <Text style={GlobalStyles.textButton} >Confirmar</Text>
+                                    </TouchableOpacity>
+                                    :
+                                    <TouchableOpacity onPress={handleSuccess} style={[GlobalStyles.buttonPrimary, { paddingHorizontal: RFValue(60) }]}>
+                                        <Text style={GlobalStyles.textButton} >Cerrar pago</Text>
+                                    </TouchableOpacity>
+                            }
+                        </View>
+                    </View>
+                </View>
+            </Modal>
 
             <Navbar />
         </>
     )
 }
 
-const TransactionStyles = StyleSheet.create({
+const styles = StyleSheet.create({
     qrCodeContainer: {
         alignSelf: 'center',
         alignItems: "center",
@@ -284,6 +265,7 @@ const TransactionStyles = StyleSheet.create({
         justifyContent: 'center',
         padding: 10,
     },
+
     orderNumber: {
         color: Colors.$colorGray,
         fontSize: RFValue(18),
@@ -300,6 +282,7 @@ const TransactionStyles = StyleSheet.create({
         textAlign: 'center',
     },
     statusRow: {
+        flexDirection: 'row',
         alignSelf: "center",
         flexDirection: 'row',
         alignItems: 'center',
@@ -321,28 +304,13 @@ const TransactionStyles = StyleSheet.create({
         padding: RFValue(10),
     },
     modalView: {
-        margin: 20,
-        backgroundColor: Colors.$colorMain,
-        borderWidth: 2,
-        borderColor: Colors.$colorYellow,
-        borderRadius: 20,
-        padding: 35,
-        alignItems: 'center',
+        alignSelf: "center",
         justifyContent: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-    },
-    handleButton: {
-        backgroundColor: Colors.$colorYellow,
-        borderRadius: 50,
-        marginTop: RFValue(30),
-        padding: RFValue(10),
+        backgroundColor: Colors.$colorBlack,
+        borderRadius: 10,
+        padding: 10,
+        height: "70%",
+        width: "85%",
     },
     animationContainer: {
         height: RFValue(150),
@@ -361,6 +329,22 @@ const TransactionStyles = StyleSheet.create({
     waitingPayment: {
         alignItems: "center",
         flexDirection: "row",
+    },
+    title: {
+        color: Colors.$colorGray,
+        fontSize: RFValue(24),
+        textAlign: 'center',
+        textTransform: 'uppercase',
+    },
+    row: {
+        flexDirection: "column",
+        width: "100%",
+        marginVertical: 10,
+        padding: 10
+    },
+    animation: {
+        height: RFValue(160),
+        width: RFValue(160)
     }
 })
 

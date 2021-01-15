@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 
 // Import Component
-import Loader from '../Loader/Loader'
-import Search from '../Search/Search'
-import HistorElement from '../HistoryElement/HistoryElement'
+import Container from '../../components/Container/Container'
+import Loader from '../../components/Loader/Loader'
+import Search from '../../components/Search/Search'
+import HistorElement from '../../components/HistoryElement/HistoryElement'
 import Lottie from 'lottie-react-native'
 import EmptyBox from '../../animations/empty-state.json'
-import Container from '../../components/Container/Container'
 import { useNavigation } from '@react-navigation/native'
 
 // Import Constants and Functions

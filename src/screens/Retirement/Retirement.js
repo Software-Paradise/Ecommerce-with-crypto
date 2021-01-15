@@ -17,12 +17,11 @@ import _ from "lodash"
 
 // import assets and styles
 import QR from '../../animations/scan-qr.json'
-import Logo from '../../assets/img/logo.png'
 
 // Import redux store
 import store from '../../store'
 import Container from '../../components/Container/Container'
-import { useHasSystemFeature } from 'react-native-device-info'
+
 
 const Retirements = ({ navigation }) => {
     const { global } = store.getState();
@@ -35,10 +34,10 @@ const Retirements = ({ navigation }) => {
 
     // Estado que guarda la direccion de la billerera
     const [walletAddress, setWalletAddress] = useState('');
-    
+
     // Estado que almacena la vista del QR
     const [showScanner, setShowScanner] = useState(false);
-    
+
     // Estados que guardan la lista y los precios de las monedas
     const [coinIndexSelected, setCoin] = useState(0);
     const [coinList, setCoinList] = useState([]);
@@ -71,7 +70,7 @@ const Retirements = ({ navigation }) => {
             const { data: response } = await http.post('ecommerce/transaction/retirement', dataSent, getHeaders())
 
             if (response.error) {
-                throw String(response.error)
+                throw String(response.message)
             } else if (response.response === 'success') {
                 successMessage('Tu solicitud de retiro esta en proceso')
 
@@ -94,7 +93,7 @@ const Retirements = ({ navigation }) => {
         try {
 
             // obtenemos los precios de las monedas principales
-            const { data } = await http.get(`${serverSpeedtradingsURL}/collection/prices`);
+            const { data } = await http.get(`${serverSpeedtradingsURL}/collection/prices/minimal`);
 
             // convertimos el objeto en array
             const arrayCoins = Object.values(data)
@@ -113,7 +112,7 @@ const Retirements = ({ navigation }) => {
 
         setAmount(value)
 
-        const { fee, fee_aly } = getFeePercentage(amount, 2, global.fee)
+        const { fee, fee_aly } = getFeePercentage(amount, 2, global.fees)
 
         let _amountFeeUSD = 0
 
@@ -145,7 +144,7 @@ const Retirements = ({ navigation }) => {
             const { price } = coinList[coinIndexSelected].quote.USD
 
 
-            const { fee, fee_aly } = getFeePercentage(totalAmount, 2, global.fee)
+            const { fee, fee_aly } = getFeePercentage(totalAmount, 2, global.fees)
 
             const satochi = (totalAmount / price)
 
@@ -164,10 +163,8 @@ const Retirements = ({ navigation }) => {
 
 
     return (
-        <Container showLogo>
+        <Container showLogo showCard>
             <ViewAnimation style={styles.container} animation='fadeIn'>
-
-                <Card />
 
                 <View style={styles.containerTitle}>
                     <Text style={styles.legendTitle}>Retirar Fondos</Text>
@@ -245,7 +242,7 @@ const Retirements = ({ navigation }) => {
                 </View>
                 <View style={styles.col}>
                     <Text style={styles.totalSatochi}>
-                        {_.floor(amountSatochi + amountFee,8)} {coinList[coinIndexSelected]?.symbol}
+                        {_.floor(amountSatochi + amountFee, 8)} {coinList[coinIndexSelected]?.symbol}
                     </Text>
                 </View>
 
