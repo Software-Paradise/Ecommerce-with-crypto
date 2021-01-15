@@ -15,7 +15,7 @@ const StoreElement = (item, index) => (
         <Text style={styles.name}>{item.item.description || 'Transacción'}</Text>
         <Text style={styles.hash}>
           {item.item.hash?.substr(0, 10)}...
-        {item.item.hash?.substr(
+          {item.item.hash?.substr(
             item.item.hash.length - 10,
             item.item.hash.length - 1,
           )}
@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
   hash: {
     color: '#FFF',
     // fontFamily: "whitrabt",
+    textTransform: "uppercase",
     fontSize: RFValue(10),
     marginVertical: 10,
   },
