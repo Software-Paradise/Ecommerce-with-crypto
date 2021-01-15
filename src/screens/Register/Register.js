@@ -159,7 +159,6 @@ const Register = ({ navigation }) => {
                 if (response.error) {
                     throw String(response.error)
                 }
-                console.log('Response',response)
 
                 switch (imageDestination) {
                     case 'operationPermission': {
@@ -285,7 +284,6 @@ const Register = ({ navigation }) => {
                 dataSent,
             ), getHeaders())
 
-            console.log("data", data)
             setDataRegister(data)
 
 

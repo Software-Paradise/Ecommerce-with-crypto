@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { StatusBar } from "react-native"
+import { Alert, StatusBar } from "react-native"
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -11,14 +11,14 @@ import MainScreen from './src/screens/Main/index';
 import TransactionScreen from './src/screens/Transaction/transaction.screen';
 
 // Import functions and constants from utils
-import { getStorage, socketAddress } from './src/utils/constants.util';
+import { getStorage, socketAddress, logOutApp } from './src/utils/constants.util';
 import { SETSTORAGE, DELETESTORAGE } from './src/store/actionTypes';
 import reduxStore from './src/store/index';
 import FlashMessage from 'react-native-flash-message';
 
 // Import Componets
 import Description from './src/components/Description/Description'
-import socketIO from 'socket.io-client'
+import socketIO, { Socket } from 'socket.io-client'
 import store from './src/store/index';
 
 const Stack = createStackNavigator();
@@ -26,6 +26,7 @@ const Stack = createStackNavigator();
 const App = () => {
   const { global } = store.getState()
   const [logged, setLogin] = useState(false)
+  const [initSocket, setInitSocket] = useState(null)
 
   const ConfigurateComponent = useCallback(async () => {
     const payload = await getStorage()
@@ -52,6 +53,7 @@ const App = () => {
         setLogin(true)
       } else {
         setLogin(false)
+        initSocket?.disconnect()
       }
     })
   }, [])
@@ -70,6 +72,20 @@ const App = () => {
     store.dispatch({ type: SETSTORAGE, payload: dataStorage })
   }
 
+  const disconnectSocket = () => {
+    if (logged) {
+      Alert.alert('Sesión Finalizada', 'Se detecto un inicio de sesión en otro dispositivo', [
+        {
+          text: 'Ok',
+          onPress: () => {
+            logOutApp()
+          }
+        }
+      ])
+    }
+
+  }
+
   /**Funcion que conecta al socket para obtener el balance del comercio */
   const Connection = _ => {
     const socket = socketIO(socketAddress, {
@@ -86,6 +102,19 @@ const App = () => {
     })
 
     socket.on('BALANCEREFRESH', udpdateWalletAmount)
+
+    socket.on('SESSIONEXIST', (id) => {
+      console.log('SessionActive', id)
+      socket.emit('SESSIONCLOSE', id)
+    })
+
+    socket.on('SESSIONCLOSE', () => {
+      console.log('Close')
+    })
+
+    socket.on('disconnect', disconnectSocket)
+
+    setInitSocket(socket)
   }
 
   useEffect(() => {

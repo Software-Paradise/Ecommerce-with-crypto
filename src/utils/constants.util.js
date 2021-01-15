@@ -299,11 +299,11 @@ export const showNotification = (message = "", type = "info" | "error" | "warnin
 
 const PORT = '3085';
 
-//export const serverAddress = Platform.OS === 'ios' ? `http://localhost:${PORT}` : `http://192.168.0.120:${PORT}`;
+export const serverAddress = Platform.OS === 'ios' ? `http://localhost:${PORT}` : `http://192.168.0.120:${PORT}`;
 
 export const serverSpeedtradingsURL = "https://ardent-medley-272823.appspot.com";
 
-export const serverAddress = 'http://staging.root-anvil-299019.appspot.com'; 
+//export const serverAddress = 'http://staging.root-anvil-299019.appspot.com'; 
 export const socketAddress = serverAddress;
 //export const socketAddress = 'http://staging.root-anvil-299019.appspot.com/'
 
@@ -421,4 +421,4 @@ export const checkPermissionCamera = () => new Promise(async (resolve, reject) =
 })
 
 /**Abre la app de whatsapp para soporte */
-export const OpenSupport = () => Linking.openURL('https://wa.me/+50660727720')
+export const OpenSupport = () => Linking.openURL('https://wa.me/+50585570529')

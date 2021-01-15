@@ -93,7 +93,7 @@ const Description = ({ route }) => {
 
                         <View style={styles.containertitle}>
                             <Text style={styles.subtitle}>{(details.name_coin_transaction ? details.name_coin_transaction : "")}</Text>
-                            <Text style={styles.subtitle}>{(`${details.amount_fee}  ${details.coin_fee}` ? `${details.amount_fee_usd}  ${details.coin_fee}` : "")}</Text>
+                            <Text style={styles.subtitle}>{(`${details.amount_fee}  ${details.coin_fee}` ? `${details.commerce_fee}  ${details.coin_fee}` : "")}</Text>
                         </View>
                     </View>
 
@@ -101,7 +101,7 @@ const Description = ({ route }) => {
                         <Text style={styles.titleTotal}>Total: </Text>
 
                         <View style={{ justifyContent: 'center' }}>
-                            <Text style={{ color: '#FFF', fontSize: RFValue(20) }}>{_.floor(details.amount_usd - details.amount_fee_usd,2)}</Text>
+                            <Text style={{ color: '#FFF', fontSize: RFValue(20) }}>{_.floor(details.amount_usd - details.commerce_fee,2)}</Text>
                         </View>
                     </View>
                 </View>

@@ -85,7 +85,7 @@ const Payment = () => {
     }, [])
 
     return (
-        <Container showLogo showCard>
+        <Container showLogo showCard onRefreshEnd={feesPercentage}>
             <Loader isVisible={loader} />
 
             <View style={styles.container}>
