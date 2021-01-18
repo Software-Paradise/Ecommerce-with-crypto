@@ -303,7 +303,9 @@ const PORT = '3000';
 
 export const serverSpeedtradingsURL = "https://ardent-medley-272823.appspot.com";
 
-export const serverAddress = 'http://staging.root-anvil-299019.appspot.com'; 
+export const serverAddress = 'https://alypay.uc.r.appspot.com'
+
+//export const serverAddress = 'http://staging.root-anvil-299019.appspot.com'; 
 export const socketAddress = serverAddress;
 
 // export const serverAddress = 'http://staging.root-anvil-299019.appspot.com'; 

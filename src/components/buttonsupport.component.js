@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {TouchableOpacity, StyleSheet, Linking, Keyboard} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { TouchableOpacity, StyleSheet, Linking, Keyboard } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Colors} from '../utils/constants.util';
-import {RFValue} from 'react-native-responsive-fontsize';
+import { Colors } from '../utils/constants.util';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const ButtonSupport = () => {
   const [hidden, setHidden] = useState(false);
@@ -46,6 +46,6 @@ const ButtonSupportStyles = StyleSheet.create({
 });
 
 export const OpenSupport = () =>
-  Linking.openURL('whatsapp://send?phone=+50660727720');
+  Linking.openURL('https://wa.me/+50585570529');
 
 export default ButtonSupport;
