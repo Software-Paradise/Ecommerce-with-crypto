@@ -32,7 +32,7 @@ const initialState = {
   device: '',
   macAddress: '',
   systemName: '',
-};
+}
 
 const Login = ({ navigation }) => {
   const [showPassword, setShowPassword] = useState(false);

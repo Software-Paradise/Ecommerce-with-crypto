@@ -39,9 +39,9 @@ const Retirements = ({ navigation }) => {
     const [showScanner, setShowScanner] = useState(false);
 
     // Estados que guardan la lista y los precios de las monedas
-    const [coinIndexSelected, setCoin] = useState(0);
+    const [coinIndexSelected, setCoin] = useState(0)
     const [coinList, setCoinList] = useState([]);
-
+    
     const isMounted = useRef(null);
     const toggleScan = () => setShowScanner(!showScanner);
 
@@ -56,7 +56,7 @@ const Retirements = ({ navigation }) => {
         try {
 
             if (amount < 5) {
-                throw String('El monto minimo a retirar es de 5 USD')
+                throw String('El monto minimo a retirar es de 20 USD')
             }
 
             const dataSent = {
@@ -302,7 +302,6 @@ const styles = StyleSheet.create({
     buttonScan: {
         backgroundColor: Colors.$colorYellow,
         borderRadius: RFValue(5),
-        // padding: RFValue(-),
         marginLeft: RFValue(10),
         zIndex: 1000,
     },
