@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native'
 
 import { RFValue, Colors, GlobalStyles, http, errorMessage, serverSpeedtradingsURL, getFeePercentage, getHeaders, successMessage } from '../../utils/constants.util'
 
@@ -41,7 +41,7 @@ const Retirements = ({ navigation }) => {
     // Estados que guardan la lista y los precios de las monedas
     const [coinIndexSelected, setCoin] = useState(0)
     const [coinList, setCoinList] = useState([]);
-    
+
     const isMounted = useRef(null);
     const toggleScan = () => setShowScanner(!showScanner);
 
