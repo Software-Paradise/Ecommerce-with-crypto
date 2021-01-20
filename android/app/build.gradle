@@ -192,7 +192,6 @@ dependencies {
     implementation project(':lottie-react-native')
     implementation project(':react-native-linear-gradient')
 
-    
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
