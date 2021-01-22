@@ -53,7 +53,7 @@ const App = () => {
         setLogin(true)
       } else {
         setLogin(false)
-        initSocket?.disconnect()
+       // initSocket?.disconnect()
       }
     })
   }, [])
@@ -72,7 +72,7 @@ const App = () => {
     store.dispatch({ type: SETSTORAGE, payload: dataStorage })
   }
 
-  const disconnectSocket = () => {
+ /*  const disconnectSocket = () => {
     if (logged) {
       Alert.alert('Sesión Finalizada', 'Se detecto un inicio de sesión en otro dispositivo', [
         {
@@ -84,7 +84,7 @@ const App = () => {
       ])
     }
 
-  }
+  } */
 
   /**Funcion que conecta al socket para obtener el balance del comercio */
   const Connection = _ => {
@@ -103,18 +103,6 @@ const App = () => {
 
     socket.on('BALANCEREFRESH', udpdateWalletAmount)
 
-    socket.on('SESSIONEXIST', (id) => {
-      console.log('SessionActive', id)
-      socket.emit('SESSIONCLOSE', id)
-    })
-
-    socket.on('SESSIONCLOSE', () => {
-      console.log('Close')
-    })
-
-    socket.on('disconnect', disconnectSocket)
-
-    setInitSocket(socket)
   }
 
   useEffect(() => {

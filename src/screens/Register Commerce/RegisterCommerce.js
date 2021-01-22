@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useReducer } from 'react'
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, FlatList, Platform, KeyboardAvoidingView } from 'react-native'
+import { PERMISSIONS, request, check } from 'react-native-permissions'
 
 // Import Component
 import Container from '../../components/Container/Container'
 import { Image, View as ViewAnimation } from 'react-native-animatable'
 import Loader from '../../components/Loader/Loader'
-import { Colors, RFValue, showNotification, http, GlobalStyles, compressImage } from '../../utils/constants.util'
+import { Colors, RFValue, showNotification, http, GlobalStyles, checkPermisionLocation, } from '../../utils/constants.util'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import MapView, { Marker } from 'react-native-maps'
-import Geolocation from '@react-native-community/geolocation'
+import Geolocation from 'react-native-geolocation-service'
 import validator from 'validator'
 import { Picker } from '@react-native-community/picker'
 import Modal from 'react-native-modal'
@@ -178,18 +179,17 @@ const RegisterCommerce = ({ route, navigation }) => {
 
     // Funcion que permite dar los permisos para la Geolocalizacion
     const ConfigureLocation = async () => {
-        await Geolocation.setRNConfiguration({
-            distanceFilter: 5.0,
-            desiredAccuracy: {
-                ios: 'bestForNavigation',
-                android: 'balancedPowerAccuracy',
-            }
-        });
-
         try {
-            Geolocation.requestAuthorization()
+            if (Platform.OS === 'android') {
+                await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+                const auth = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+
+                if (auth === 'granted') {
+                    position()
+                }
+            }
         } catch (error) {
-            console.log(error.message);
+            showNotification(error.toString())
         }
     };
 
@@ -201,12 +201,14 @@ const RegisterCommerce = ({ route, navigation }) => {
                 dispatch({ type: "latitude", payload: position.coords.latitude })
                 dispatch({ type: "longitude", payload: position.coords.longitude })
             }
+        }, (error) => {
+            console.log(error.message)
         })
     }
 
     useEffect(() => {
         ConfigureLocation()
-        position()
+        //position()
     }, [])
 
     return (

@@ -297,9 +297,9 @@ export const showNotification = (message = "", type = "info" | "error" | "warnin
   })
 }
 
-const PORT = '3000';
+const PORT = '3085';
 
-//export const serverAddress = Platform.OS === 'ios' ? `http://localhost:${PORT}` : `http://192.168.0.120:${PORT}`;
+//export const serverAddress = Platform.OS === 'ios' ? `http://localhost:${PORT}` : `http://192.168.0.125:${PORT}`;
 
 export const serverSpeedtradingsURL = "https://ardent-medley-272823.appspot.com";
 
@@ -335,7 +335,7 @@ export const readFile = (fileId) => new Promise(async (resolve, _) => {
 * @param {Number} feeType - tipo de fee (1=transacción, 2=retiro, 3=exchange)
 */
 export const getFeePercentage = (amount, feeType, fees) => {
-  console.log("FeeConst",fees)
+  console.log("FeeConst", fees)
   const enableFees = {
     1: 'transaction',
     2: 'retirement',
@@ -419,6 +419,27 @@ export const checkPermissionCamera = () => new Promise(async (resolve, reject) =
       }
     }
 
+    resolve()
+  } catch (error) {
+    reject(error)
+  }
+})
+
+export const checkPermisionLocation = () => new Promise(async (resolve, reject) => {
+  try {
+    await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+    const auth = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+
+    // verificamos los posibles errores de permisos
+    switch (auth) {
+      case RESULTS.DENIED: {
+        throw String('Permiso de Localizacion denegados')
+      }
+
+      case RESULTS.UNAVAILABLE: {
+        throw String('Esta función no esta disponible')
+      }
+    }
     resolve()
   } catch (error) {
     reject(error)
