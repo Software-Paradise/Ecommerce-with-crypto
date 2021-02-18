@@ -14,7 +14,6 @@ import { Colors, showNotification, http, getHeaders, RFValue, GlobalStyles, chec
 import { Image, View as ViewAnimation } from 'react-native-animatable'
 import { Picker } from '@react-native-community/picker'
 
-
 // Import Assets
 import Logo from '../../assets/img/logo.png'
 import Funko from '../../assets/img/AlyFunko.png'
@@ -299,19 +298,35 @@ const Register = ({ navigation }) => {
         }
     }
 
+    const validateEmailFunction = async (value) => {
+        try {
+            const dataEmail = {
+                email: value
+            }
+
+            const { data } = await http.post('/ecommerce/company/comprobate-email', dataEmail)
+
+            if (data.error) {
+                throw String(data.message)
+            }
+            setValidEmail(data)
+
+        } catch (error) {
+            showNotification(error.toString())
+        }
+    }
+
     // Funcion que permite llenar el registro del comercio
     const registerCommerce = () => {
         navigation.navigate('RegisterCommerce', { companyId: dataRegister.id })
         setModalSuccess(false)
     }
-    
+
 
     return (
         <Container showLogo>
-        <KeyboardAvoidingView style={styles.scrollView} >
+            <KeyboardAvoidingView style={styles.scrollView} >
                 <View style={styles.container1}>
-                    {/* <Image source={Logo} style={styles.logo} /> */}
-
                     <Loader isVisible={loader} />
 
                     <ViewAnimation style={[styles.tab, { paddingBottom: RFValue(20) }]} animations="fadeIn" >
@@ -345,6 +360,7 @@ const Register = ({ navigation }) => {
                                 keyboardType='email-address'
                                 value={state.username}
                                 onChangeText={str => dispatch({ type: 'username', payload: str })}
+                                onBlur={_ => validateEmailFunction(state.username)}
                             />
                         </View>
 
@@ -444,6 +460,7 @@ const Register = ({ navigation }) => {
                                 keyboardType='email-address'
                                 value={state.repEmail}
                                 onChangeText={str => dispatch({ type: 'repEmail', payload: str })}
+                                onBlur={_ => validateEmailFunction(state.repEmail)}
                             />
                         </View>
 
@@ -549,53 +566,53 @@ const Register = ({ navigation }) => {
                         </View>
                     </ViewAnimation>
                 </View>
-        
 
-            <Modal isVisible={modalSuccess} onBackButtonPress={_ => setModalSuccess(false)} onBackdropPress={_ => setModalSuccess(false)}>
-                <View style={styles.containerModalSuccess}>
-                    <Image style={styles.logo} source={Logo} />
 
-                    <View style={{ alignItems: 'center' }}>
-                        <View style={[styles.row, { alignItems: 'center' }]}>
-                            <Text style={{ color: Colors.$colorYellow, fontSize: RFValue(15) }}>Esta a un paso de completar el registro</Text>
+                <Modal isVisible={modalSuccess} onBackButtonPress={_ => setModalSuccess(false)} onBackdropPress={_ => setModalSuccess(false)}>
+                    <View style={styles.containerModalSuccess}>
+                        <Image style={styles.logo} source={Logo} />
+
+                        <View style={{ alignItems: 'center' }}>
+                            <View style={[styles.row, { alignItems: 'center' }]}>
+                                <Text style={{ color: Colors.$colorYellow, fontSize: RFValue(15) }}>Esta a un paso de completar el registro</Text>
+                            </View>
+                            <Image style={styles.logo} source={Funko} />
                         </View>
-                        <Image style={styles.logo} source={Funko} />
-                    </View>
 
-                    <View style={{ alignItems: 'center' }}>
-                        <View style={styles.row}>
-                            <Text style={{ color: Colors.$colorYellow, fontSize: RFValue(15), textAlign: 'justify' }}>Ahora solo debe vincular su primer comercio para empezar a hacer uso de Alypay E-commerce</Text>
+                        <View style={{ alignItems: 'center' }}>
+                            <View style={styles.row}>
+                                <Text style={{ color: Colors.$colorYellow, fontSize: RFValue(15), textAlign: 'justify' }}>Ahora solo debe vincular su primer comercio para empezar a hacer uso de Alypay E-commerce</Text>
+                            </View>
+                        </View>
+
+                        <View style={{ alignItems: 'center', padding: 20 }}>
+                            <TouchableOpacity onPress={registerCommerce} style={GlobalStyles.buttonPrimary}>
+                                <Text>REGISTRA TU COMERCIO</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
+                </Modal>
 
-                    <View style={{ alignItems: 'center', padding: 20 }}>
-                        <TouchableOpacity onPress={registerCommerce} style={GlobalStyles.buttonPrimary}>
-                            <Text>REGISTRA TU COMERCIO</Text>
-                        </TouchableOpacity>
+
+                <Modal onBackdropPress={_ => setModalCountry(false)} onBackButtonPress={_ => setModalCountry(false)} isVisible={modalCoutry}>
+                    <View style={styles.containerModal}>
+                        <TextInput
+                            style={GlobalStyles.textInput}
+                            placeholder="Buscar"
+                            placeholderTextColor="#FFF"
+                            value={state.filter}
+                            onChangeText={str => dispatch({ type: "filter", payload: str })} />
+
+                        <View style={{ height: 10 }} />
+
+                        <FlatList
+                            keyboardShouldPersistTaps="always"
+                            data={countries}
+                            renderItem={ItemCountry}
+                            keyExtractor={(_, i) => i.toString()} />
                     </View>
-                </View>
-            </Modal>
-
-
-            <Modal onBackdropPress={_ => setModalCountry(false)} onBackButtonPress={_ => setModalCountry(false)} isVisible={modalCoutry}>
-                <View style={styles.containerModal}>
-                    <TextInput
-                        style={GlobalStyles.textInput}
-                        placeholder="Buscar"
-                        placeholderTextColor="#FFF"
-                        value={state.filter}
-                        onChangeText={str => dispatch({ type: "filter", payload: str })} />
-
-                    <View style={{ height: 10 }} />
-
-                    <FlatList
-                        keyboardShouldPersistTaps="always"
-                        data={countries}
-                        renderItem={ItemCountry}
-                        keyExtractor={(_, i) => i.toString()} />
-                </View>
-            </Modal>
-        </KeyboardAvoidingView>
+                </Modal>
+            </KeyboardAvoidingView>
         </Container>
     )
 }
@@ -707,6 +724,23 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 10,
         marginVertical: 5,
+    },
+    valid: {
+        backgroundColor: Colors.$colorYellow,
+        padding: 5,
+        borderRadius: 5,
+        color: Colors.colorMain,
+        fontSize: RFValue(10),
+        marginLeft: 10,
+    },
+
+    invalid: {
+        backgroundColor: Colors.$,
+        padding: 5,
+        borderRadius: 5,
+        color: "#FFF",
+        fontSize: RFValue(10),
+        marginLeft: 10,
     },
 })
 

@@ -93,7 +93,7 @@ const Description = ({ route }) => {
 
                         <View style={styles.containertitle}>
                             <Text style={styles.subtitle}>{(details.name_coin_transaction ? details.name_coin_transaction : "")}</Text>
-                            <Text style={styles.subtitle}>{(`${details.amount_fee}  ${details.coin_fee}` ? `${details.commerce_fee}  ${details.coin_fee}` : "")}</Text>
+                            <Text style={styles.subtitle}>{(`${details.amount_fee}  ${details.coin_fee}` ? `${details.commerce_fee} USDT` : "")}</Text>
                         </View>
                     </View>
 

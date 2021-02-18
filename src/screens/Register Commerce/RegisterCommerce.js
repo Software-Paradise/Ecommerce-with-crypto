@@ -177,6 +177,23 @@ const RegisterCommerce = ({ route, navigation }) => {
         }
     }
 
+    const validateEmailFunction = async (value) => {
+        try {
+            const dataEmail = {
+                email: value
+            }
+
+            const { data } = await http.post('/ecommerce/company/comprobate-email', dataEmail)
+
+            if (data.error) {
+                throw String(data.message)
+            }
+
+        } catch (error) {
+            showNotification(error.toString())
+        }
+    }
+
     // Funcion que permite dar los permisos para la Geolocalizacion
     const ConfigureLocation = async () => {
         try {
@@ -250,6 +267,7 @@ const RegisterCommerce = ({ route, navigation }) => {
                                 value={state.email}
                                 keyboardType='email-address'
                                 onChangeText={str => dispatch({ type: 'email', payload: str })}
+                                onBlur={_=> validateEmailFunction(state.email)}
                             />
                         </View>
 
@@ -443,6 +461,7 @@ const RegisterCommerce = ({ route, navigation }) => {
 const styles = StyleSheet.create({
     scrollView: {
         flex: 1,
+        width: '100%',
     },
     container1: {
         alignItems: 'center',
@@ -453,8 +472,10 @@ const styles = StyleSheet.create({
     container: {
         alignItems: "center",
         paddingHorizontal: "5%",
+        width: '100%',
+        //marginRight: '25%',
         flexDirection: "column",
-        justifyContent: "space-between",
+        //justifyContent: "space-between",
         // flex: 1,
     },
     containerTitle: {

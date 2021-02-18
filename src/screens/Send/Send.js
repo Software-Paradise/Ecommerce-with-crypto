@@ -83,7 +83,7 @@ const sentComponent = () => {
                 // limpiamos el fee
                 dispatch({ type: 'fee', payload: '0' })
             } else {
-                throw String("Tu transacción no se ha compeltado, contacte a soporte")
+                throw String("Tu transacción no se ha completado, contacte a soporte")
             }
         } catch (error) {
             errorMessage(error.toString())
@@ -170,7 +170,7 @@ const sentComponent = () => {
 
                 <View style={styles.row}>
                     <View style={styles.col}>
-                        <Text style={styles.legend}>Mondo (USD)</Text>
+                        <Text style={styles.legend}>Monto (USD)</Text>
 
                         <View style={styles.rowInput}>
                             <TextInput

@@ -4,12 +4,13 @@ import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'reac
 import { RFValue, Colors, GlobalStyles, http, errorMessage, serverSpeedtradingsURL, getFeePercentage, getHeaders, successMessage } from '../../utils/constants.util'
 
 // import components
-import Card from '../../components/CardProfile/CardProfile'
 import Lottie from 'lottie-react-native'
 import Modal from 'react-native-modal'
 import QRCodeScanner from 'react-native-qrcode-scanner'
 import { Picker } from '@react-native-community/picker'
 import { View as ViewAnimation } from 'react-native-animatable'
+import Container from '../../components/Container/Container'
+import Loader from '../../components/Loader/Loader'
 
 // import constanst and functions
 import { RNCamera } from 'react-native-camera'
@@ -20,7 +21,6 @@ import QR from '../../animations/scan-qr.json'
 
 // Import redux store
 import store from '../../store'
-import Container from '../../components/Container/Container'
 
 
 const Retirements = ({ navigation }) => {
@@ -42,6 +42,9 @@ const Retirements = ({ navigation }) => {
     const [coinIndexSelected, setCoin] = useState(0);
     const [coinList, setCoinList] = useState([]);
 
+    // Estado que muestra la animacion de espera al hacer el retiros
+    const [loader, setLoader] = useState(false)
+
     const isMounted = useRef(null);
     const toggleScan = () => setShowScanner(!showScanner);
 
@@ -55,8 +58,9 @@ const Retirements = ({ navigation }) => {
     const _handleSubmit = async () => {
         try {
 
-            if (amount < 5) {
-                throw String('El monto minimo a retirar es de 5 USD')
+            setLoader(true)
+            if (amount < 20) {
+                throw String('El monto minimo a retirar es de 20 USD')
             }
 
             const dataSent = {
@@ -85,6 +89,8 @@ const Retirements = ({ navigation }) => {
             navigation.pop();
         } catch (error) {
             errorMessage(error.toString());
+        } finally {
+            setLoader(false)
         }
     };
 
@@ -165,6 +171,7 @@ const Retirements = ({ navigation }) => {
     return (
         <Container showLogo showCard>
             <ViewAnimation style={styles.container} animation='fadeIn'>
+                <Loader isVisible={loader} />
 
                 <View style={styles.containerTitle}>
                     <Text style={styles.legendTitle}>Retirar Fondos</Text>
@@ -228,21 +235,22 @@ const Retirements = ({ navigation }) => {
                 <View style={styles.totalFees}>
                     <View style={styles.containerPrinc}>
                         <View style={styles.containerTitleFee}>
-                            <Text style={styles.legend}>Monto</Text>
+                            <Text style={styles.legend}>Monto Débito</Text>
                             <Text style={styles.legend}>Fee ({coinList[coinIndexSelected]?.symbol})</Text>
                             <Text style={styles.legend}>Fee (USD)</Text>
                         </View>
 
                         <View style={styles.containerTitleFee}>
-                            <Text style={styles.legendSubtitle}>{amountSatochi}</Text>
+                            <Text style={styles.legendSubtitle}>{_.floor(amountSatochi + amountFee, 8)}</Text>
                             <Text style={styles.legendSubtitle}>{amountFee}</Text>
                             <Text style={styles.legendSubtitle}>{amountFeeUSD}</Text>
                         </View>
                     </View>
                 </View>
                 <View style={styles.col}>
+                    <Text style={styles.legend}>Monto a recibir</Text>
                     <Text style={styles.totalSatochi}>
-                        {_.floor(amountSatochi + amountFee, 8)} {coinList[coinIndexSelected]?.symbol}
+                        {amountSatochi} {coinList[coinIndexSelected]?.symbol}
                     </Text>
                 </View>
 
@@ -275,6 +283,8 @@ const styles = StyleSheet.create({
     col: {
         flex: 1,
         marginHorizontal: RFValue(10),
+        justifyContent:'center',
+        alignItems: "center",
     },
 
     colSelectionCoin: {
