@@ -151,7 +151,6 @@ const RegisterCommerce = ({ route, navigation }) => {
 
             const dataSent = {
                 idCompany: companyId,
-                username: null,
                 email: state.email,
                 password: state.password,
                 description: state.companyName,

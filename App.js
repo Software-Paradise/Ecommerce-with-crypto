@@ -102,7 +102,6 @@ const App = () => {
     })
 
     socket.on('BALANCEREFRESH', udpdateWalletAmount)
-
   }
 
   useEffect(() => {

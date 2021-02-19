@@ -37,9 +37,11 @@ const CadProfile = () => {
 
         setData(global.info)
 
+        
         store.subscribe(_ => {
             const { global: newGlobal } = store.getState()
-
+            
+            console.log('DataCard',newGlobal.info)
             setData(newGlobal.info)
         })
     }, [])

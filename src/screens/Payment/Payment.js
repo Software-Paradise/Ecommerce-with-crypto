@@ -50,6 +50,7 @@ const Payment = () => {
             const { data: fees } = await http.get('/fees-percentage')
 
             const { data: information } = await http.get('/ecommerce/info', getHeaders())
+            console.log('Info',information)
 
             const dataStorage = {
                 ...global,
