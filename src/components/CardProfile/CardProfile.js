@@ -2,12 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, Image } from 'react-native'
 
 // Import constants
-import { RFValue, Colors, readFile, http, getHeaders, showNotification } from '../../utils/constants.util'
+import { RFValue, Colors, readFile } from '../../utils/constants.util'
 import _ from "lodash"
-
-// Import Components
-import Loader from '../Loader/Loader'
-import Container from '../Container/Container'
 
 // import assets 
 import avatar from "../../assets/img/ecommerce-avatar.png"
@@ -37,11 +33,9 @@ const CadProfile = () => {
 
         setData(global.info)
 
-        
+
         store.subscribe(_ => {
             const { global: newGlobal } = store.getState()
-            
-            console.log('DataCard',newGlobal.info)
             setData(newGlobal.info)
         })
     }, [])

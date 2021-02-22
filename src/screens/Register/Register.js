@@ -13,6 +13,7 @@ import ImagePicker from 'react-native-image-picker'
 import { Colors, showNotification, http, getHeaders, RFValue, GlobalStyles, checkPermissionCamera } from '../../utils/constants.util'
 import { Image, View as ViewAnimation } from 'react-native-animatable'
 import { Picker } from '@react-native-community/picker'
+import DocumentPicker from 'react-native-document-picker'
 
 // Import Assets
 import Logo from '../../assets/img/logo.png'
@@ -124,7 +125,7 @@ const Register = ({ navigation }) => {
         });
 
         data.append('repLegalPower', {
-            name: legalPower.fileName,
+            name: legalPower.name,
             type: legalPower.type,
             uri:
                 Platform.OS === 'android'
@@ -168,10 +169,10 @@ const Register = ({ navigation }) => {
                         setRUCImage(response);
                         break;
                     }
-                    case 'legalPower': {
+                    /* case 'legalPower': {
                         setLegalPower(response);
                         break;
-                    }
+                    } */
                     case 'repID': {
                         setRepID(response);
                         break;
@@ -184,6 +185,14 @@ const Register = ({ navigation }) => {
         } catch (error) {
             showNotification(error.toString())
         }
+    }
+
+    const uploadDocument = async () => {
+        const res = await DocumentPicker.pick({
+            type:[DocumentPicker.types.pdf]
+        })
+
+        setLegalPower(res)
     }
 
     /**Metodo que confirma la salida del usuario a la pantalla de inicio */
@@ -252,7 +261,7 @@ const Register = ({ navigation }) => {
             }
 
             if (legalPower === null) {
-                throw String("Imagen de poder administrativo es requerida")
+                throw String("El documento de poder administrativo es requerida")
             }
 
             if (repID === null) {
@@ -298,6 +307,7 @@ const Register = ({ navigation }) => {
         }
     }
 
+    // Funcion que verifica si el correo ya existe en la base de datos
     const validateEmailFunction = async (value) => {
         try {
             const dataEmail = {
@@ -309,8 +319,6 @@ const Register = ({ navigation }) => {
             if (data.error) {
                 throw String(data.message)
             }
-            setValidEmail(data)
-
         } catch (error) {
             showNotification(error.toString())
         }
@@ -551,7 +559,7 @@ const Register = ({ navigation }) => {
                                 <Text style={styles.legendRow}>Poder Administrativo</Text>
                             </View>
 
-                            <UploadImage value={legalPower} onChange={_ => uploadImage('legalPower')} />
+                            <UploadImage isPdf value={legalPower} onChange={_ => uploadDocument('legalPower')} />
                         </View>
 
                         <View style={styles.rowButtons}>

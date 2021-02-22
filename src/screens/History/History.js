@@ -48,7 +48,7 @@ const History = () => {
 
     return (
         <>
-            <Container showLogo >
+            <Container showLogo onRefreshEnd={getAllData}>
                 <View style={styles.container}>
                     <Loader isVisible={loader} />
                     <View style={styles.containerTitle}>

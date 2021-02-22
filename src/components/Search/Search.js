@@ -7,20 +7,19 @@ import { useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
 const Search = () => {
-
     const [searchText, setSearchText] = useState("")
     const { navigate, } = useNavigation()
 
+    // Funcion que pasa por parametro el hash para el detalle de la transaccion
     const goToSearch = () => {
         try {
-
             // verificamos si el hash es de un formato correcto
             if (searchText.length < 50) {
                 throw String("Ingrese un hash de formato correcto")
+            } else {
+                navigate("Description", { hash: searchText })
+                setSearchText('')
             }
-
-            navigate("Description", { hash: searchText })
-
         } catch (error) {
             showNotification(error.toString())
         }
@@ -41,7 +40,7 @@ const Search = () => {
                         />
 
                         <TouchableOpacity onPress={goToSearch} style={styles.buttonSearch}>
-                            <Icon name='search' size={40}  />
+                            <Icon name='search' size={40} />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -53,8 +52,8 @@ const Search = () => {
 
 const styles = StyleSheet.create({
     container: {
-        flex:1,
-        margin:RFValue(10)
+        flex: 1,
+        margin: RFValue(10)
     },
 
     textInput: {

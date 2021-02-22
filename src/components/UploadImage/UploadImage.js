@@ -8,17 +8,26 @@ import { Colors } from '../../utils/constants.util';
 
 // Import Assets
 import images from '../../assets/img/Recurso.png'
+import pdf from '../../assets/img/uploadPdf.png'
 
-const UploadImage = ({ onChange, value }) => {
+const UploadImage = ({ onChange, value, isPdf = false }) => {
     return (
         <ViewAnimation style={styles.container} animation="fadeIn">
             <View style={styles.containerImage}>
                 <TouchableOpacity onPress={onChange}>
-                    <Image source={value ? { uri: value.uri } : images} style={value ? styles.bigPicture : styles.images} />
+                    {
+                        value && value.type === 'application/pdf'
+                            ? <Text style={styles.legendTitle}>{value.name}</Text>
+                            : <Image source={isPdf ? pdf : (value ? { uri: value.uri } : images)} style={value ? styles.bigPicture : styles.images} />
+                    }
                 </TouchableOpacity>
                 {
-                    !value &&
+                    (!value && isPdf) &&
                     <Text style={styles.legendImage}>Presiona para subir o tomar una fotografia</Text>
+                }
+                {
+                    (!value && !isPdf) &&
+                    < Text style={styles.legendImage}>Presiona para subir o tomar una fotografia</Text>
                 }
             </View>
         </ViewAnimation >
@@ -87,6 +96,11 @@ const styles = StyleSheet.create({
         color: Colors.$colorYellow,
         fontWeight: 'bold',
         // color: 'white',
+    },
+    legendTitle: {
+        color: Colors.$colorYellow,
+        fontSize: RFValue(16),
+        padding: 10,
     },
 })
 

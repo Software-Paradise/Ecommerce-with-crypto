@@ -176,6 +176,7 @@ const RegisterCommerce = ({ route, navigation }) => {
         }
     }
 
+    // Funcion que nos permite verificar si el correo ya existe en la base de datos
     const validateEmailFunction = async (value) => {
         try {
             const dataEmail = {

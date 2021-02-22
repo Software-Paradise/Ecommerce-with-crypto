@@ -299,11 +299,11 @@ export const showNotification = (message = "", type = "info" | "error" | "warnin
 
 const PORT = '3085';
 
-export const serverAddress = Platform.OS === 'ios' ? `http://localhost:${PORT}` : `http://192.168.0.125:${PORT}`;
+//export const serverAddress = Platform.OS === 'ios' ? `http://localhost:${PORT}` : `http://192.168.100.243:${PORT}`;
 
 export const serverSpeedtradingsURL = "https://ardent-medley-272823.appspot.com";
 
-//export const serverAddress = 'https://alypay.uc.r.appspot.com'
+export const serverAddress = 'https://alypay.uc.r.appspot.com'
 
 //export const serverAddress = 'http://staging.root-anvil-299019.appspot.com'; 
 export const socketAddress = serverAddress;
@@ -335,7 +335,6 @@ export const readFile = (fileId) => new Promise(async (resolve, _) => {
 * @param {Number} feeType - tipo de fee (1=transacción, 2=retiro, 3=exchange)
 */
 export const getFeePercentage = (amount, feeType, fees) => {
-  console.log("FeeConst", fees)
   const enableFees = {
     1: 'transaction',
     2: 'retirement',
