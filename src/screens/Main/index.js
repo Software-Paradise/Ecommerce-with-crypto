@@ -20,7 +20,7 @@ const Stack = createStackNavigator()
 const index = ({ navigation }) => {
     const { global } = store.getState()
 
-    console.log('Storage',global)
+    console.log('Storage', global)
 
     useEffect(() => {
         store.dispatch({ type: SETNAVIGATION, payload: navigation })
@@ -28,7 +28,7 @@ const index = ({ navigation }) => {
 
     return (
         <>
-            {/* {global.state === 2 ? <ModalVerification /> : null} */}
+            {global.state === 2 ? <ModalVerification /> : null}
             <Stack.Navigator initialRouteName='Payment' headerMode={null}>
                 <Stack.Screen name='Payment' component={Payment} />
                 <Stack.Screen name='Send' component={Send} />
