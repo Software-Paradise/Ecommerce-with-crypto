@@ -23,7 +23,7 @@ const UploadImage = ({ onChange, value, isPdf = false }) => {
                 </TouchableOpacity>
                 {
                     (!value && isPdf) &&
-                    <Text style={styles.legendImage}>Presiona para subir o tomar una fotografia</Text>
+                    <Text style={styles.legendImage}>Presiona para subir un documento</Text>
                 }
                 {
                     (!value && !isPdf) &&

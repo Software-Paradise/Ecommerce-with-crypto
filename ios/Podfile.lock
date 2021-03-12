@@ -252,7 +252,9 @@ PODS:
     - React-Core
   - react-native-camera/RN (3.41.0):
     - React-Core
-  - react-native-geolocation (2.0.2):
+  - react-native-document-picker (5.0.0):
+    - React-Core
+  - react-native-geolocation-service (5.1.1):
     - React
   - react-native-image-picker (2.3.3):
     - React
@@ -398,7 +400,8 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-camera (from `../node_modules/react-native-camera`)
-  - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
+  - react-native-document-picker (from `../node_modules/react-native-document-picker`)
+  - react-native-geolocation-service (from `../node_modules/react-native-geolocation-service`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-maps (from `../node_modules/react-native-maps`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
@@ -486,8 +489,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/blur"
   react-native-camera:
     :path: "../node_modules/react-native-camera"
-  react-native-geolocation:
-    :path: "../node_modules/@react-native-community/geolocation"
+  react-native-document-picker:
+    :path: "../node_modules/react-native-document-picker"
+  react-native-geolocation-service:
+    :path: "../node_modules/react-native-geolocation-service"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
   react-native-maps:
@@ -579,7 +584,8 @@ SPEC CHECKSUMS:
   React-jsinspector: b14e62ebe7a66e9231e9581279909f2fc3db6606
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-camera: 32a00b742e747487d633fce357290aff9049da01
-  react-native-geolocation: cbd9d6bd06bac411eed2671810f454d4908484a8
+  react-native-document-picker: 5a7dc439cc7ce9bc7644605458bfc7e3f4b524d5
+  react-native-geolocation-service: f33626f1ae12381ca2ae60f98b2f5edd676bf95a
   react-native-image-picker: a6c3d644751a388b0fc8b56822ff7cbd398a3008
   react-native-maps: f4b89da81626ad7f151a8bfcb79733295d31ce5c
   react-native-netinfo: 52cf0ee8342548a485e28f4b09e56b477567244d
@@ -614,4 +620,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 1849b3c0120c09be674100a3f87b0cc09c6c91cf
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.10.0

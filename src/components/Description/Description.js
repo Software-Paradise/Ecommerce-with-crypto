@@ -22,7 +22,7 @@ const Description = ({ route }) => {
             setLoader(true)
 
             const { data } = await http.get(`/blockchain/transaction/${hash}`)
-            console.log('Description', data)
+            
             if (data.error) {
                 throw String(data.message)
             }
@@ -38,6 +38,7 @@ const Description = ({ route }) => {
     useEffect(() => {
         getAllDetails()
     }, [])
+    
     return (
         <Container showLogo>
             <Loader isVisible={loader} />
@@ -58,7 +59,7 @@ const Description = ({ route }) => {
                     </View>
                 </TouchableOpacity>
 
-                <View style={styles.hashsec}>
+                <View style={[styles.hashsec,styles.text]}>
                     <View style={styles.containertitle}>
                         <Text style={styles.title}>Descripcion</Text>
                         <Text style={styles.subtitle}>{details.description_transaction}</Text>

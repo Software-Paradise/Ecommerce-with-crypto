@@ -1,19 +1,22 @@
-import React, { useState, useReducer } from 'react'
+import React, { useState, useReducer, useEffect } from 'react'
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, FlatList, Alert, KeyboardAvoidingView } from 'react-native'
 
 // Import Component
 import Container from '../../components/Container/Container'
 import Loader from '../../components/Loader/Loader'
-import validator from 'validator'
-import countries from '../../utils/countries.json'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Modal from 'react-native-modal'
 import UploadImage from '../../components/UploadImage/UploadImage'
-import ImagePicker from 'react-native-image-picker'
-import { Colors, showNotification, http, getHeaders, RFValue, GlobalStyles, checkPermissionCamera } from '../../utils/constants.util'
+import { launchCamera } from 'react-native-image-picker'
 import { Image, View as ViewAnimation } from 'react-native-animatable'
 import { Picker } from '@react-native-community/picker'
 import DocumentPicker from 'react-native-document-picker'
+import CheckBox from "react-native-check-box"
+
+// Import constanst and funtions
+import { Colors, showNotification, http, getHeaders, RFValue, GlobalStyles, checkPermissionCamera } from '../../utils/constants.util'
+import countries from '../../utils/countries.json'
+import validator from 'validator'
 
 // Import Assets
 import Logo from '../../assets/img/logo.png'
@@ -33,7 +36,9 @@ const initialState = {
     username: '',
     password: '',
 
-    filter: ''
+    filter: '',
+
+    executive: false
 }
 
 const reducer = (state, action) => {
@@ -44,7 +49,7 @@ const reducer = (state, action) => {
 }
 
 const optionsOpenCamera = {
-    noData: true,
+    //noData: true,
     maxHeight: 1024,
     maxWidth: 1024,
     quality: 0.5,
@@ -73,10 +78,17 @@ const Register = ({ navigation }) => {
 
     // Estados que almacenan la informacion de las imagenes
     const [operationPermission, setOperationPermission] = useState('');
-
     const [RUCImage, setRUCImage] = useState('');
     const [legalPower, setLegalPower] = useState('');
     const [repID, setRepID] = useState('')
+
+    // Estado que verifica si agregamos un Ejectivo o no
+    const [check, setCheck] = useState(false)
+    const [excute, setExcute] = useState('')
+
+    // Estado que almacena la peticion de los terminoss y condiciones
+    const [terms, setTerms] = useState('')
+    const [showTerms, setShowTerms] = useState(false)
 
     // Estado que indica si muestra el modal de success
     const [modalSuccess, setModalSuccess] = useState(false)
@@ -155,7 +167,7 @@ const Register = ({ navigation }) => {
         try {
             await checkPermissionCamera()
 
-            ImagePicker.launchCamera(optionsOpenCamera, (response) => {
+            launchCamera(optionsOpenCamera, (response) => {
                 if (response.error) {
                     throw String(response.error)
                 }
@@ -169,10 +181,6 @@ const Register = ({ navigation }) => {
                         setRUCImage(response);
                         break;
                     }
-                    /* case 'legalPower': {
-                        setLegalPower(response);
-                        break;
-                    } */
                     case 'repID': {
                         setRepID(response);
                         break;
@@ -189,7 +197,7 @@ const Register = ({ navigation }) => {
 
     const uploadDocument = async () => {
         const res = await DocumentPicker.pick({
-            type:[DocumentPicker.types.pdf]
+            type: [DocumentPicker.types.pdf]
         })
 
         setLegalPower(res)
@@ -213,6 +221,7 @@ const Register = ({ navigation }) => {
 
     // Funcion que hace la peticion al server
     const onSubmitInformation = async () => {
+        setShowTerms(false)
         try {
             setLoader(true)
 
@@ -268,6 +277,13 @@ const Register = ({ navigation }) => {
                 throw String("Imagen de perfil es requerida")
             }
 
+
+            if (check) {
+                if (excute.trim().length === 0) {
+                    throw String("Es requerido que ingrese el correo de su ejecutivo de venta para continuar")
+                }
+            }
+
             const dataSent = {
                 companyName: state.companyName,
                 companyRUC: state.companyRuc,
@@ -280,9 +296,9 @@ const Register = ({ navigation }) => {
                 repIDType: state.repIDType,
                 repEmail: state.repEmail,
                 username: state.username,
-                password: state.password
+                password: state.password,
+                sale_excutive: excute
             }
-
 
             const { data } = await http.post('/ecommerce/company/register', createFormData(
                 operationPermission,
@@ -293,7 +309,6 @@ const Register = ({ navigation }) => {
             ), getHeaders())
 
             setDataRegister(data)
-
 
             if (data.error) {
                 throw String(data.message)
@@ -324,12 +339,26 @@ const Register = ({ navigation }) => {
         }
     }
 
+    const termsModal = async () => {
+        try {
+            const { data } = await http.get('https://ardent-medley-272823.appspot.com/terms/read/alypay-ecommerce')
+
+            const text = data.split(/<p>/gm)[1].split(/<\/p>/)[0]
+            console.log(text)
+
+            setTerms(text.split('\n'))
+            setShowTerms(true)
+
+        } catch (error) {
+            showNotification(error.toString())
+        }
+    }
+
     // Funcion que permite llenar el registro del comercio
     const registerCommerce = () => {
         navigation.navigate('RegisterCommerce', { companyId: dataRegister.id })
         setModalSuccess(false)
     }
-
 
     return (
         <Container showLogo>
@@ -393,7 +422,7 @@ const Register = ({ navigation }) => {
 
                         <View style={styles.row}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Repetir Contraseña</Text>
+                                <Text style={styles.legendRow}>Repetir contraseña</Text>
                             </View>
                             <View style={[styles.textInputWithImage, GlobalStyles.textInput]}>
                                 <TextInput
@@ -412,7 +441,7 @@ const Register = ({ navigation }) => {
 
                         <View style={styles.row}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Numero RUC</Text>
+                                <Text style={styles.legendRow}>Número de identificación fiscal</Text>
                             </View>
 
                             <TextInput
@@ -528,7 +557,7 @@ const Register = ({ navigation }) => {
 
                         <View style={styles.position}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Foto de Perfil</Text>
+                                <Text style={styles.legendRow}>Identificacion del representante legal</Text>
                             </View>
 
                             <UploadImage value={repID} onChange={_ => uploadImage('repID')} />
@@ -548,7 +577,7 @@ const Register = ({ navigation }) => {
 
                         <View style={styles.position}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Codigo de identificacion de Empresa</Text>
+                                <Text style={styles.legendRow}>Identificación fiscal</Text>
                             </View>
 
                             <UploadImage value={RUCImage} onChange={_ => uploadImage('ruc')} />
@@ -556,11 +585,40 @@ const Register = ({ navigation }) => {
 
                         <View style={styles.position}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Poder Administrativo</Text>
+                                <Text style={styles.legendRow}>Poder administrativo</Text>
                             </View>
 
                             <UploadImage isPdf value={legalPower} onChange={_ => uploadDocument('legalPower')} />
                         </View>
+
+                        <View style={[styles.rowButtons, { justifyContent: 'flex-end' }]}>
+                            <Text style={[styles.legendRow, { marginRight: 10 }]}>Añadir asesor Alysystem</Text>
+
+                            <CheckBox
+                                checkBoxColor={Colors.$colorYellow}
+                                isChecked={check}
+                                onClick={_ => setCheck(!check)}
+                            />
+                        </View>
+
+                        {
+                            check
+                                ?
+                                <View style={styles.row}>
+                                    <View style={styles.labelsRow}>
+                                        <Text style={styles.legendRow}>Ejectivo de venta</Text>
+                                    </View>
+
+                                    <TextInput
+                                        style={GlobalStyles.textInput}
+                                        placeholder="Ingrese el correo del ejecutivo"
+                                        placeholderTextColor={Colors.$colorGray}
+                                        value={excute}
+                                        onChangeText={setExcute}
+                                    />
+                                </View>
+                                : null
+                        }
 
                         <View style={styles.rowButtons}>
                             <TouchableOpacity onPress={goBack}>
@@ -568,15 +626,14 @@ const Register = ({ navigation }) => {
                             </TouchableOpacity>
 
 
-                            <TouchableOpacity onPress={onSubmitInformation} disabled={!state.companyName} style={state.companyName ? GlobalStyles.buttonPrimary : GlobalStyles.button}>
-                                <Text style={[GlobalStyles.textButton, { opacity: state.companyName ? 1 : 0.5 }]}>Guardar</Text>
+                            <TouchableOpacity onPress={termsModal} disabled={!state.companyName} style={state.companyName ? GlobalStyles.buttonPrimary : GlobalStyles.button}>
+                                <Text style={[GlobalStyles.textButton, { opacity: state.companyName ? 1 : 0.5 }]}>Continuar</Text>
                             </TouchableOpacity>
                         </View>
                     </ViewAnimation>
                 </View>
 
-
-                <Modal isVisible={modalSuccess} onBackButtonPress={_ => setModalSuccess(false)} onBackdropPress={_ => setModalSuccess(false)}>
+                <Modal isVisible={modalSuccess} onBackButtonPress={_ => setModalSuccess(true)} onBackdropPress={_ => setModalSuccess(true)}>
                     <View style={styles.containerModalSuccess}>
                         <Image style={styles.logo} source={Logo} />
 
@@ -601,7 +658,6 @@ const Register = ({ navigation }) => {
                     </View>
                 </Modal>
 
-
                 <Modal onBackdropPress={_ => setModalCountry(false)} onBackButtonPress={_ => setModalCountry(false)} isVisible={modalCoutry}>
                     <View style={styles.containerModal}>
                         <TextInput
@@ -620,6 +676,25 @@ const Register = ({ navigation }) => {
                             keyExtractor={(_, i) => i.toString()} />
                     </View>
                 </Modal>
+
+                <Modal isVisible={showTerms} onBackdropPress={_ => setShowTerms(false)} onBackButtonPress={_ => setShowTerms(false)} >
+                    <View style={styles.containerModalTerms}>
+                        <View style={styles.positionContain}>
+                            <Image style={styles.logo} source={Logo} />
+                        </View>
+                        <ScrollView>
+                            <View style={styles.positionContain}>
+                                <Text style={styles.legendTerms}>{terms}</Text>
+                            </View>
+                        </ScrollView>
+                        <View style={styles.positionButton}>
+                            <TouchableOpacity onPress={onSubmitInformation} style={GlobalStyles.buttonPrimary}>
+                                <Text>Aceptar términos y condiciones</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+
             </KeyboardAvoidingView>
         </Container>
     )
@@ -636,13 +711,6 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         flex: 1,
     },
-    /* container: {
-        //marginVertical:RFValue(10),
-        alignItems: "center",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        flex: 1,
-    }, */
     containerTitle: {
         flex: 1,
         padding: 10,
@@ -665,7 +733,14 @@ const styles = StyleSheet.create({
         height: "80%",
         width: "90%",
     },
-
+    containerModalTerms: {
+        alignSelf: "center",
+        backgroundColor: Colors.$colorBlack,
+        borderRadius: 10,
+        padding: 10,
+        height: "80%",
+        width: "90%",
+    },
     logo: {
         resizeMode: "contain",
         height: RFValue(128),
@@ -674,6 +749,12 @@ const styles = StyleSheet.create({
     legendRow: {
         color: Colors.$colorYellow,
         fontSize: RFValue(16)
+    },
+    legendTerms: {
+        color: "#FFF",
+        fontSize: RFValue(14),
+        textAlign: 'justify',
+        letterSpacing: -0.003
     },
     labelsRow: {
         alignItems: "center",
@@ -720,6 +801,13 @@ const styles = StyleSheet.create({
     position: {
         padding: 10
     },
+    positionContain: {
+        alignSelf: "center",
+    },
+    positionButton: {
+        alignItems: 'center',
+        padding: 10
+    },
     textBack: {
         color: Colors.$colorYellow,
         textTransform: "uppercase",
@@ -727,9 +815,11 @@ const styles = StyleSheet.create({
     },
     itemCountry: {
         backgroundColor: "rgba(255, 255, 255, 0.1)",
+        borderColor: Colors.$colorYellow,
         flexDirection: "row",
         justifyContent: "space-between",
         borderRadius: 5,
+        borderWidth: 1,
         padding: 10,
         marginVertical: 5,
     },

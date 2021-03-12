@@ -14,7 +14,7 @@ import validator from 'validator'
 import { Picker } from '@react-native-community/picker'
 import Modal from 'react-native-modal'
 import UploadImage from '../../components/UploadImage/UploadImage'
-import ImagePicker from 'react-native-image-picker'
+import { launchCamera } from 'react-native-image-picker'
 
 // Import Assets
 import Logo from '../../assets/img/logo.png'
@@ -43,7 +43,7 @@ const reducer = (state, action) => {
 }
 
 const optionsOpenCamera = {
-    noData: true,
+    //noData: true,
     maxHeight: 1024,
     maxWidth: 1024,
     quality: 0.6,
@@ -95,7 +95,7 @@ const RegisterCommerce = ({ route, navigation }) => {
 
     const uploadImage = async (imageDestination) => {
         try {
-            ImagePicker.launchCamera(optionsOpenCamera, (response) => {
+            launchCamera(optionsOpenCamera, (response) => {
                 if (response.error) {
                     throw String(response.error)
                 }
@@ -267,7 +267,7 @@ const RegisterCommerce = ({ route, navigation }) => {
                                 value={state.email}
                                 keyboardType='email-address'
                                 onChangeText={str => dispatch({ type: 'email', payload: str })}
-                                onBlur={_=> validateEmailFunction(state.email)}
+                                onBlur={_ => validateEmailFunction(state.email)}
                             />
                         </View>
 
@@ -493,7 +493,7 @@ const styles = StyleSheet.create({
     },
     containerModal: {
         alignSelf: "center",
-        backgroundColor: Colors.$colorBlack,
+        backgroundColor: Colors.$colorMain,
         borderRadius: 10,
         padding: 10,
         height: "80%",
@@ -568,14 +568,14 @@ const styles = StyleSheet.create({
     mapContainer: {
         flex: 1,
         width: '100%',
-        height: 200,
+        height: 250,
         justifyContent: 'flex-end',
         alignItems: 'flex-end',
     },
     mapFullScreen: {
         flex: 1,
         // ...StyleSheet.absoluteFillObject,
-        height: 350,
+        height: 500,
         width: '100%',
         alignItems: 'flex-end',
         justifyContent: 'flex-end',
@@ -590,10 +590,12 @@ const styles = StyleSheet.create({
         flexDirection: "row",
     },
     itemCountry: {
-        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        backgroundColor: Colors.$colorYellow,
         flexDirection: "row",
         justifyContent: "space-between",
+        borderColor: Colors.$colorYellow,
         borderRadius: 5,
+        borderWidth:1,
         padding: 10,
         marginVertical: 5,
     },
