@@ -1,19 +1,20 @@
 import React, { useState, useEffect, useReducer } from 'react'
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, FlatList, Platform, KeyboardAvoidingView } from 'react-native'
+import { PERMISSIONS, request, check } from 'react-native-permissions'
 
 // Import Component
 import Container from '../../components/Container/Container'
 import { Image, View as ViewAnimation } from 'react-native-animatable'
 import Loader from '../../components/Loader/Loader'
-import { Colors, RFValue, showNotification, http, GlobalStyles, compressImage } from '../../utils/constants.util'
+import { Colors, RFValue, showNotification, http, GlobalStyles, checkPermisionLocation, } from '../../utils/constants.util'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import MapView, { Marker } from 'react-native-maps'
-import Geolocation from '@react-native-community/geolocation'
+import Geolocation from 'react-native-geolocation-service'
 import validator from 'validator'
 import { Picker } from '@react-native-community/picker'
 import Modal from 'react-native-modal'
 import UploadImage from '../../components/UploadImage/UploadImage'
-import ImagePicker from 'react-native-image-picker'
+import { launchCamera } from 'react-native-image-picker'
 
 // Import Assets
 import Logo from '../../assets/img/logo.png'
@@ -42,7 +43,7 @@ const reducer = (state, action) => {
 }
 
 const optionsOpenCamera = {
-    noData: true,
+    //noData: true,
     maxHeight: 1024,
     maxWidth: 1024,
     quality: 0.6,
@@ -94,7 +95,7 @@ const RegisterCommerce = ({ route, navigation }) => {
 
     const uploadImage = async (imageDestination) => {
         try {
-            ImagePicker.launchCamera(optionsOpenCamera, (response) => {
+            launchCamera(optionsOpenCamera, (response) => {
                 if (response.error) {
                     throw String(response.error)
                 }
@@ -150,7 +151,6 @@ const RegisterCommerce = ({ route, navigation }) => {
 
             const dataSent = {
                 idCompany: companyId,
-                username: null,
                 email: state.email,
                 password: state.password,
                 description: state.companyName,
@@ -176,20 +176,37 @@ const RegisterCommerce = ({ route, navigation }) => {
         }
     }
 
+    // Funcion que nos permite verificar si el correo ya existe en la base de datos
+    const validateEmailFunction = async (value) => {
+        try {
+            const dataEmail = {
+                email: value
+            }
+
+            const { data } = await http.post('/ecommerce/company/comprobate-email', dataEmail)
+
+            if (data.error) {
+                throw String(data.message)
+            }
+
+        } catch (error) {
+            showNotification(error.toString())
+        }
+    }
+
     // Funcion que permite dar los permisos para la Geolocalizacion
     const ConfigureLocation = async () => {
-        await Geolocation.setRNConfiguration({
-            distanceFilter: 5.0,
-            desiredAccuracy: {
-                ios: 'bestForNavigation',
-                android: 'balancedPowerAccuracy',
-            }
-        });
-
         try {
-            Geolocation.requestAuthorization()
+            if (Platform.OS === 'android') {
+                await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+                const auth = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+
+                if (auth === 'granted') {
+                    position()
+                }
+            }
         } catch (error) {
-            console.log(error.message);
+            showNotification(error.toString())
         }
     };
 
@@ -201,12 +218,14 @@ const RegisterCommerce = ({ route, navigation }) => {
                 dispatch({ type: "latitude", payload: position.coords.latitude })
                 dispatch({ type: "longitude", payload: position.coords.longitude })
             }
+        }, (error) => {
+            console.log(error.message)
         })
     }
 
     useEffect(() => {
         ConfigureLocation()
-        position()
+        //position()
     }, [])
 
     return (
@@ -248,6 +267,7 @@ const RegisterCommerce = ({ route, navigation }) => {
                                 value={state.email}
                                 keyboardType='email-address'
                                 onChangeText={str => dispatch({ type: 'email', payload: str })}
+                                onBlur={_ => validateEmailFunction(state.email)}
                             />
                         </View>
 
@@ -441,6 +461,7 @@ const RegisterCommerce = ({ route, navigation }) => {
 const styles = StyleSheet.create({
     scrollView: {
         flex: 1,
+        width: '100%',
     },
     container1: {
         alignItems: 'center',
@@ -451,8 +472,10 @@ const styles = StyleSheet.create({
     container: {
         alignItems: "center",
         paddingHorizontal: "5%",
+        width: '100%',
+        //marginRight: '25%',
         flexDirection: "column",
-        justifyContent: "space-between",
+        //justifyContent: "space-between",
         // flex: 1,
     },
     containerTitle: {
@@ -470,7 +493,7 @@ const styles = StyleSheet.create({
     },
     containerModal: {
         alignSelf: "center",
-        backgroundColor: Colors.$colorBlack,
+        backgroundColor: Colors.$colorMain,
         borderRadius: 10,
         padding: 10,
         height: "80%",
@@ -545,14 +568,14 @@ const styles = StyleSheet.create({
     mapContainer: {
         flex: 1,
         width: '100%',
-        height: 200,
+        height: 250,
         justifyContent: 'flex-end',
         alignItems: 'flex-end',
     },
     mapFullScreen: {
         flex: 1,
         // ...StyleSheet.absoluteFillObject,
-        height: 350,
+        height: 500,
         width: '100%',
         alignItems: 'flex-end',
         justifyContent: 'flex-end',
@@ -567,10 +590,12 @@ const styles = StyleSheet.create({
         flexDirection: "row",
     },
     itemCountry: {
-        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        backgroundColor: Colors.$colorYellow,
         flexDirection: "row",
         justifyContent: "space-between",
+        borderColor: Colors.$colorYellow,
         borderRadius: 5,
+        borderWidth:1,
         padding: 10,
         marginVertical: 5,
     },

@@ -53,7 +53,7 @@ const App = () => {
         setLogin(true)
       } else {
         setLogin(false)
-        //initSocket?.disconnect()
+       // initSocket?.disconnect()
       }
     })
   }, [])
@@ -101,19 +101,6 @@ const App = () => {
     })
 
     socket.on('BALANCEREFRESH', udpdateWalletAmount)
-
-    /* socket.on('SESSIONEXIST', (id) => {
-      console.log('SessionActive', id)
-      socket.emit('SESSIONCLOSE', id)
-    })
-
-    socket.on('SESSIONCLOSE', () => {
-      console.log('Close')
-    }) */
-
-    //socket.on('disconnect', disconnectSocket)
-
-    //setInitSocket(socket)
   }
 
   useEffect(() => {

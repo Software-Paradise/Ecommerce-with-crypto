@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useReducer } from 'react'
+import React, { useState,useReducer } from 'react'
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native'
 import { useNavigation } from "@react-navigation/native"
 
@@ -40,14 +40,12 @@ const reducer = (state, action) => {
 
 const sentComponent = () => {
     const { global } = store.getState()
-
     const { navigate } = useNavigation()
     const [state, dispatch] = useReducer(reducer, initialState)
-
     const [loader, setLoader] = useState(false)
-
     const [showScanner, setShowScanner] = useState(false)
 
+    // Hacemos la peticion al server
     const submit = async () => {
         try {
 
@@ -83,7 +81,7 @@ const sentComponent = () => {
                 // limpiamos el fee
                 dispatch({ type: 'fee', payload: '0' })
             } else {
-                throw String("Tu transacción no se ha compeltado, contacte a soporte")
+                throw String("Tu transacción no se ha completado, contacte a soporte")
             }
         } catch (error) {
             errorMessage(error.toString())
@@ -92,6 +90,7 @@ const sentComponent = () => {
         }
     }
 
+    // Comprobamos la billetera de destino
     const onComprobateWallet = async () => {
         try {
 
@@ -121,16 +120,19 @@ const sentComponent = () => {
         }
     }
 
+    // Nos movemos a la vista de retiro
     const onRetirement = () => {
         navigate("Retirements", { wallet: global.wallet_commerce })
     }
 
+    // Funcion que nos permite scannear el codigo QR
     const onReadCodeQR = ({ data }) => {
         toggleScan()
 
         dispatch({ type: 'walletAdress', payload: data })
     }
 
+    // Funcion que nos permite calcular el fee de los montos 
     const onChangeAmount = (str) => {
         dispatch({ type: 'amountFraction', payload: str })
 
@@ -170,7 +172,7 @@ const sentComponent = () => {
 
                 <View style={styles.row}>
                     <View style={styles.col}>
-                        <Text style={styles.legend}>Mondo (USD)</Text>
+                        <Text style={styles.legend}>Monto (USD)</Text>
 
                         <View style={styles.rowInput}>
                             <TextInput

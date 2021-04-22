@@ -65,7 +65,6 @@ const Navbar = () => {
         const eventHideKeyboard = Keyboard.addListener('keyboardDidHide', () => setHidden(false))
 
         return () => {
-            console.log('Return')
             // Removemos los eventos cuando el componente se desmonte
             eventShowKeyboard.remove()
             eventHideKeyboard.remove()

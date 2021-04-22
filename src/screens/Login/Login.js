@@ -2,7 +2,6 @@ import React, { useEffect, useReducer, useState } from 'react';
 import { Text, StyleSheet, View, TextInput, Image, TouchableOpacity, ScrollView, KeyboardAvoidingView } from 'react-native';
 
 // Import Component
-import Container from '../../components/Container/Container'
 import ButtonSupport from '../../components/buttonsupport.component';
 import ButtonWithIcon from '../../components/button-with-icon.component';
 import Loader from '../../components/Loader/Loader';
@@ -10,9 +9,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { showMessage } from 'react-native-flash-message';
 
 // Import funtion and constants
-import { Colors, errorMessage, reducer, setStorage, http, RFValue,GlobalStyles, serverAddress } from '../../utils/constants.util';
+import { Colors, errorMessage, reducer, setStorage, http, RFValue,GlobalStyles} from '../../utils/constants.util';
 import { getBrand, getDeviceId, getMacAddress, getSystemName, } from 'react-native-device-info';
-// import { GlobalStyles } from '../../styles/global.style';
 import validator from 'validator';
 
 // Import Assets

@@ -8,7 +8,6 @@ import { useNavigation } from '@react-navigation/native';
 // Import component
 import Container from '../../components/Container/Container'
 import Loader from '../../components/Loader/Loader'
-import Card from '../../components/CardProfile/CardProfile'
 
 // Import redux store
 import store from '../../store'
@@ -50,7 +49,7 @@ const Payment = () => {
             const { data: fees } = await http.get('/fees-percentage')
 
             const { data: information } = await http.get('/ecommerce/info', getHeaders())
-
+            
             const dataStorage = {
                 ...global,
                 fees: [],
