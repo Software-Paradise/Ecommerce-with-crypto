@@ -1,43 +1,50 @@
-import AsyncStorage from '@react-native-community/async-storage'
-import axios from 'axios'
-import Clipboard from '@react-native-community/clipboard'
-import TouchID from 'react-native-touch-id'
-import Toast from 'react-native-simple-toast'
-import RNFetchBlob from 'rn-fetch-blob'
-import store from '../store/index'
-import { Platform, StyleSheet, StatusBar, Dimensions, Alert, Linking } from 'react-native'
-import { check, PERMISSIONS, RESULTS, request } from 'react-native-permissions'
-import { SETPERMISSIONS, DELETESTORAGE, SETLOADER } from '../store/actionTypes'
-import { showMessage } from 'react-native-flash-message'
-import { isIphoneX } from 'react-native-iphone-x-helper'
+import AsyncStorage from '@react-native-community/async-storage';
+import axios from 'axios';
+import Clipboard from '@react-native-community/clipboard';
+import TouchID from 'react-native-touch-id';
+import Toast from 'react-native-simple-toast';
+import RNFetchBlob from 'rn-fetch-blob';
+import store from '../store/index';
+import {
+  Platform,
+  StyleSheet,
+  StatusBar,
+  Dimensions,
+  Alert,
+  Linking,
+} from 'react-native';
+import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
+import {SETPERMISSIONS, DELETESTORAGE, SETLOADER} from '../store/actionTypes';
+import {showMessage} from 'react-native-flash-message';
+import {isIphoneX} from 'react-native-iphone-x-helper';
 
 const keyStorage = '@storage';
 
 export const Colors = {
-  $colorMain: "#000",
-  $colorBlack: "#1d1d1d",
-  $colorGray: "#CCC",
-  $colorSecondary: "#9ed3da",
-  $colorYellow: "#ffcb08",
-  $colorRed: "#c0392b",
-  $colorGreen: "#33d9b2",
-}
+  $colorMain: '#000',
+  $colorBlack: '#1d1d1d',
+  $colorGray: '#CCC',
+  $colorSecondary: '#9ed3da',
+  $colorYellow: '#ffcb08',
+  $colorRed: '#c0392b',
+  $colorGreen: '#33d9b2',
+};
 
-const { height, width } = Dimensions.get("window")
-const standardLength = width > height ? width : height
+const {height, width} = Dimensions.get('window');
+const standardLength = width > height ? width : height;
 const offset =
-  width > height ? 0 : Platform.OS === "ios" ? 78 : StatusBar.currentHeight // iPhone X style SafeAreaView size in portrait
+  width > height ? 0 : Platform.OS === 'ios' ? 78 : StatusBar.currentHeight; // iPhone X style SafeAreaView size in portrait
 
 const deviceHeight =
-  isIphoneX() || Platform.OS === "android"
+  isIphoneX() || Platform.OS === 'android'
     ? standardLength - offset
-    : standardLength
+    : standardLength;
 
 // guideline height for standard 5" device screen is 680
 export const RFValue = (fontSize = 0, standardScreenHeight = 680) => {
-  const heightPercent = (fontSize * deviceHeight) / standardScreenHeight
-  return Math.round(heightPercent)
-}
+  const heightPercent = (fontSize * deviceHeight) / standardScreenHeight;
+  return Math.round(heightPercent);
+};
 
 const buttonStyle = {
   alignItems: 'center',
@@ -141,11 +148,11 @@ export const GlobalStyles = StyleSheet.create({
 export const logOutApp = async () => {
   await deleteStorage();
 
-  store.dispatch({ type: DELETESTORAGE });
+  store.dispatch({type: DELETESTORAGE});
 };
 
 export const loader = (payload = false) =>
-  store.dispatch({ type: SETLOADER, payload });
+  store.dispatch({type: SETLOADER, payload});
 
 export const setStorage = async (json = {}) => {
   const data = JSON.stringify(json);
@@ -170,7 +177,7 @@ export const getStorage = async () => {
 // Verificar permiso para acceder a camara
 export const CheckCameraPermission = async () => {
   try {
-    const { permissions } = store.getState();
+    const {permissions} = store.getState();
 
     // Check permission of camera
     const checkPermission = await check(
@@ -194,7 +201,7 @@ export const CheckCameraPermission = async () => {
           camera: true,
         };
 
-        store.dispatch({ type: SETPERMISSIONS, payload });
+        store.dispatch({type: SETPERMISSIONS, payload});
       }
 
       if (requestPermission === RESULTS.DENIED) {
@@ -212,7 +219,7 @@ export const CheckCameraPermission = async () => {
         camera: true,
       };
 
-      store.dispatch({ type: SETPERMISSIONS, payload });
+      store.dispatch({type: SETPERMISSIONS, payload});
     }
   } catch (description) {
     showMessage({
@@ -229,7 +236,7 @@ export const CheckCameraPermission = async () => {
 // Verificar permisos de TouchID
 export const CheckTouchIDPermission = async () => {
   try {
-    const { permissions } = store.getState();
+    const {permissions} = store.getState();
 
     // Verificar si hay permisos en redux
     if (permissions.touchID === undefined) {
@@ -246,7 +253,7 @@ export const CheckTouchIDPermission = async () => {
             touchID,
           };
 
-          store.dispatch({ type: SETPERMISSIONS, payload });
+          store.dispatch({type: SETPERMISSIONS, payload});
         })
         .catch((e) => {
           console.log(e);
@@ -286,32 +293,38 @@ export const successMessage = (description = '', title = 'AlyPay') => {
 };
 
 /**Muestra una notificacion con estilo global */
-export const showNotification = (message = "", type = "info" | "error" | "warning") => {
+export const showNotification = (
+  message = '',
+  type = 'info' | 'error' | 'warning',
+) => {
   showMessage({
-    message: "Alypay Ecommerce",
+    message: 'Alypay Ecommerce',
     description: message,
-    color: "#FFF",
-    backgroundColor: "#f39c12",
-    icon: "warning",
+    color: '#FFF',
+    backgroundColor: '#f39c12',
+    icon: 'warning',
     duration: 10000,
-  })
-}
+  });
+};
 
 const PORT = '3085';
 
-export const serverAddress = Platform.OS === 'ios' ? `http://localhost:${PORT}` : `http://192.168.0.125:${PORT}`;
+export const serverAddress =
+  Platform.OS === 'ios'
+    ? `http://localhost:${PORT}`
+    : `http://192.168.0.161:${PORT}`;
 
-export const serverSpeedtradingsURL = "https://ardent-medley-272823.appspot.com";
+export const serverSpeedtradingsURL =
+  'https://ardent-medley-272823.appspot.com';
 
 //export const serverAddress = 'https://alypay.uc.r.appspot.com'
 
-//export const serverAddress = 'http://staging.root-anvil-299019.appspot.com'; 
+//export const serverAddress = 'http://staging.root-anvil-299019.appspot.com';
 export const socketAddress = serverAddress;
 
-// export const serverAddress = 'http://staging.root-anvil-299019.appspot.com'; 
+// export const serverAddress = 'http://staging.root-anvil-299019.appspot.com';
 // export const socketAddress = serverAddress;
 //export const socketAddress = 'http://staging.root-anvil-299019.appspot.com/'
-
 
 export const CopyClipboard = async (text = '') => {
   await Clipboard.setString(text);
@@ -319,47 +332,49 @@ export const CopyClipboard = async (text = '') => {
 };
 
 // Convierete un blog en un archivo previsaulizable
-export const readFile = (fileId) => new Promise(async (resolve, _) => {
-  const { headers } = getHeaders()
+export const readFile = (fileId) =>
+  new Promise(async (resolve, _) => {
+    const {headers} = getHeaders();
 
-  const response = await RNFetchBlob.config({ fileCache: true, appendExt: 'jpg' })
-    .fetch('GET', `${serverAddress}/ecommerce/file/${fileId}`, headers)
+    const response = await RNFetchBlob.config({
+      fileCache: true,
+      appendExt: 'jpg',
+    }).fetch('GET', `${serverAddress}/ecommerce/file/${fileId}`, headers);
 
-  const base64 = await response.base64()
-  resolve(`data:image/jpeg;base64,${base64}`)
-})
+    const base64 = await response.base64();
+    resolve(`data:image/jpeg;base64,${base64}`);
+  });
 
 /**
-* Obtiene el porcentaje del fee según el monto ingresado y el tipo de fee a verificar
-* @param {Number} amount - Monto actual
-* @param {Number} feeType - tipo de fee (1=transacción, 2=retiro, 3=exchange)
-*/
+ * Obtiene el porcentaje del fee según el monto ingresado y el tipo de fee a verificar
+ * @param {Number} amount - Monto actual
+ * @param {Number} feeType - tipo de fee (1=transacción, 2=retiro, 3=exchange)
+ */
 export const getFeePercentage = (amount, feeType, fees) => {
   const enableFees = {
     1: 'transaction',
     2: 'retirement',
-    3: 'exchange'
-  }
+    3: 'exchange',
+  };
 
-  const currentFeeType = enableFees[feeType]
+  const currentFeeType = enableFees[feeType];
 
-  const [firstFee, secondFee, lastFee] = fees[currentFeeType]
+  const [firstFee, secondFee, lastFee] = fees[currentFeeType];
 
   // Se verifica sí el monto está dentro del primer rango
   if (amount <= firstFee.limit) {
-    return firstFee
+    return firstFee;
   }
   // Se verifica sí el monto está dentro del segundo rango
   if (amount > firstFee.limit && amount <= lastFee.limit) {
-    return secondFee
+    return secondFee;
   }
   // Se verifica sí el monto está dentro del último rango
   if (amount > lastFee.limit) {
-    return lastFee
+    return lastFee;
   }
-  return {}
-}
-
+  return {};
+};
 
 const http = axios.create({
   baseURL: serverAddress,
@@ -370,7 +385,7 @@ const http = axios.create({
         {
           text: 'OK',
           // onPress: () => { }
-          onPress: () => logOutApp()
+          onPress: () => logOutApp(),
         },
       ]);
       return true;
@@ -380,15 +395,15 @@ const http = axios.create({
   },
 });
 
-http.interceptors.request.use(config => {
-  console.log(config.url)
-  return config
-})
+http.interceptors.request.use((config) => {
+  console.log(config.url);
+  return config;
+});
 
-export { http }
+export {http};
 
 export const getHeaders = () => {
-  const { token } = store.getState().global;
+  const {token} = store.getState().global;
 
   return {
     headers: {
@@ -398,52 +413,54 @@ export const getHeaders = () => {
 };
 
 /**Metodo tradicional para verificar los permisos de la camara */
-export const checkPermissionCamera = () => new Promise(async (resolve, reject) => {
-  try {
-    await request(PERMISSIONS.ANDROID.CAMERA)
-    const result = await check(PERMISSIONS.ANDROID.CAMERA)
+export const checkPermissionCamera = () =>
+  new Promise(async (resolve, reject) => {
+    try {
+      await request(PERMISSIONS.ANDROID.CAMERA);
+      const result = await check(PERMISSIONS.ANDROID.CAMERA);
 
-    // verificamos los tres posibles errores de permisos
-    switch (result) {
-      case RESULTS.DENIED: {
-        throw String("Permiso de camara denegado")
+      // verificamos los tres posibles errores de permisos
+      switch (result) {
+        case RESULTS.DENIED: {
+          throw String('Permiso de camara denegado');
+        }
+
+        case RESULTS.BLOCKED: {
+          throw String('El permiso está denegado y ya no se puede solicitar');
+        }
+
+        case RESULTS.UNAVAILABLE: {
+          throw String('Esta función no está disponible');
+        }
       }
 
-      case RESULTS.BLOCKED: {
-        throw String("El permiso está denegado y ya no se puede solicitar")
-      }
-
-      case RESULTS.UNAVAILABLE: {
-        throw String("Esta función no está disponible")
-      }
+      resolve();
+    } catch (error) {
+      reject(error);
     }
+  });
 
-    resolve()
-  } catch (error) {
-    reject(error)
-  }
-})
+export const checkPermisionLocation = () =>
+  new Promise(async (resolve, reject) => {
+    try {
+      await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+      const auth = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
 
-export const checkPermisionLocation = () => new Promise(async (resolve, reject) => {
-  try {
-    await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
-    const auth = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+      // verificamos los posibles errores de permisos
+      switch (auth) {
+        case RESULTS.DENIED: {
+          throw String('Permiso de Localizacion denegados');
+        }
 
-    // verificamos los posibles errores de permisos
-    switch (auth) {
-      case RESULTS.DENIED: {
-        throw String('Permiso de Localizacion denegados')
+        case RESULTS.UNAVAILABLE: {
+          throw String('Esta función no esta disponible');
+        }
       }
-
-      case RESULTS.UNAVAILABLE: {
-        throw String('Esta función no esta disponible')
-      }
+      resolve();
+    } catch (error) {
+      reject(error);
     }
-    resolve()
-  } catch (error) {
-    reject(error)
-  }
-})
+  });
 
 /**Abre la app de whatsapp para soporte */
-export const OpenSupport = () => Linking.openURL('https://wa.me/+50585570529')
+export const OpenSupport = () => Linking.openURL('https://wa.me/+50585570529');

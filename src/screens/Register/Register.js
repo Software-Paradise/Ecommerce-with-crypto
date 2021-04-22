@@ -557,7 +557,7 @@ const Register = ({ navigation }) => {
 
                         <View style={styles.position}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Identificacion del representante legal</Text>
+                                <Text style={styles.legendRow}>Foto de perfil sosteniendo su identificacion </Text>
                             </View>
 
                             <UploadImage value={repID} onChange={_ => uploadImage('repID')} />

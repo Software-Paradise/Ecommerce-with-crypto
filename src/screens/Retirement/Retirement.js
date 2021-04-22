@@ -59,6 +59,7 @@ const Retirements = ({ navigation }) => {
         try {
 
             setLoader(true)
+
             if (amount < 20) {
                 throw String('El monto minimo a retirar es de 20 USD')
             }
@@ -283,7 +284,7 @@ const styles = StyleSheet.create({
     col: {
         flex: 1,
         marginHorizontal: RFValue(10),
-        justifyContent:'center',
+        justifyContent: 'center',
         alignItems: "center",
     },
 
