@@ -309,15 +309,15 @@ export const showNotification = (
 
 const PORT = '3085';
 
-export const serverAddress =
-  Platform.OS === 'ios'
-    ? `http://localhost:${PORT}`
-    : `http://192.168.0.161:${PORT}`;
+// export const serverAddress =
+//   Platform.OS === 'ios'
+//     ? `http://localhost:${PORT}`
+//     : `http://192.168.0.161:${PORT}`;
 
 export const serverSpeedtradingsURL =
   'https://ardent-medley-272823.appspot.com';
 
-//export const serverAddress = 'https://alypay.uc.r.appspot.com'
+export const serverAddress = 'https://alypay.uc.r.appspot.com'
 
 //export const serverAddress = 'http://staging.root-anvil-299019.appspot.com';
 export const socketAddress = serverAddress;
