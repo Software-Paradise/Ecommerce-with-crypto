@@ -54,8 +54,8 @@ const Description = ({ route }) => {
   /// Total de factura
   const totalBill =
     details.id_type === 6
-      ? _.subtract(details.amount_usd, details.commission_usd)
-      : _.add(details.amount_usd, details.commission_usd)
+      ? _.subtract(details.amount_usd, details.amount_fee_usd)
+      : _.add(details.amount_usd, details.amount_fee_usd)
 
   return (
     <Container showLogo>
@@ -139,7 +139,7 @@ const Description = ({ route }) => {
               </Text>
               <Text style={styles.subtitle}>
                 {details.id_type === 6
-                  ? `${details.commission_usd} ${details.symbol_fee}`
+                  ? `${details.amount_fee_usd} ${details.symbol}`
                   : `${details.amount_fee} ${details.coin_fee}`}
               </Text>
             </View>
