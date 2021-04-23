@@ -13,10 +13,11 @@ import tether from "../../assets/img/tether.png"
 import store from "../../store"
 
 const CadProfile = () => {
-  const [source, setSource] = useState(null)
+  // Estado que almacena la informacion del comercio
   const [data, setData] = useState({})
+  console.log("Data Info", data)
 
-  // Funcion que permite extraer la imagen para visualizarla
+  /* // Funcion que permite extraer la imagen para visualizarla
   const read = async () => {
     const blog = data?.profile_picture
 
@@ -25,7 +26,7 @@ const CadProfile = () => {
       const file = await readFile(blog)
       setSource(file)
     }
-  }
+  } */
 
   useEffect(() => {
     const { global } = store.getState()
@@ -38,14 +39,14 @@ const CadProfile = () => {
     })
   }, [])
 
-  useEffect(() => {
+  /* useEffect(() => {
     read()
-  }, [data])
+  }, [data]) */
 
   return (
     <View style={styles.card}>
       <Image
-        source={source === null ? avatar : { uri: source }}
+        source={data?.picture === null ? avatar : { uri: data?.picture }}
         style={styles.logo}
       />
 
