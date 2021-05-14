@@ -331,6 +331,8 @@ const Register = ({ navigation }) => {
 
             const { data } = await http.post('/ecommerce/company/comprobate-email', dataEmail)
 
+            console.log(data)
+
             if (data.error) {
                 throw String(data.message)
             }
