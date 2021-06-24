@@ -1,42 +1,53 @@
-import React, { useState } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import React, { useState } from "react"
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native"
 
 // Import Componente
-import { Image, View as ViewAnimation } from 'react-native-animatable'
-import { RFValue } from 'react-native-responsive-fontsize';
-import { Colors } from '../../utils/constants.util';
+import { Image, View as ViewAnimation } from "react-native-animatable"
+import { RFValue } from "react-native-responsive-fontsize"
+import { Colors } from "../../utils/constants.util"
 
 // Import Assets
-import images from '../../assets/img/Recurso.png'
-import pdf from '../../assets/img/uploadPdf.png'
+import images from "../../assets/img/Recurso.png"
+import pdf from "../../assets/img/uploadPdf.png"
 
 const UploadImage = ({ onChange, value, isPdf = false }) => {
     return (
         <ViewAnimation style={styles.container} animation="fadeIn">
             <View style={styles.containerImage}>
                 <TouchableOpacity onPress={onChange}>
-                    {
-                        value && value.type === 'application/pdf'
-                            ? <Text style={styles.legendTitle}>{value.name}</Text>
-                            : <Image source={isPdf ? pdf : (value ? { uri: value.uri } : images)} style={value ? styles.bigPicture : styles.images} />
-                    }
+                    {value && value.type === "application/pdf" ? (
+                        <Text style={styles.legendTitle}>{value.name}</Text>
+                    ) : (
+                        <Image
+                            source={
+                                isPdf
+                                    ? pdf
+                                    : value
+                                    ? { uri: value.uri }
+                                    : images
+                            }
+                            style={value ? styles.bigPicture : styles.images}
+                        />
+                    )}
                 </TouchableOpacity>
-                {
-                    (!value && isPdf) &&
-                    <Text style={styles.legendImage}>Presiona para subir un documento</Text>
-                }
-                {
-                    (!value && !isPdf) &&
-                    < Text style={styles.legendImage}>Presiona para subir o tomar una fotografia</Text>
-                }
+                {!value && isPdf && (
+                    <Text style={styles.legendImage}>
+                        Presiona para subir un documento
+                    </Text>
+                )}
+                {!value && !isPdf && (
+                    <Text style={styles.legendImage}>
+                        Presiona para subir o tomar una fotografia
+                    </Text>
+                )}
             </View>
-        </ViewAnimation >
+        </ViewAnimation>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
     },
     containerImage: {
         alignItems: "center",
@@ -45,7 +56,7 @@ const styles = StyleSheet.create({
         borderWidth: 1.5,
         borderColor: Colors.$colorYellow,
         borderStyle: "dashed",
-        padding: 15
+        padding: 15,
     },
     images: {
         alignContent: "center",
@@ -64,7 +75,7 @@ const styles = StyleSheet.create({
     },
     legendImage: {
         fontSize: RFValue(15),
-        color: Colors.$colorYellow
+        color: Colors.$colorYellow,
     },
     deleteImage: {
         alignItems: "center",
@@ -73,28 +84,28 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderWidth: 1,
         height: 25,
-        width: 40
+        width: 40,
     },
     panel: {
         padding: 20,
         backgroundColor: Colors.$colorBlack,
-        paddingTop: 20
+        paddingTop: 20,
     },
     panelTitle: {
         fontSize: RFValue(25),
-        color: "#FFF"
+        color: "#FFF",
     },
     panelButton: {
         padding: 13,
         borderRadius: 10,
         backgroundColor: Colors.$colorGray,
-        alignItems: 'center',
+        alignItems: "center",
         marginVertical: 7,
     },
     panelButtonTitle: {
         fontSize: 17,
         color: Colors.$colorYellow,
-        fontWeight: 'bold',
+        fontWeight: "bold",
         // color: 'white',
     },
     legendTitle: {

@@ -1,50 +1,68 @@
-import React, { useState, useReducer, useEffect } from 'react'
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, FlatList, Alert, KeyboardAvoidingView } from 'react-native'
+import React, { useState, useReducer, useEffect } from "react"
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    StyleSheet,
+    ScrollView,
+    FlatList,
+    Alert,
+    KeyboardAvoidingView,
+} from "react-native"
 
 // Import Component
-import Container from '../../components/Container/Container'
-import Loader from '../../components/Loader/Loader'
-import Icon from 'react-native-vector-icons/MaterialIcons'
-import Modal from 'react-native-modal'
-import UploadImage from '../../components/UploadImage/UploadImage'
-import { launchCamera } from 'react-native-image-picker'
-import { Image, View as ViewAnimation } from 'react-native-animatable'
-import { Picker } from '@react-native-community/picker'
-import DocumentPicker from 'react-native-document-picker'
+import Container from "../../components/Container/Container"
+import Loader from "../../components/Loader/Loader"
+import Icon from "react-native-vector-icons/MaterialIcons"
+import Modal from "react-native-modal"
+import UploadImage from "../../components/UploadImage/UploadImage"
+import { launchCamera } from "react-native-image-picker"
+import { Image, View as ViewAnimation } from "react-native-animatable"
+import { Picker } from "@react-native-community/picker"
+import DocumentPicker from "react-native-document-picker"
 import CheckBox from "react-native-check-box"
 
 // Import constanst and funtions
-import { Colors, showNotification, http, getHeaders, RFValue, GlobalStyles, checkPermissionCamera } from '../../utils/constants.util'
-import countries from '../../utils/countries.json'
-import validator from 'validator'
+import {
+    Colors,
+    showNotification,
+    http,
+    getHeaders,
+    RFValue,
+    GlobalStyles,
+    checkPermissionCamera,
+} from "../../utils/constants.util"
+import countries from "../../utils/countries.json"
+import validator from "validator"
 
 // Import Assets
-import Logo from '../../assets/img/logo.png'
-import Funko from '../../assets/img/AlyFunko.png'
+import Logo from "../../assets/img/logo.png"
+import Funko from "../../assets/img/AlyFunko.png"
 
 const initialState = {
-    companyName: '',
-    companyRuc: '',
+    companyName: "",
+    companyRuc: "",
     country: countries[0],
-    phoneCode: '',
-    repFirstName: '',
-    repLastName: '',
-    repPhone: '',
-    repIdNumber: '',
-    repIDType: '',
-    repEmail: '',
-    username: '',
-    password: '',
+    phoneCode: "",
+    repFirstName: "",
+    repLastName: "",
+    repPhone: "",
+    repIdNumber: "",
+    repIDType: "",
+    repEmail: "",
+    username: "",
+    password: "",
 
-    filter: '',
+    filter: "",
 
-    executive: false
+    executive: false,
 }
 
 const reducer = (state, action) => {
     return {
         ...state,
-        [action.type]: action.payload
+        [action.type]: action.payload,
     }
 }
 
@@ -56,18 +74,19 @@ const optionsOpenCamera = {
     mediaType: "photo",
     storageOptions: {
         skipBackup: true,
-        path: 'Pictures/myAppPicture/', //-->this is FUCK neccesary
+        path: "Pictures/myAppPicture/", //-->this is FUCK neccesary
         privateDirectory: true,
-        cameraRoll: false
-    }
+        cameraRoll: false,
+    },
+    cameraType: "back",
 }
 
 const Register = ({ navigation }) => {
     const [state, dispatch] = useReducer(reducer, initialState)
     const [loader, setLoader] = useState(false)
-    const [dataRegister, setDataRegister] = useState('')
+    const [dataRegister, setDataRegister] = useState("")
 
-    const [confirmPassword, setConfirmPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState("")
 
     // Estado que indica si muestra la modal de paises
     const [modalCoutry, setModalCountry] = useState(false)
@@ -77,24 +96,24 @@ const Register = ({ navigation }) => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
     // Estados que almacenan la informacion de las imagenes
-    const [operationPermission, setOperationPermission] = useState('');
-    const [RUCImage, setRUCImage] = useState('');
-    const [legalPower, setLegalPower] = useState('');
-    const [repID, setRepID] = useState('')
+    const [operationPermission, setOperationPermission] = useState("")
+    const [RUCImage, setRUCImage] = useState("")
+    const [legalPower, setLegalPower] = useState("")
+    const [repID, setRepID] = useState("")
 
     // Estado que verifica si agregamos un Ejectivo o no
     const [check, setCheck] = useState(false)
-    const [excute, setExcute] = useState('')
+    const [excute, setExcute] = useState("")
 
     // Estado que almacena la peticion de los terminoss y condiciones
-    const [terms, setTerms] = useState('')
+    const [terms, setTerms] = useState("")
     const [showTerms, setShowTerms] = useState(false)
 
     // Estado que indica si muestra el modal de success
     const [modalSuccess, setModalSuccess] = useState(false)
     /**
      * Funcion que permite guardar la seleccion del pais
-     * @param {*} item 
+     * @param {*} item
      */
     const selectedCountry = (item) => {
         dispatch({ type: "country", payload: item })
@@ -104,62 +123,75 @@ const Register = ({ navigation }) => {
 
     /**render element country modal */
     const ItemCountry = ({ item }) => {
-        if (item.name.length > 0 && item.name.toLowerCase().search(state.filter.toLocaleLowerCase()) > -1) {
+        if (
+            item.name.length > 0 &&
+            item.name.toLowerCase().search(state.filter.toLocaleLowerCase()) >
+                -1
+        ) {
             return (
-                <TouchableOpacity style={styles.itemCountry} onPress={_ => selectedCountry(item)}>
+                <TouchableOpacity
+                    style={styles.itemCountry}
+                    onPress={(_) => selectedCountry(item)}>
                     <Text style={{ color: "#FFF" }}>{item.name}</Text>
-                    <Text style={{ color: Colors.$colorYellow }}>{item.phoneCode}</Text>
+                    <Text style={{ color: Colors.$colorYellow }}>
+                        {item.phoneCode}
+                    </Text>
                 </TouchableOpacity>
             )
         }
     }
 
     // Funcion que hace la peticion para guardar las imagenes en la nube
-    const createFormData = (operationPermission, rucImage, legalPower, repID, body) => {
-        const data = new FormData();
+    const createFormData = (
+        operationPermission,
+        rucImage,
+        legalPower,
+        repID,
+        body,
+    ) => {
+        const data = new FormData()
 
-        data.append('operationPermission', {
+        data.append("operationPermission", {
             name: operationPermission.fileName,
             type: operationPermission.type,
             uri:
-                Platform.OS === 'android'
+                Platform.OS === "android"
                     ? operationPermission.uri
-                    : operationPermission.uri.replace('file://', ''),
-        });
+                    : operationPermission.uri.replace("file://", ""),
+        })
 
-        data.append('rucImage', {
+        data.append("rucImage", {
             name: rucImage.fileName,
             type: rucImage.type,
             uri:
-                Platform.OS === 'android'
+                Platform.OS === "android"
                     ? rucImage.uri
-                    : rucImage.uri.replace('file://', ''),
-        });
+                    : rucImage.uri.replace("file://", ""),
+        })
 
-        data.append('repLegalPower', {
+        data.append("repLegalPower", {
             name: legalPower.name,
             type: legalPower.type,
             uri:
-                Platform.OS === 'android'
+                Platform.OS === "android"
                     ? legalPower.uri
-                    : legalPower.uri.replace('file://', ''),
-        });
+                    : legalPower.uri.replace("file://", ""),
+        })
 
-        data.append('repIdDocument', {
+        data.append("repIdDocument", {
             name: repID.fileName,
             type: repID.type,
             uri:
-                Platform.OS === 'android'
+                Platform.OS === "android"
                     ? repID.uri
-                    : repID.uri.replace('file://', ''),
-        });
+                    : repID.uri.replace("file://", ""),
+        })
 
         Object.keys(body).forEach((key) => {
-            data.append(key, body[key]);
-        });
+            data.append(key, body[key])
+        })
 
-        return data;
-
+        return data
     }
 
     // Funcion que pertime almacenar las imagenes
@@ -173,20 +205,20 @@ const Register = ({ navigation }) => {
                 }
 
                 switch (imageDestination) {
-                    case 'operationPermission': {
-                        setOperationPermission(response);
-                        break;
+                    case "operationPermission": {
+                        setOperationPermission(response)
+                        break
                     }
-                    case 'ruc': {
-                        setRUCImage(response);
-                        break;
+                    case "ruc": {
+                        setRUCImage(response)
+                        break
                     }
-                    case 'repID': {
-                        setRepID(response);
-                        break;
+                    case "repID": {
+                        setRepID(response)
+                        break
                     }
                     default: {
-                        break;
+                        break
                     }
                 }
             })
@@ -197,7 +229,7 @@ const Register = ({ navigation }) => {
 
     const uploadDocument = async () => {
         const res = await DocumentPicker.pick({
-            type: [DocumentPicker.types.pdf]
+            type: [DocumentPicker.types.pdf],
         })
 
         setLegalPower(res)
@@ -205,16 +237,20 @@ const Register = ({ navigation }) => {
 
     /**Metodo que confirma la salida del usuario a la pantalla de inicio */
     const goBack = () => {
-        Alert.alert("Estas a punto de salir", "Perderas todo tus registros. ¿Salir?", [
-            {
-                text: "Cancelar",
-                onPress: () => { }
-            },
-            {
-                text: "Salir",
-                onPress: () => navigation.pop()
-            }
-        ])
+        Alert.alert(
+            "Estas a punto de salir",
+            "Perderas todo tus registros. ¿Salir?",
+            [
+                {
+                    text: "Cancelar",
+                    onPress: () => {},
+                },
+                {
+                    text: "Salir",
+                    onPress: () => navigation.pop(),
+                },
+            ],
+        )
 
         return true
     }
@@ -266,21 +302,26 @@ const Register = ({ navigation }) => {
             }
 
             if (RUCImage === null) {
-                throw String("Imagen de identificacion de la empresa es requerida")
+                throw String(
+                    "Imagen de identificacion de la empresa es requerida",
+                )
             }
 
             if (legalPower === null) {
-                throw String("El documento de poder administrativo es requerida")
+                throw String(
+                    "El documento de poder administrativo es requerida",
+                )
             }
 
             if (repID === null) {
                 throw String("Imagen de perfil es requerida")
             }
 
-
             if (check) {
                 if (excute.trim().length === 0) {
-                    throw String("Es requerido que ingrese el correo de su ejecutivo de venta para continuar")
+                    throw String(
+                        "Es requerido que ingrese el correo de su ejecutivo de venta para continuar",
+                    )
                 }
             }
 
@@ -297,16 +338,20 @@ const Register = ({ navigation }) => {
                 repEmail: state.repEmail,
                 username: state.username,
                 password: state.password,
-                sale_excutive: excute
+                sale_excutive: excute,
             }
 
-            const { data } = await http.post('/ecommerce/company/register', createFormData(
-                operationPermission,
-                RUCImage,
-                legalPower,
-                repID,
-                dataSent,
-            ), getHeaders())
+            const { data } = await http.post(
+                "/ecommerce/company/register",
+                createFormData(
+                    operationPermission,
+                    RUCImage,
+                    legalPower,
+                    repID,
+                    dataSent,
+                ),
+                getHeaders(),
+            )
 
             setDataRegister(data)
 
@@ -326,10 +371,13 @@ const Register = ({ navigation }) => {
     const validateEmailFunction = async (value) => {
         try {
             const dataEmail = {
-                email: value
+                email: value,
             }
 
-            const { data } = await http.post('/ecommerce/company/comprobate-email', dataEmail)
+            const { data } = await http.post(
+                "/ecommerce/company/comprobate-email",
+                dataEmail,
+            )
 
             console.log(data)
 
@@ -343,14 +391,14 @@ const Register = ({ navigation }) => {
 
     const termsModal = async () => {
         try {
-            const { data } = await http.get('https://ardent-medley-272823.appspot.com/terms/read/alypay-ecommerce')
+            const { data } = await http.get(
+                "https://ardent-medley-272823.appspot.com/terms/read/alypay-ecommerce",
+            )
 
             const text = data.split(/<p>/gm)[1].split(/<\/p>/)[0]
-            console.log(text)
 
-            setTerms(text.split('\n'))
+            setTerms(text.split("\n"))
             setShowTerms(true)
-
         } catch (error) {
             showNotification(error.toString())
         }
@@ -358,48 +406,69 @@ const Register = ({ navigation }) => {
 
     // Funcion que permite llenar el registro del comercio
     const registerCommerce = () => {
-        navigation.navigate('RegisterCommerce', { companyId: dataRegister.id })
+        navigation.navigate("RegisterCommerce", { companyId: dataRegister.id })
         setModalSuccess(false)
     }
 
     return (
         <Container showLogo>
-            <KeyboardAvoidingView style={styles.scrollView} >
+            <KeyboardAvoidingView style={styles.scrollView}>
                 <View style={styles.container1}>
                     <Loader isVisible={loader} />
 
-                    <ViewAnimation style={[styles.tab, { paddingBottom: RFValue(20) }]} animations="fadeIn" >
+                    <ViewAnimation
+                        style={[styles.tab, { paddingBottom: RFValue(20) }]}
+                        animations="fadeIn">
                         <View style={styles.containerTitle}>
-                            <Text style={{ color: Colors.$colorYellow, fontSize: RFValue(20) }}>Registro de Compañía</Text>
+                            <Text
+                                style={{
+                                    color: Colors.$colorYellow,
+                                    fontSize: RFValue(20),
+                                }}>
+                                Registro de Compañía
+                            </Text>
                         </View>
 
                         <View style={styles.row}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Nombre de la compañía</Text>
+                                <Text style={styles.legendRow}>
+                                    Nombre de la compañía
+                                </Text>
                             </View>
 
                             <TextInput
                                 style={GlobalStyles.textInput}
                                 placeholder="Ingrese nombre de la compañía aqui"
-                                placeholderTextColor='#CCC'
+                                placeholderTextColor="#CCC"
                                 value={state.companyName}
-                                onChangeText={str => dispatch({ type: 'companyName', payload: str })}
+                                onChangeText={(str) =>
+                                    dispatch({
+                                        type: "companyName",
+                                        payload: str,
+                                    })
+                                }
                             />
                         </View>
 
                         <View style={styles.row}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Correo electrónico</Text>
+                                <Text style={styles.legendRow}>
+                                    Correo electrónico de la compañia
+                                </Text>
                             </View>
 
                             <TextInput
                                 style={GlobalStyles.textInput}
-                                placeholder="Ingrese correo aqui"
-                                placeholderTextColor='#CCC'
-                                keyboardType='email-address'
+                                placeholder="Ingrese correo de la compañia aqui"
+                                placeholderTextColor="#CCC"
+                                keyboardType="email-address"
                                 value={state.username}
-                                onChangeText={str => dispatch({ type: 'username', payload: str })}
-                                onBlur={_ => validateEmailFunction(state.username)}
+                                onChangeText={(str) =>
+                                    dispatch({ type: "username", payload: str })
+                                }
+                                onBlur={(_) =>
+                                    validateEmailFunction(state.username)
+                                }
                             />
                         </View>
 
@@ -407,56 +476,109 @@ const Register = ({ navigation }) => {
                             <View style={styles.labelsRow}>
                                 <Text style={styles.legendRow}>Contraseña</Text>
                             </View>
-                            <View style={[styles.textInputWithImage, GlobalStyles.textInput]}>
+                            <View
+                                style={[
+                                    styles.textInputWithImage,
+                                    GlobalStyles.textInput,
+                                ]}>
                                 <TextInput
                                     secureTextEntry={!showPassword}
                                     value={state.password}
-                                    onChangeText={(payload) => dispatch({ type: 'password', payload })}
+                                    onChangeText={(payload) =>
+                                        dispatch({ type: "password", payload })
+                                    }
                                     placeholder="Contraseña"
-                                    placeholderTextColor='#CCC'
+                                    placeholderTextColor="#CCC"
                                     style={styles.textInputCol}
                                 />
-                                <TouchableOpacity onPress={(e) => setShowPassword(!showPassword)} style={styles.touchableCol}>
-                                    <Icon name={showPassword ? 'visibility-off' : 'visibility'} color={Colors.$colorYellow} size={18} />
+                                <TouchableOpacity
+                                    onPress={(e) =>
+                                        setShowPassword(!showPassword)
+                                    }
+                                    style={styles.touchableCol}>
+                                    <Icon
+                                        name={
+                                            showPassword
+                                                ? "visibility-off"
+                                                : "visibility"
+                                        }
+                                        color={Colors.$colorYellow}
+                                        size={18}
+                                    />
                                 </TouchableOpacity>
                             </View>
                         </View>
 
                         <View style={styles.row}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Repetir contraseña</Text>
+                                <Text style={styles.legendRow}>
+                                    Repetir contraseña
+                                </Text>
                             </View>
-                            <View style={[styles.textInputWithImage, GlobalStyles.textInput]}>
+                            <View
+                                style={[
+                                    styles.textInputWithImage,
+                                    GlobalStyles.textInput,
+                                ]}>
                                 <TextInput
                                     secureTextEntry={!showConfirmPassword}
                                     value={confirmPassword}
-                                    onChangeText={value => setConfirmPassword(value)}
-                                    placeholder="Contraseña"
-                                    placeholderTextColor='#CCC'
+                                    onChangeText={(value) =>
+                                        setConfirmPassword(value)
+                                    }
+                                    placeholder="Repertir contraseña"
+                                    placeholderTextColor="#CCC"
                                     style={styles.textInputCol}
                                 />
-                                <TouchableOpacity onPress={(e) => setShowConfirmPassword(!showConfirmPassword)} style={styles.touchableCol}>
-                                    <Icon name={showConfirmPassword ? 'visibility-off' : 'visibility'} color={Colors.$colorYellow} size={18} />
+                                <TouchableOpacity
+                                    onPress={(e) =>
+                                        setShowConfirmPassword(
+                                            !showConfirmPassword,
+                                        )
+                                    }
+                                    style={styles.touchableCol}>
+                                    <Icon
+                                        name={
+                                            showConfirmPassword
+                                                ? "visibility-off"
+                                                : "visibility"
+                                        }
+                                        color={Colors.$colorYellow}
+                                        size={18}
+                                    />
                                 </TouchableOpacity>
                             </View>
                         </View>
 
                         <View style={styles.row}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Número de identificación fiscal</Text>
+                                <Text style={styles.legendRow}>
+                                    Número de identificación fiscal
+                                </Text>
                             </View>
 
                             <TextInput
                                 style={GlobalStyles.textInput}
                                 placeholder="Ingrese numero ruc aqui"
-                                placeholderTextColor='#CCC'
+                                placeholderTextColor="#CCC"
                                 value={state.companyRuc}
-                                onChangeText={str => dispatch({ type: 'companyRuc', payload: str })}
+                                onChangeText={(str) =>
+                                    dispatch({
+                                        type: "companyRuc",
+                                        payload: str,
+                                    })
+                                }
                             />
                         </View>
 
                         <View style={styles.containerTitle}>
-                            <Text style={{ color: Colors.$colorYellow, fontSize: RFValue(20) }}>Representante Legal</Text>
+                            <Text
+                                style={{
+                                    color: Colors.$colorYellow,
+                                    fontSize: RFValue(20),
+                                }}>
+                                Representante Legal
+                            </Text>
                         </View>
 
                         <View style={styles.row}>
@@ -467,59 +589,94 @@ const Register = ({ navigation }) => {
                             <TextInput
                                 style={GlobalStyles.textInput}
                                 placeholder="Ingrese nombre aqui"
-                                placeholderTextColor='#CCC'
+                                placeholderTextColor="#CCC"
                                 value={state.repFirstName}
-                                onChangeText={str => dispatch({ type: 'repFirstName', payload: str })}
+                                onChangeText={(str) =>
+                                    dispatch({
+                                        type: "repFirstName",
+                                        payload: str,
+                                    })
+                                }
                             />
                         </View>
 
                         <View style={styles.row}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Apellido(s)</Text>
+                                <Text style={styles.legendRow}>
+                                    Apellido(s)
+                                </Text>
                             </View>
 
                             <TextInput
                                 style={GlobalStyles.textInput}
-                                placeholder="Ingrese numero ruc aqui"
-                                placeholderTextColor='#CCC'
+                                placeholder="Ingrese apellido aqui"
+                                placeholderTextColor="#CCC"
                                 value={state.repLastName}
-                                onChangeText={str => dispatch({ type: 'repLastName', payload: str })}
+                                onChangeText={(str) =>
+                                    dispatch({
+                                        type: "repLastName",
+                                        payload: str,
+                                    })
+                                }
                             />
                         </View>
 
                         <View style={styles.row}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Correo electrónico</Text>
+                                <Text style={styles.legendRow}>
+                                    Correo electrónico del representante legal
+                                </Text>
                             </View>
 
                             <TextInput
                                 style={GlobalStyles.textInput}
-                                placeholder="Ingrese correo aqui"
-                                placeholderTextColor='#CCC'
-                                keyboardType='email-address'
+                                placeholder="Ingrese correo del representante legal aqui"
+                                placeholderTextColor="#CCC"
+                                keyboardType="email-address"
                                 value={state.repEmail}
-                                onChangeText={str => dispatch({ type: 'repEmail', payload: str })}
-                                onBlur={_ => validateEmailFunction(state.repEmail)}
+                                onChangeText={(str) =>
+                                    dispatch({ type: "repEmail", payload: str })
+                                }
+                                onBlur={(_) =>
+                                    validateEmailFunction(state.repEmail)
+                                }
                             />
                         </View>
 
                         <View style={styles.row}>
-                            <Text style={styles.legendRow}>Numero de telefono</Text>
+                            <Text style={styles.legendRow}>
+                                Numero de telefono
+                            </Text>
 
                             <View style={styles.rowPhoneNumber}>
-                                <TouchableOpacity style={[GlobalStyles.textInput, { marginRight: 10, justifyContent: "center" }]} onPress={_ => setModalCountry(true)}>
-                                    <Text style={{ color: '#CCC' }}>{state.country.phoneCode}</Text>
+                                <TouchableOpacity
+                                    style={[
+                                        GlobalStyles.textInput,
+                                        {
+                                            marginRight: 10,
+                                            justifyContent: "center",
+                                        },
+                                    ]}
+                                    onPress={(_) => setModalCountry(true)}>
+                                    <Text style={{ color: "#CCC" }}>
+                                        {state.country.phoneCode}
+                                    </Text>
                                 </TouchableOpacity>
 
                                 <TextInput
-                                    style={[GlobalStyles.textInput, { flex: 1 }]}
+                                    style={[
+                                        GlobalStyles.textInput,
+                                        { flex: 1 },
+                                    ]}
                                     placeholder="Ingrese numero de telefono"
-                                    placeholderTextColor='#CCC'
+                                    placeholderTextColor="#CCC"
                                     value={state.repPhone}
                                     autoCorrect={false}
                                     keyboardType="numeric"
                                     keyboardAppearance="dark"
-                                    onChangeText={payload => dispatch({ type: "repPhone", payload })}
+                                    onChangeText={(payload) =>
+                                        dispatch({ type: "repPhone", payload })
+                                    }
                                 />
                             </View>
                         </View>
@@ -533,19 +690,34 @@ const Register = ({ navigation }) => {
                                 <Picker
                                     style={GlobalStyles.picker}
                                     selectedValue={state.repIDType}
-                                    onValueChange={id => dispatch({ type: "repIDType", payload: id })}
-                                >
-                                    <Picker.Item label='Seleccione el tipo de identificacion' value={0} />
-                                    <Picker.Item label='Identificacion Personal' value={1} />
-                                    <Picker.Item label='Pasaporte' value={2} />
-                                    <Picker.Item label='Permiso de Conducir' value={3} />
+                                    onValueChange={(id) =>
+                                        dispatch({
+                                            type: "repIDType",
+                                            payload: id,
+                                        })
+                                    }>
+                                    <Picker.Item
+                                        label="Seleccione el tipo de identificacion"
+                                        value={0}
+                                    />
+                                    <Picker.Item
+                                        label="Identificacion Personal"
+                                        value={1}
+                                    />
+                                    <Picker.Item label="Pasaporte" value={2} />
+                                    <Picker.Item
+                                        label="Permiso de Conducir"
+                                        value={3}
+                                    />
                                 </Picker>
                             </View>
                         </View>
 
                         <View style={styles.row}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Numero de identificacion</Text>
+                                <Text style={styles.legendRow}>
+                                    Numero de identificacion
+                                </Text>
                             </View>
 
                             <TextInput
@@ -553,121 +725,209 @@ const Register = ({ navigation }) => {
                                 placeholder="Ingrese numero de identificacion aqui"
                                 placeholderTextColor={Colors.$colorGray}
                                 value={state.repIdNumber}
-                                onChangeText={str => dispatch({ type: 'repIdNumber', payload: str })}
+                                onChangeText={(str) =>
+                                    dispatch({
+                                        type: "repIdNumber",
+                                        payload: str,
+                                    })
+                                }
                             />
                         </View>
 
                         <View style={styles.position}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Foto de perfil sosteniendo su identificacion </Text>
+                                <Text style={styles.legendRow}>
+                                    Foto de perfil sosteniendo su identificacion{" "}
+                                </Text>
                             </View>
 
-                            <UploadImage value={repID} onChange={_ => uploadImage('repID')} />
+                            <UploadImage
+                                value={repID}
+                                onChange={(_) => uploadImage("repID")}
+                            />
                         </View>
 
                         <View style={styles.containerTitle}>
-                            <Text style={{ color: Colors.$colorYellow, fontSize: RFValue(20) }}>Agregar imagen de documentos</Text>
+                            <Text
+                                style={{
+                                    color: Colors.$colorYellow,
+                                    fontSize: RFValue(20),
+                                }}>
+                                Agregar imagen de documentos
+                            </Text>
                         </View>
 
                         <View style={styles.position}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Permiso de operación</Text>
+                                <Text style={styles.legendRow}>
+                                    Permiso de operación
+                                </Text>
                             </View>
 
-                            <UploadImage value={operationPermission} onChange={_ => uploadImage('operationPermission')} />
+                            <UploadImage
+                                value={operationPermission}
+                                onChange={(_) =>
+                                    uploadImage("operationPermission")
+                                }
+                            />
                         </View>
 
                         <View style={styles.position}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Identificación fiscal</Text>
+                                <Text style={styles.legendRow}>
+                                    Identificación fiscal
+                                </Text>
                             </View>
 
-                            <UploadImage value={RUCImage} onChange={_ => uploadImage('ruc')} />
+                            <UploadImage
+                                value={RUCImage}
+                                onChange={(_) => uploadImage("ruc")}
+                            />
                         </View>
 
                         <View style={styles.position}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Poder administrativo</Text>
+                                <Text style={styles.legendRow}>
+                                    Poder administrativo
+                                </Text>
                             </View>
 
-                            <UploadImage isPdf value={legalPower} onChange={_ => uploadDocument('legalPower')} />
+                            <UploadImage
+                                isPdf
+                                value={legalPower}
+                                onChange={(_) => uploadDocument("legalPower")}
+                            />
                         </View>
 
-                        <View style={[styles.rowButtons, { justifyContent: 'flex-end' }]}>
-                            <Text style={[styles.legendRow, { marginRight: 10 }]}>Añadir asesor Alysystem</Text>
+                        <View
+                            style={[
+                                styles.rowButtons,
+                                { justifyContent: "flex-end" },
+                            ]}>
+                            <Text
+                                style={[styles.legendRow, { marginRight: 10 }]}>
+                                Añadir asesor Alysystem
+                            </Text>
 
                             <CheckBox
                                 checkBoxColor={Colors.$colorYellow}
                                 isChecked={check}
-                                onClick={_ => setCheck(!check)}
+                                onClick={(_) => {
+                                    setCheck(!check)
+                                    setExcute("")
+                                }}
                             />
                         </View>
 
-                        {
-                            check
-                                ?
-                                <View style={styles.row}>
-                                    <View style={styles.labelsRow}>
-                                        <Text style={styles.legendRow}>Ejectivo de venta</Text>
-                                    </View>
-
-                                    <TextInput
-                                        style={GlobalStyles.textInput}
-                                        placeholder="Ingrese el correo del ejecutivo"
-                                        placeholderTextColor={Colors.$colorGray}
-                                        value={excute}
-                                        onChangeText={setExcute}
-                                    />
+                        {check ? (
+                            <View style={styles.row}>
+                                <View style={styles.labelsRow}>
+                                    <Text style={styles.legendRow}>
+                                        Ejectivo de venta
+                                    </Text>
                                 </View>
-                                : null
-                        }
+
+                                <TextInput
+                                    style={GlobalStyles.textInput}
+                                    placeholder="Ingrese el correo del ejecutivo"
+                                    placeholderTextColor={Colors.$colorGray}
+                                    value={excute}
+                                    onChangeText={setExcute}
+                                />
+                            </View>
+                        ) : null}
 
                         <View style={styles.rowButtons}>
                             <TouchableOpacity onPress={goBack}>
-                                <Text style={styles.textBack}>Iniciar sesion</Text>
+                                <Text style={styles.textBack}>
+                                    Iniciar sesion
+                                </Text>
                             </TouchableOpacity>
 
-
-                            <TouchableOpacity onPress={termsModal} disabled={!state.companyName} style={state.companyName ? GlobalStyles.buttonPrimary : GlobalStyles.button}>
-                                <Text style={[GlobalStyles.textButton, { opacity: state.companyName ? 1 : 0.5 }]}>Continuar</Text>
+                            <TouchableOpacity
+                                onPress={termsModal}
+                                disabled={!state.companyName}
+                                style={
+                                    state.companyName
+                                        ? GlobalStyles.buttonPrimary
+                                        : GlobalStyles.button
+                                }>
+                                <Text
+                                    style={[
+                                        GlobalStyles.textButton,
+                                        {
+                                            opacity: state.companyName
+                                                ? 1
+                                                : 0.5,
+                                        },
+                                    ]}>
+                                    Continuar
+                                </Text>
                             </TouchableOpacity>
                         </View>
                     </ViewAnimation>
                 </View>
 
-                <Modal isVisible={modalSuccess} onBackButtonPress={_ => setModalSuccess(true)} onBackdropPress={_ => setModalSuccess(true)}>
+                <Modal
+                    isVisible={modalSuccess}
+                    onBackButtonPress={(_) => setModalSuccess(true)}
+                    onBackdropPress={(_) => setModalSuccess(true)}>
                     <View style={styles.containerModalSuccess}>
                         <Image style={styles.logo} source={Logo} />
 
-                        <View style={{ alignItems: 'center' }}>
-                            <View style={[styles.row, { alignItems: 'center' }]}>
-                                <Text style={{ color: Colors.$colorYellow, fontSize: RFValue(15) }}>Esta a un paso de completar el registro</Text>
+                        <View style={{ alignItems: "center" }}>
+                            <View
+                                style={[styles.row, { alignItems: "center" }]}>
+                                <Text
+                                    style={{
+                                        color: Colors.$colorYellow,
+                                        fontSize: RFValue(15),
+                                    }}>
+                                    Esta a un paso de completar el registro
+                                </Text>
                             </View>
                             <Image style={styles.logo} source={Funko} />
                         </View>
 
-                        <View style={{ alignItems: 'center' }}>
+                        <View style={{ alignItems: "center" }}>
                             <View style={styles.row}>
-                                <Text style={{ color: Colors.$colorYellow, fontSize: RFValue(15), textAlign: 'justify' }}>Ahora solo debe vincular su primer comercio para empezar a hacer uso de Alypay E-commerce</Text>
+                                <Text
+                                    style={{
+                                        color: Colors.$colorYellow,
+                                        fontSize: RFValue(15),
+                                        textAlign: "justify",
+                                    }}>
+                                    Ahora solo debe vincular su primer comercio
+                                    para empezar a hacer uso de Alypay
+                                    E-commerce
+                                </Text>
                             </View>
                         </View>
 
-                        <View style={{ alignItems: 'center', padding: 20 }}>
-                            <TouchableOpacity onPress={registerCommerce} style={GlobalStyles.buttonPrimary}>
+                        <View style={{ alignItems: "center", padding: 20 }}>
+                            <TouchableOpacity
+                                onPress={registerCommerce}
+                                style={GlobalStyles.buttonPrimary}>
                                 <Text>REGISTRA TU COMERCIO</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
                 </Modal>
 
-                <Modal onBackdropPress={_ => setModalCountry(false)} onBackButtonPress={_ => setModalCountry(false)} isVisible={modalCoutry}>
+                <Modal
+                    onBackdropPress={(_) => setModalCountry(false)}
+                    onBackButtonPress={(_) => setModalCountry(false)}
+                    isVisible={modalCoutry}>
                     <View style={styles.containerModal}>
                         <TextInput
                             style={GlobalStyles.textInput}
                             placeholder="Buscar"
                             placeholderTextColor="#FFF"
                             value={state.filter}
-                            onChangeText={str => dispatch({ type: "filter", payload: str })} />
+                            onChangeText={(str) =>
+                                dispatch({ type: "filter", payload: str })
+                            }
+                        />
 
                         <View style={{ height: 10 }} />
 
@@ -675,11 +935,15 @@ const Register = ({ navigation }) => {
                             keyboardShouldPersistTaps="always"
                             data={countries}
                             renderItem={ItemCountry}
-                            keyExtractor={(_, i) => i.toString()} />
+                            keyExtractor={(_, i) => i.toString()}
+                        />
                     </View>
                 </Modal>
 
-                <Modal isVisible={showTerms} onBackdropPress={_ => setShowTerms(false)} onBackButtonPress={_ => setShowTerms(false)} >
+                <Modal
+                    isVisible={showTerms}
+                    onBackdropPress={(_) => setShowTerms(false)}
+                    onBackButtonPress={(_) => setShowTerms(false)}>
                     <View style={styles.containerModalTerms}>
                         <View style={styles.positionContain}>
                             <Image style={styles.logo} source={Logo} />
@@ -690,13 +954,14 @@ const Register = ({ navigation }) => {
                             </View>
                         </ScrollView>
                         <View style={styles.positionButton}>
-                            <TouchableOpacity onPress={onSubmitInformation} style={GlobalStyles.buttonPrimary}>
+                            <TouchableOpacity
+                                onPress={onSubmitInformation}
+                                style={GlobalStyles.buttonPrimary}>
                                 <Text>Aceptar términos y condiciones</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
                 </Modal>
-
             </KeyboardAvoidingView>
         </Container>
     )
@@ -717,7 +982,7 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 10,
         marginLeft: 10,
-        alignItems: "center"
+        alignItems: "center",
     },
     containerModalSuccess: {
         alignSelf: "center",
@@ -750,13 +1015,13 @@ const styles = StyleSheet.create({
     },
     legendRow: {
         color: Colors.$colorYellow,
-        fontSize: RFValue(16)
+        fontSize: RFValue(16),
     },
     legendTerms: {
         color: "#FFF",
         fontSize: RFValue(14),
-        textAlign: 'justify',
-        letterSpacing: -0.003
+        textAlign: "justify",
+        letterSpacing: -0.003,
     },
     labelsRow: {
         alignItems: "center",
@@ -773,25 +1038,25 @@ const styles = StyleSheet.create({
         width: "100%",
     },
     textInputWithImage: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
     },
     touchableCol: {
         flex: 0.1,
-        alignItems: 'flex-end',
+        alignItems: "flex-end",
     },
     textInputCol: {
         flex: 0.9,
         paddingLeft: 5,
         padding: 0,
-        color: 'white',
+        color: "white",
     },
     rowPhoneNumber: {
         alignItems: "stretch",
         flexDirection: "row",
         marginTop: RFValue(5),
-        width: '100%',
+        width: "100%",
     },
     rowButtons: {
         alignItems: "center",
@@ -801,19 +1066,19 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
     },
     position: {
-        padding: 10
+        padding: 10,
     },
     positionContain: {
         alignSelf: "center",
     },
     positionButton: {
-        alignItems: 'center',
-        padding: 10
+        alignItems: "center",
+        padding: 10,
     },
     textBack: {
         color: Colors.$colorYellow,
         textTransform: "uppercase",
-        fontSize: RFValue(16)
+        fontSize: RFValue(16),
     },
     itemCountry: {
         backgroundColor: "rgba(255, 255, 255, 0.1)",

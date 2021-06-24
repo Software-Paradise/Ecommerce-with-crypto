@@ -1,44 +1,62 @@
-import React, { useState, useEffect, useReducer } from 'react'
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, FlatList, Platform, KeyboardAvoidingView } from 'react-native'
-import { PERMISSIONS, request, check } from 'react-native-permissions'
+import React, { useState, useEffect, useReducer } from "react"
+import {
+    View,
+    Text,
+    TextInput,
+    StyleSheet,
+    TouchableOpacity,
+    ScrollView,
+    FlatList,
+    Platform,
+    KeyboardAvoidingView,
+} from "react-native"
+import { PERMISSIONS, request, check } from "react-native-permissions"
 
 // Import Component
-import Container from '../../components/Container/Container'
-import { Image, View as ViewAnimation } from 'react-native-animatable'
-import Loader from '../../components/Loader/Loader'
-import { Colors, RFValue, showNotification, http, GlobalStyles, checkPermisionLocation, } from '../../utils/constants.util'
-import Icon from 'react-native-vector-icons/MaterialIcons'
-import MapView, { Marker } from 'react-native-maps'
-import Geolocation from 'react-native-geolocation-service'
-import validator from 'validator'
-import { Picker } from '@react-native-community/picker'
-import Modal from 'react-native-modal'
-import UploadImage from '../../components/UploadImage/UploadImage'
-import { launchCamera } from 'react-native-image-picker'
+import Container from "../../components/Container/Container"
+import { Image, View as ViewAnimation } from "react-native-animatable"
+import Loader from "../../components/Loader/Loader"
+import {
+    Colors,
+    RFValue,
+    showNotification,
+    http,
+    GlobalStyles,
+    successMessage,
+    checkPermisionLocation,
+} from "../../utils/constants.util"
+import Icon from "react-native-vector-icons/MaterialIcons"
+import MapView, { Marker } from "react-native-maps"
+import Geolocation from "react-native-geolocation-service"
+import validator from "validator"
+import { Picker } from "@react-native-community/picker"
+import Modal from "react-native-modal"
+import UploadImage from "../../components/UploadImage/UploadImage"
+import { launchCamera } from "react-native-image-picker"
 
 // Import Assets
-import Logo from '../../assets/img/logo.png'
-import countries from '../../utils/countries.json'
+import Logo from "../../assets/img/logo.png"
+import countries from "../../utils/countries.json"
 
 const initialState = {
-    email: '',
-    password: '',
-    commerceType: '',
-    description: '',
-    phoneCommerce: '',
-    physicalAddress: '',
+    email: "",
+    password: "",
+    commerceType: "",
+    description: "",
+    phoneCommerce: "",
+    physicalAddress: "",
     latitude: null,
     longitude: null,
     profilePicture: null,
 
-    filter: '',
-    country: countries[0]
+    filter: "",
+    country: countries[0],
 }
 
 const reducer = (state, action) => {
     return {
         ...state,
-        [action.type]: action.payload
+        [action.type]: action.payload,
     }
 }
 
@@ -50,14 +68,15 @@ const optionsOpenCamera = {
     mediaType: "photo",
     storageOptions: {
         skipBackup: true,
-        path: 'Pictures/myAppPicture/', //-->this is FUCK neccesary
-        privateDirectory: true
-    }
+        path: "Pictures/myAppPicture/", //-->this is FUCK neccesary
+        privateDirectory: true,
+    },
+    cameraType: "back",
 }
 const RegisterCommerce = ({ route, navigation }) => {
     const [state, dispatch] = useReducer(reducer, initialState)
     const [loader, setLoader] = useState(false)
-    const [confirmPassword, setConfirmPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState("")
 
     const companyId = route.params?.companyId
 
@@ -72,9 +91,9 @@ const RegisterCommerce = ({ route, navigation }) => {
     const [modalCoutry, setModalCountry] = useState(false)
 
     /**
-    * Funcion que permite guardar la seleccion del pais
-    * @param {*} item 
-    */
+     * Funcion que permite guardar la seleccion del pais
+     * @param {*} item
+     */
     const selectedCountry = (item) => {
         dispatch({ type: "country", payload: item })
 
@@ -83,11 +102,19 @@ const RegisterCommerce = ({ route, navigation }) => {
 
     /**render element country modal */
     const ItemCountry = ({ item }) => {
-        if (item.name.length > 0 && item.name.toLowerCase().search(state.filter.toLocaleLowerCase()) > -1) {
+        if (
+            item.name.length > 0 &&
+            item.name.toLowerCase().search(state.filter.toLocaleLowerCase()) >
+                -1
+        ) {
             return (
-                <TouchableOpacity style={styles.itemCountry} onPress={_ => selectedCountry(item)}>
+                <TouchableOpacity
+                    style={styles.itemCountry}
+                    onPress={(_) => selectedCountry(item)}>
                     <Text style={{ color: "#FFF" }}>{item.name}</Text>
-                    <Text style={{ color: Colors.$colorYellow }}>{item.phoneCode}</Text>
+                    <Text style={{ color: Colors.$colorYellow }}>
+                        {item.phoneCode}
+                    </Text>
                 </TouchableOpacity>
             )
         }
@@ -109,19 +136,20 @@ const RegisterCommerce = ({ route, navigation }) => {
     const createForData = (body) => {
         const data = new FormData()
 
-        data.append('profilePicture', {
+        data.append("profilePicture", {
             name: state.profilePicture.fileName,
             type: state.profilePicture.type,
-            uri: Platform.OS === 'android'
-                ? state.profilePicture.uri
-                : state.profilePicture.uri.replace('file://', '')
+            uri:
+                Platform.OS === "android"
+                    ? state.profilePicture.uri
+                    : state.profilePicture.uri.replace("file://", ""),
         })
 
         Object.keys(body).forEach((key) => {
-            data.append(key, body[key]);
-        });
+            data.append(key, body[key])
+        })
 
-        return data;
+        return data
     }
 
     // Hacemos la peticion al server
@@ -158,17 +186,22 @@ const RegisterCommerce = ({ route, navigation }) => {
                 phoneCommerce: state.phoneCommerce,
                 physicalAddress: state.physicalAddress,
                 latitude: state.latitude,
-                longitude: state.longitude
+                longitude: state.longitude,
             }
 
-            const { data } = await http.post('/ecommerce/company/commerce', createForData(dataSent))
+            const { data } = await http.post(
+                "/ecommerce/company/commerce",
+                createForData(dataSent),
+            )
 
             if (data.error) {
                 throw String(data.message)
-
-            } else {
-                navigation.navigate('Login')
             }
+            data.response === "success"
+            successMessage(
+                "Registro completo espero la verificacion de su cuenta",
+            )
+            navigation.navigate("Login")
         } catch (error) {
             showNotification(error.toString())
         } finally {
@@ -180,15 +213,17 @@ const RegisterCommerce = ({ route, navigation }) => {
     const validateEmailFunction = async (value) => {
         try {
             const dataEmail = {
-                email: value
+                email: value,
             }
 
-            const { data } = await http.post('/ecommerce/company/comprobate-email', dataEmail)
+            const { data } = await http.post(
+                "/ecommerce/company/comprobate-email",
+                dataEmail,
+            )
 
             if (data.error) {
                 throw String(data.message)
             }
-
         } catch (error) {
             showNotification(error.toString())
         }
@@ -197,30 +232,40 @@ const RegisterCommerce = ({ route, navigation }) => {
     // Funcion que permite dar los permisos para la Geolocalizacion
     const ConfigureLocation = async () => {
         try {
-            if (Platform.OS === 'android') {
+            if (Platform.OS === "android") {
                 await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
-                const auth = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+                const auth = await check(
+                    PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+                )
 
-                if (auth === 'granted') {
+                if (auth === "granted") {
                     position()
                 }
             }
         } catch (error) {
             showNotification(error.toString())
         }
-    };
-
+    }
 
     // Funcion que almacena la posicion en el mapa
     const position = () => {
-        Geolocation.getCurrentPosition((position) => {
-            if (position !== null && position !== undefined) {
-                dispatch({ type: "latitude", payload: position.coords.latitude })
-                dispatch({ type: "longitude", payload: position.coords.longitude })
-            }
-        }, (error) => {
-            console.log(error.message)
-        })
+        Geolocation.getCurrentPosition(
+            (position) => {
+                if (position !== null && position !== undefined) {
+                    dispatch({
+                        type: "latitude",
+                        payload: position.coords.latitude,
+                    })
+                    dispatch({
+                        type: "longitude",
+                        payload: position.coords.longitude,
+                    })
+                }
+            },
+            (error) => {
+                console.log(error.message)
+            },
+        )
     }
 
     useEffect(() => {
@@ -230,44 +275,67 @@ const RegisterCommerce = ({ route, navigation }) => {
 
     return (
         <KeyboardAvoidingView style={styles.container1}>
-            <ScrollView keyboardShouldPersistTaps='always' style={styles.scrollView}>
+            <ScrollView
+                keyboardShouldPersistTaps="always"
+                style={styles.scrollView}>
                 <View style={styles.container}>
                     <Image style={styles.logo} source={Logo} />
 
                     <Loader isVisible={loader} />
 
-                    <ViewAnimation style={[styles.tab, { paddingBottom: RFValue(20) }]} animations="fadeIn" >
+                    <ViewAnimation
+                        style={[styles.tab, { paddingBottom: RFValue(20) }]}
+                        animations="fadeIn">
                         <View style={styles.containerTitle}>
-                            <Text style={{ color: Colors.$colorYellow, fontSize: RFValue(20) }}>Registro de Comercio</Text>
+                            <Text
+                                style={{
+                                    color: Colors.$colorYellow,
+                                    fontSize: RFValue(20),
+                                }}>
+                                Registro de Comercio
+                            </Text>
                         </View>
 
                         <View style={styles.row}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Nombre de la compañía</Text>
+                                <Text style={styles.legendRow}>
+                                    Nombre del comercio
+                                </Text>
                             </View>
 
                             <TextInput
                                 style={GlobalStyles.textInput}
-                                placeholder="Ingrese nombre de la compañía aqui"
-                                placeholderTextColor='#CCC'
+                                placeholder="Ingrese nombre del comercio aqui"
+                                placeholderTextColor="#CCC"
                                 value={state.companyName}
-                                onChangeText={str => dispatch({ type: 'companyName', payload: str })}
+                                onChangeText={(str) =>
+                                    dispatch({
+                                        type: "companyName",
+                                        payload: str,
+                                    })
+                                }
                             />
                         </View>
 
                         <View style={styles.row}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Correo electrónico</Text>
+                                <Text style={styles.legendRow}>
+                                    Correo electrónico del comercio
+                                </Text>
                             </View>
 
                             <TextInput
                                 style={GlobalStyles.textInput}
-                                placeholder="Ingrese correo aqui"
-                                placeholderTextColor='#CCC'
+                                placeholder="Ingrese correo del comercio aqui"
+                                placeholderTextColor="#CCC"
                                 value={state.email}
-                                keyboardType='email-address'
-                                onChangeText={str => dispatch({ type: 'email', payload: str })}
-                                onBlur={_ => validateEmailFunction(state.email)}
+                                keyboardType="email-address"
+                                onChangeText={(str) =>
+                                    dispatch({ type: "email", payload: str })
+                                }
+                                onBlur={(_) =>
+                                    validateEmailFunction(state.email)
+                                }
                             />
                         </View>
 
@@ -275,174 +343,321 @@ const RegisterCommerce = ({ route, navigation }) => {
                             <View style={styles.labelsRow}>
                                 <Text style={styles.legendRow}>Contraseña</Text>
                             </View>
-                            <View style={[styles.textInputWithImage, GlobalStyles.textInput]}>
+                            <View
+                                style={[
+                                    styles.textInputWithImage,
+                                    GlobalStyles.textInput,
+                                ]}>
                                 <TextInput
                                     secureTextEntry={!showPassword}
                                     value={state.password}
-                                    onChangeText={(payload) => dispatch({ type: 'password', payload })}
+                                    onChangeText={(payload) =>
+                                        dispatch({ type: "password", payload })
+                                    }
                                     placeholder="Contraseña"
-                                    placeholderTextColor='#CCC'
+                                    placeholderTextColor="#CCC"
                                     style={styles.textInputCol}
                                 />
-                                <TouchableOpacity onPress={(e) => setShowPassword(!showPassword)} style={styles.touchableCol}>
-                                    <Icon name={showPassword ? 'visibility-off' : 'visibility'} color={Colors.$colorYellow} size={18} />
+                                <TouchableOpacity
+                                    onPress={(e) =>
+                                        setShowPassword(!showPassword)
+                                    }
+                                    style={styles.touchableCol}>
+                                    <Icon
+                                        name={
+                                            showPassword
+                                                ? "visibility-off"
+                                                : "visibility"
+                                        }
+                                        color={Colors.$colorYellow}
+                                        size={18}
+                                    />
                                 </TouchableOpacity>
                             </View>
                         </View>
 
                         <View style={styles.row}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Repetir Contraseña</Text>
+                                <Text style={styles.legendRow}>
+                                    Repetir Contraseña
+                                </Text>
                             </View>
-                            <View style={[styles.textInputWithImage, GlobalStyles.textInput]}>
+                            <View
+                                style={[
+                                    styles.textInputWithImage,
+                                    GlobalStyles.textInput,
+                                ]}>
                                 <TextInput
                                     secureTextEntry={!showConfirmPassword}
                                     value={confirmPassword}
-                                    onChangeText={value => setConfirmPassword(value)}
+                                    onChangeText={(value) =>
+                                        setConfirmPassword(value)
+                                    }
                                     placeholder="Contraseña"
-                                    placeholderTextColor='#CCC'
+                                    placeholderTextColor="#CCC"
                                     style={styles.textInputCol}
                                 />
-                                <TouchableOpacity onPress={(e) => setShowConfirmPassword(!showConfirmPassword)} style={styles.touchableCol}>
-                                    <Icon name={showConfirmPassword ? 'visibility-off' : 'visibility'} color={Colors.$colorYellow} size={18} />
+                                <TouchableOpacity
+                                    onPress={(e) =>
+                                        setShowConfirmPassword(
+                                            !showConfirmPassword,
+                                        )
+                                    }
+                                    style={styles.touchableCol}>
+                                    <Icon
+                                        name={
+                                            showConfirmPassword
+                                                ? "visibility-off"
+                                                : "visibility"
+                                        }
+                                        color={Colors.$colorYellow}
+                                        size={18}
+                                    />
                                 </TouchableOpacity>
                             </View>
                         </View>
 
                         <View style={styles.row}>
-                            <Text style={styles.legendRow}>Numero de telefono</Text>
+                            <Text style={styles.legendRow}>
+                                Numero de telefono
+                            </Text>
 
                             <View style={styles.rowPhoneNumber}>
-                                <TouchableOpacity style={[GlobalStyles.textInput, { marginRight: 10, justifyContent: "center" }]} onPress={_ => setModalCountry(true)}>
-                                    <Text style={{ color: Colors.$colorGray }}>{state.country.phoneCode}</Text>
+                                <TouchableOpacity
+                                    style={[
+                                        GlobalStyles.textInput,
+                                        {
+                                            marginRight: 10,
+                                            justifyContent: "center",
+                                        },
+                                    ]}
+                                    onPress={(_) => setModalCountry(true)}>
+                                    <Text style={{ color: Colors.$colorGray }}>
+                                        {state.country.phoneCode}
+                                    </Text>
                                 </TouchableOpacity>
 
                                 <TextInput
-                                    style={[GlobalStyles.textInput, { flex: 1 }]}
+                                    style={[
+                                        GlobalStyles.textInput,
+                                        { flex: 1 },
+                                    ]}
                                     placeholder="Ingrese numero de telefono"
-                                    placeholderTextColor='#CCC'
+                                    placeholderTextColor="#CCC"
                                     value={state.phoneCommerce}
                                     autoCorrect={false}
                                     keyboardType="numeric"
                                     keyboardAppearance="dark"
-                                    onChangeText={payload => dispatch({ type: "phoneCommerce", payload })}
+                                    onChangeText={(payload) =>
+                                        dispatch({
+                                            type: "phoneCommerce",
+                                            payload,
+                                        })
+                                    }
                                 />
                             </View>
                         </View>
 
                         <View style={styles.row}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Tipo de comercio</Text>
+                                <Text style={styles.legendRow}>
+                                    Tipo de comercio
+                                </Text>
                             </View>
 
                             <View style={GlobalStyles.containerPicker}>
                                 <Picker
                                     style={GlobalStyles.picker}
                                     selectedValue={state.commerceType}
-                                    onValueChange={id => dispatch({ type: "commerceType", payload: id })}
-                                >
-                                    <Picker.Item label='Seleccione una categoria' value={0} />
-                                    <Picker.Item label='Abarrotería' value={1} />
-                                    <Picker.Item label='Agencia de Viajes' value={2} />
-                                    <Picker.Item label='Bar' value={3} />
-                                    <Picker.Item label='Bazar' value={4} />
-                                    <Picker.Item label='Cafetería' value={5} />
-                                    <Picker.Item label='Centro Comercial' value={6} />
-                                    <Picker.Item label='Heladería' value={7} />
-                                    <Picker.Item label='Discoteca' value={8} />
-                                    <Picker.Item label='Estacion de Servicios' value={9} />
-                                    <Picker.Item label='Ferretería' value={10} />
-                                    <Picker.Item label='Almacén' value={11} />
-                                    <Picker.Item label='Hotel / Hospedaje' value={12} />
-                                    <Picker.Item label='Joyería' value={13} />
-                                    <Picker.Item label='Librería' value={14} />
-                                    <Picker.Item label='Mercado' value={15} />
-                                    <Picker.Item label='Repostería' value={16} />
-                                    <Picker.Item label='Restaurante' value={17} />
-                                    <Picker.Item label='Tienda' value={18} />
-                                    <Picker.Item label='Venta Minorista' value={19} />
-                                    <Picker.Item label='Otros' value={20} />
+                                    onValueChange={(id) =>
+                                        dispatch({
+                                            type: "commerceType",
+                                            payload: id,
+                                        })
+                                    }>
+                                    <Picker.Item
+                                        label="Seleccione una categoria"
+                                        value={0}
+                                    />
+                                    <Picker.Item
+                                        label="Abarrotería"
+                                        value={1}
+                                    />
+                                    <Picker.Item
+                                        label="Agencia de Viajes"
+                                        value={2}
+                                    />
+                                    <Picker.Item label="Bar" value={3} />
+                                    <Picker.Item label="Bazar" value={4} />
+                                    <Picker.Item label="Cafetería" value={5} />
+                                    <Picker.Item
+                                        label="Centro Comercial"
+                                        value={6}
+                                    />
+                                    <Picker.Item label="Heladería" value={7} />
+                                    <Picker.Item label="Discoteca" value={8} />
+                                    <Picker.Item
+                                        label="Estacion de Servicios"
+                                        value={9}
+                                    />
+                                    <Picker.Item
+                                        label="Ferretería"
+                                        value={10}
+                                    />
+                                    <Picker.Item label="Almacén" value={11} />
+                                    <Picker.Item
+                                        label="Hotel / Hospedaje"
+                                        value={12}
+                                    />
+                                    <Picker.Item label="Joyería" value={13} />
+                                    <Picker.Item label="Librería" value={14} />
+                                    <Picker.Item label="Mercado" value={15} />
+                                    <Picker.Item
+                                        label="Repostería"
+                                        value={16}
+                                    />
+                                    <Picker.Item
+                                        label="Restaurante"
+                                        value={17}
+                                    />
+                                    <Picker.Item label="Tienda" value={18} />
+                                    <Picker.Item
+                                        label="Venta Minorista"
+                                        value={19}
+                                    />
+                                    <Picker.Item label="Otros" value={20} />
                                 </Picker>
                             </View>
                         </View>
 
                         <View style={styles.row}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Punto de referencia</Text>
+                                <Text style={styles.legendRow}>
+                                    Punto de referencia
+                                </Text>
                             </View>
 
                             <TextInput
                                 style={GlobalStyles.textInput}
                                 placeholder="Ingrese un punto de referencia del comercio"
-                                placeholderTextColor='#CCC'
+                                placeholderTextColor="#CCC"
                                 value={state.physicalAddress}
-                                onChangeText={str => dispatch({ type: 'physicalAddress', payload: str })}
+                                onChangeText={(str) =>
+                                    dispatch({
+                                        type: "physicalAddress",
+                                        payload: str,
+                                    })
+                                }
                             />
                         </View>
 
                         <View style={styles.row}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Dirección Física</Text>
+                                <Text style={styles.legendRow}>
+                                    Dirección Física
+                                </Text>
                             </View>
 
-                            <View style={showModal ? styles.mapFullScreen : styles.mapContainer}>
-
-                                {
-                                    (state.latitude !== null && state.longitude !== null) &&
-                                    <MapView
-                                        style={styles.map}
-                                        initialRegion={{
-                                            longitude: state.longitude,
-                                            latitude: state.latitude,
-                                            latitudeDelta: 0.050,
-                                            longitudeDelta: 0.050
-                                        }}
-                                        onMarkerDragEnd={(event) => {
-                                            dispatch({ type: "longitude", payload: event.nativeEvent.coordinate.longitude })
-                                            dispatch({ type: "latitude", payload: event.nativeEvent.coordinate.latitude })
-                                        }}
-                                    >
-                                        <Marker
-                                            coordinate={{
+                            <View
+                                style={
+                                    showModal
+                                        ? styles.mapFullScreen
+                                        : styles.mapContainer
+                                }>
+                                {state.latitude !== null &&
+                                    state.longitude !== null && (
+                                        <MapView
+                                            style={styles.map}
+                                            initialRegion={{
                                                 longitude: state.longitude,
                                                 latitude: state.latitude,
+                                                latitudeDelta: 0.05,
+                                                longitudeDelta: 0.05,
                                             }}
-                                            draggable={true}
-                                        />
-                                    </MapView>
-                                }
+                                            onMarkerDragEnd={(event) => {
+                                                dispatch({
+                                                    type: "longitude",
+                                                    payload:
+                                                        event.nativeEvent
+                                                            .coordinate
+                                                            .longitude,
+                                                })
+                                                dispatch({
+                                                    type: "latitude",
+                                                    payload:
+                                                        event.nativeEvent
+                                                            .coordinate
+                                                            .latitude,
+                                                })
+                                            }}>
+                                            <Marker
+                                                coordinate={{
+                                                    longitude: state.longitude,
+                                                    latitude: state.latitude,
+                                                }}
+                                                draggable={true}
+                                            />
+                                        </MapView>
+                                    )}
 
-                                <TouchableOpacity onPress={_ => setShowModal(!showModal)}>
-                                    <Icon name={showModal ? 'fullscreen-exit' : 'fullscreen'} size={40} color={Colors.$colorYellow} />
+                                <TouchableOpacity
+                                    onPress={(_) => setShowModal(!showModal)}>
+                                    <Icon
+                                        name={
+                                            showModal
+                                                ? "fullscreen-exit"
+                                                : "fullscreen"
+                                        }
+                                        size={40}
+                                        color={Colors.$colorYellow}
+                                    />
                                 </TouchableOpacity>
                             </View>
                         </View>
 
                         <View style={styles.position}>
                             <View style={styles.labelsRow}>
-                                <Text style={styles.legendRow}>Sube el logo del negocio</Text>
+                                <Text style={styles.legendRow}>
+                                    Sube el logo del negocio
+                                </Text>
                             </View>
 
-                            <UploadImage value={state.profilePicture} onChange={_ => uploadImage('profilePicture')} />
+                            <UploadImage
+                                value={state.profilePicture}
+                                onChange={(_) => uploadImage("profilePicture")}
+                            />
                         </View>
 
                         <View style={styles.row}>
-                            <TouchableOpacity onPress={onSubmit} style={[GlobalStyles.buttonPrimary, styles.button]}>
-                                <Text style={GlobalStyles.textButton}>GUARDAR</Text>
+                            <TouchableOpacity
+                                onPress={onSubmit}
+                                style={[
+                                    GlobalStyles.buttonPrimary,
+                                    styles.button,
+                                ]}>
+                                <Text style={GlobalStyles.textButton}>
+                                    GUARDAR
+                                </Text>
                             </TouchableOpacity>
                         </View>
                     </ViewAnimation>
                 </View>
             </ScrollView>
 
-            <Modal onBackdropPress={_ => setModalCountry(false)} onBackButtonPress={_ => setModalCountry(false)} isVisible={modalCoutry}>
+            <Modal
+                onBackdropPress={(_) => setModalCountry(false)}
+                onBackButtonPress={(_) => setModalCountry(false)}
+                isVisible={modalCoutry}>
                 <View style={styles.containerModal}>
                     <TextInput
                         style={GlobalStyles.textInput}
                         placeholder="Buscar"
                         placeholderTextColor="#FFF"
                         value={state.filter}
-                        onChangeText={str => dispatch({ type: "filter", payload: str })} />
+                        onChangeText={(str) =>
+                            dispatch({ type: "filter", payload: str })
+                        }
+                    />
 
                     <View style={{ height: 10 }} />
 
@@ -450,21 +665,21 @@ const RegisterCommerce = ({ route, navigation }) => {
                         keyboardShouldPersistTaps="always"
                         data={countries}
                         renderItem={ItemCountry}
-                        keyExtractor={(_, i) => i.toString()} />
+                        keyExtractor={(_, i) => i.toString()}
+                    />
                 </View>
             </Modal>
         </KeyboardAvoidingView>
     )
-
 }
 
 const styles = StyleSheet.create({
     scrollView: {
         flex: 1,
-        width: '100%',
+        width: "100%",
     },
     container1: {
-        alignItems: 'center',
+        alignItems: "center",
         backgroundColor: Colors.$colorMain,
         flex: 1,
     },
@@ -472,7 +687,7 @@ const styles = StyleSheet.create({
     container: {
         alignItems: "center",
         paddingHorizontal: "5%",
-        width: '100%',
+        width: "100%",
         //marginRight: '25%',
         flexDirection: "column",
         //justifyContent: "space-between",
@@ -481,7 +696,7 @@ const styles = StyleSheet.create({
     containerTitle: {
         flex: 1,
         padding: 10,
-        marginLeft: 10
+        marginLeft: 10,
     },
     containerModalSuccess: {
         alignSelf: "center",
@@ -507,7 +722,7 @@ const styles = StyleSheet.create({
     },
     legendRow: {
         color: Colors.$colorYellow,
-        fontSize: RFValue(16)
+        fontSize: RFValue(16),
     },
     labelsRow: {
         alignItems: "center",
@@ -524,25 +739,25 @@ const styles = StyleSheet.create({
         width: "100%",
     },
     textInputWithImage: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
     },
     touchableCol: {
         flex: 0.1,
-        alignItems: 'flex-end',
+        alignItems: "flex-end",
     },
     textInputCol: {
         flex: 0.9,
         paddingLeft: 5,
         padding: 0,
-        color: 'white',
+        color: "white",
     },
     rowPhoneNumber: {
         alignItems: "stretch",
         flexDirection: "row",
         marginTop: RFValue(5),
-        width: '100%',
+        width: "100%",
     },
     rowButtons: {
         alignItems: "center",
@@ -552,12 +767,12 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
     },
     position: {
-        padding: 10
+        padding: 10,
     },
     textBack: {
         color: Colors.$colorYellow,
         textTransform: "uppercase",
-        fontSize: RFValue(16)
+        fontSize: RFValue(16),
     },
     button: {
         marginTop: 20,
@@ -567,21 +782,21 @@ const styles = StyleSheet.create({
     },
     mapContainer: {
         flex: 1,
-        width: '100%',
+        width: "100%",
         height: 250,
-        justifyContent: 'flex-end',
-        alignItems: 'flex-end',
+        justifyContent: "flex-end",
+        alignItems: "flex-end",
     },
     mapFullScreen: {
         flex: 1,
         // ...StyleSheet.absoluteFillObject,
         height: 500,
-        width: '100%',
-        alignItems: 'flex-end',
-        justifyContent: 'flex-end',
+        width: "100%",
+        alignItems: "flex-end",
+        justifyContent: "flex-end",
     },
     position: {
-        padding: 10
+        padding: 10,
     },
     labelsRow: {
         alignItems: "center",
@@ -590,12 +805,12 @@ const styles = StyleSheet.create({
         flexDirection: "row",
     },
     itemCountry: {
-        backgroundColor: Colors.$colorYellow,
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        borderColor: Colors.$colorYellow,
         flexDirection: "row",
         justifyContent: "space-between",
-        borderColor: Colors.$colorYellow,
         borderRadius: 5,
-        borderWidth:1,
+        borderWidth: 1,
         padding: 10,
         marginVertical: 5,
     },

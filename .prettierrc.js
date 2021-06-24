@@ -5,5 +5,5 @@ module.exports = {
     trailingComma: "all",
     semi: false,
     jsxSingleQuote: false,
-    tabWidth: 2,
+    tabWidth: 4,
 }
