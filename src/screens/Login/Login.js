@@ -125,9 +125,10 @@ const Login = ({ navigation }) => {
         }
     }
 
-    const onDataphone = () => {
-        navigation.navigate("DatePhone")
-    }
+    // Funcion que nos permite ir a la vista de Dataphone
+    // const onDataphone = () => {
+    //     navigation.navigate("DatePhone")
+    // }
 
     useEffect(() => {
         store.dispatch({ type: SETNAVIGATION, payload: navigation })
@@ -225,7 +226,7 @@ const Login = ({ navigation }) => {
                         </View>
                     </View>
 
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                         style={styles.containerFooter}
                         onPress={onDataphone}>
                         <Icon
@@ -234,7 +235,7 @@ const Login = ({ navigation }) => {
                             style={styles.iconFooter}
                         />
                         <Text style={styles.legendFooter}>Datáfono</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
 
                     <Image source={LogoFooter} style={styles.from} />
                 </View>
