@@ -317,12 +317,12 @@ const PORT = "3085"
 /**
  * Servidor de Produccion
  */
-// export const serverAddress = "https://alypay.uc.r.appspot.com"
+export const serverAddress = "https://alypay.uc.r.appspot.com"
 export const serverSpeedtradingsURL = "https://ardent-medley-272823.appspot.com"
 export const socketAddress = serverAddress
 
 // Server de test
-export const serverAddress = "http://staging.root-anvil-299019.appspot.com"
+// export const serverAddress = "http://staging.root-anvil-299019.appspot.com"
 // export const serverAddress = "http://2f2b526aa11a.ngrok.io"
 
 // export const socketAddress = serverAddress;

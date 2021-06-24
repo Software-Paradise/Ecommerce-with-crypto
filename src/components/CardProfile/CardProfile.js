@@ -17,10 +17,10 @@ const CadProfile = () => {
     const [data, setData] = useState({})
 
     // Almacenamos la imagen del comercio
-    const images = data.picture
+    // const images = data.picture
 
     // Reemplazamos la extencion de la imagen para poder visualizarla
-    const parsedImage = images.replace("http:", "https:")
+    // const parsedImage = images.replace("http:", "https:")
 
     /* // Funcion que permite extraer la imagen para visualizarla
   const read = async () => {
@@ -51,7 +51,9 @@ const CadProfile = () => {
     return (
         <View style={styles.card}>
             <Image
-                source={data.picture === null ? commerce : { uri: parsedImage }}
+                source={
+                    data?.picture === null ? commerce : { uri: data?.picture }
+                }
                 style={styles.logo}
             />
 
