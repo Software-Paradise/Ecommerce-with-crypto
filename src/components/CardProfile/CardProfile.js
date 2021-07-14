@@ -6,7 +6,7 @@ import { RFValue, Colors, readFile } from "../../utils/constants.util"
 import _ from "lodash"
 
 // import assets
-import avatar from "../../assets/img/ecommerce-avatar.png"
+import commerce from "../../assets/img/ecommerce-avatar.png"
 import tether from "../../assets/img/tether.png"
 
 // Import redux store
@@ -15,6 +15,12 @@ import store from "../../store"
 const CadProfile = () => {
     // Estado que almacena la informacion del comercio
     const [data, setData] = useState({})
+
+    // Almacenamos la imagen del comercio
+    // const images = data.picture
+
+    // Reemplazamos la extencion de la imagen para poder visualizarla
+    // const parsedImage = images.replace("http:", "https:")
 
     /* // Funcion que permite extraer la imagen para visualizarla
   const read = async () => {
@@ -46,7 +52,7 @@ const CadProfile = () => {
         <View style={styles.card}>
             <Image
                 source={
-                    data?.picture === null ? avatar : { uri: data?.picture }
+                    data?.picture === null ? commerce : { uri: data?.picture }
                 }
                 style={styles.logo}
             />

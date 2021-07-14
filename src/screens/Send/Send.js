@@ -82,7 +82,6 @@ const sentComponent = () => {
                 dataSent,
                 getHeaders(),
             )
-            console.log("Data", data)
 
             if (data.error) {
                 errorMessage(data.message)
