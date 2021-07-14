@@ -1,41 +1,67 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react"
 
 // Import components
-import { StyleSheet, View, TouchableOpacity, Keyboard, Image, Platform, Alert, Text } from 'react-native'
+import {
+    StyleSheet,
+    View,
+    TouchableOpacity,
+    Keyboard,
+    Image,
+    Platform,
+    Alert,
+    Text,
+} from "react-native"
 import { BlurView } from "@react-native-community/blur"
+import Modal from "react-native-modal"
+import Icon from "react-native-vector-icons/Entypo"
+import Lottie from "lottie-react-native"
 
 // Import funtions and constanst
-import { RFValue, logOutApp, OpenSupport, Colors } from '../../utils/constants.util'
-import { useNavigation, StackActions } from '@react-navigation/native'
+import {
+    RFValue,
+    logOutApp,
+    OpenSupport,
+    Colors,
+} from "../../utils/constants.util"
+import { useNavigation, StackActions } from "@react-navigation/native"
 
 // Import Assets
-import Facturar from '../../assets/img/facturar.png'
-import Enviar from '../../assets/img/enviar.png'
-import Historial from '../../assets/img/history.png'
-import Support from '../../assets/img/support.png'
-import Exit from '../../assets/img/exit.png'
+import Facturar from "../../assets/img/facturar.png"
+import Enviar from "../../assets/img/enviar.png"
+import Historial from "../../assets/img/history.png"
+import whatsapp from "../../animations/whatsapp.animation.json"
+import Exit from "../../animations/logout.json"
+import Transaction from "../../assets/img/transacction.png"
+
+// Import Store
+import store from "../../store/index"
 
 iconSize = RFValue(32)
 
 const Navbar = () => {
     const [hidden, setHidden] = useState(false)
+    const [showModal, setShowModal] = useState(false)
     const { navigate } = useNavigation()
 
     const toggleMenu = () => {
-        Alert.alert("Cerrar Sesion", "Esta apunto de cerrar sesion en Alypay Ecommerce", [
-            {
-                text: "Cancelar",
-                onPress: () => { }
-            },
-            {
-                text: "Cerrar Sesion",
-                onPress: logOut
-            }
-        ])
+        Alert.alert(
+            "Cerrar Sesion",
+            "Esta apunto de cerrar sesion en Alypay Ecommerce",
+            [
+                {
+                    text: "Cancelar",
+                    onPress: () => {},
+                },
+                {
+                    text: "Cerrar Sesion",
+                    onPress: logOut,
+                },
+            ],
+        )
     }
 
     const goToTop = () => {
-        navigate('Payment')
+        navigate("Payment")
     }
 
     const logOut = async () => {
@@ -50,19 +76,23 @@ const Navbar = () => {
      * Funcion que me permite navegar a la vista de enviar
      */
     const onSend = () => {
-        navigate('Send')
+        navigate("Send")
     }
 
     const onHistory = () => {
-        navigate('History')
+        navigate("History")
     }
 
     useEffect(() => {
         // Ocultamos el menu cuando el teclado se active
-        const eventShowKeyboard = Keyboard.addListener('keyboardDidShow', () => setHidden(true))
+        const eventShowKeyboard = Keyboard.addListener("keyboardDidShow", () =>
+            setHidden(true),
+        )
 
         // Mostramos el menu cuando el teclado se oculte
-        const eventHideKeyboard = Keyboard.addListener('keyboardDidHide', () => setHidden(false))
+        const eventHideKeyboard = Keyboard.addListener("keyboardDidHide", () =>
+            setHidden(false),
+        )
 
         return () => {
             // Removemos los eventos cuando el componente se desmonte
@@ -73,52 +103,111 @@ const Navbar = () => {
 
     if (!hidden) {
         return (
-            <View style={styles.container}>
-                <View style={styles.subContainer}>
-                    {
-                        Platform.OS === "ios" &&
-                        <BlurView style={styles.absolute} blurType="dark" />
-                    }
+            <>
+                <View style={styles.container}>
+                    <View style={styles.subContainer}>
+                        {Platform.OS === "ios" && (
+                            <BlurView style={styles.absolute} blurType="dark" />
+                        )}
 
-                    <View style={styles.containerButtons}>
+                        <View style={styles.containerButtons}>
+                            <TouchableOpacity
+                                onPress={goToTop}
+                                style={styles.button}>
+                                <Image
+                                    source={Facturar}
+                                    style={styles.imageProfile}
+                                />
+                                <Text style={styles.text}>Facturar</Text>
+                            </TouchableOpacity>
 
-                        <TouchableOpacity onPress={goToTop} style={styles.button}>
-                            <Image source={Facturar} style={styles.imageProfile} />
-                            <Text style={styles.text}>Facturar</Text>
+                            <TouchableOpacity
+                                onPress={onSend}
+                                style={styles.button}>
+                                <Image
+                                    source={Enviar}
+                                    style={styles.imageProfile}
+                                />
+                                <Text style={styles.text}>Enviar</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                onPress={onHistory}
+                                style={styles.button}>
+                                <Image
+                                    source={Historial}
+                                    style={styles.imageProfile}
+                                />
+                                <Text style={styles.text}>Historial</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={styles.button}
+                                onPress={(_) => setShowModal(true)}>
+                                <Icon
+                                    name="dots-three-vertical"
+                                    size={25}
+                                    color={Colors.$colorYellow}
+                                />
+                            </TouchableOpacity>
+                        </View>
+
+                        {Platform.OS === "ios" && (
+                            <View style={{ height: 20 }} />
+                        )}
+                    </View>
+                </View>
+
+                <Modal
+                    isVisible={showModal}
+                    animationOut="fadeOutDown"
+                    backdropOpacity={0}
+                    style={{
+                        justifyContent: "flex-end",
+                        alignItems: "flex-end",
+                        marginBottom: RFValue(70),
+                    }}
+                    onBackdropPress={(_) => setShowModal(false)}
+                    onBackButtonPress={(_) => setShowModal(false)}>
+                    <View style={styles.containerModal}>
+                        <TouchableOpacity
+                            onPress={OpenSupport}
+                            style={styles.selectionMenu}>
+                            <Text style={styles.textSelection}>
+                                Transacciónes
+                            </Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={onSend} style={styles.button}>
-                            <Image source={Enviar} style={styles.imageProfile} />
-                            <Text style={styles.text}>Enviar</Text>
+                        <TouchableOpacity
+                            onPress={OpenSupport}
+                            style={styles.selectionMenu}>
+                            <Lottie
+                                style={styles.imageItem}
+                                source={whatsapp}
+                                autoPlay
+                                loop={true}
+                            />
+                            <Text style={styles.textSelection}>Soporte</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={onHistory} style={styles.button}>
-                            <Image source={Historial} style={styles.imageProfile} />
-                            <Text style={styles.text}>Historial</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity onPress={OpenSupport} style={styles.button}>
-                            <Image source={Support} style={styles.imageProfile} />
-                            <Text style={styles.text}>Soporte</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity onPress={toggleMenu} style={styles.button}>
-                            <Image source={Exit} style={styles.imageProfile} />
-                            <Text style={styles.text}>Salir</Text>
+                        <TouchableOpacity
+                            onPress={toggleMenu}
+                            style={styles.selectionMenu}>
+                            <Lottie
+                                style={styles.imageItem}
+                                source={Exit}
+                                autoPlay
+                                loop={true}
+                            />
+                            <Text style={styles.textSelection}>Salir</Text>
                         </TouchableOpacity>
                     </View>
-
-                    {
-                        Platform.OS === "ios" &&
-                        <View style={{ height: 20 }} />
-                    }
-                </View>
-            </View>
+                </Modal>
+            </>
         )
     }
     return null
 }
-
 
 const styles = StyleSheet.create({
     container: {
@@ -131,11 +220,12 @@ const styles = StyleSheet.create({
     },
 
     absolute: {
-        ...StyleSheet.absoluteFillObject
+        ...StyleSheet.absoluteFillObject,
     },
 
     subContainer: {
-        backgroundColor: Platform.OS === "ios" ? "transparent" : Colors.$colorBlack,
+        backgroundColor:
+            Platform.OS === "ios" ? "transparent" : Colors.$colorBlack,
         position: "relative",
         flex: 1,
     },
@@ -160,7 +250,7 @@ const styles = StyleSheet.create({
     text: {
         color: Colors.$colorYellow,
         marginTop: 5,
-        fontSize: RFValue(9)
+        fontSize: RFValue(9),
     },
 
     imageProfile: {
@@ -171,7 +261,33 @@ const styles = StyleSheet.create({
     },
     legend: {
         color: Colors.$colorYellow,
-        fontSize: RFValue(13)
+        fontSize: RFValue(13),
+    },
+    containerModal: {
+        backgroundColor: Colors.$colorBlack,
+        marginTop: "50%",
+        padding: RFValue(10),
+        // marginLeft: RFValue(100),
+        justifyContent: "center",
+        // alignItems: "center",
+        borderRadius: 10,
+        width: "45%",
+    },
+    selectionMenu: {
+        position: "relative",
+        alignItems: "center",
+        flexDirection: "row",
+        paddingVertical: 10,
+    },
+
+    textSelection: {
+        fontSize: RFValue(14),
+        color: "#FFF",
+        marginLeft: 10,
+    },
+    imageItem: {
+        height: RFValue(24),
+        width: RFValue(24),
     },
 })
 

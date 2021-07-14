@@ -162,12 +162,12 @@ const App = () => {
                                 component={RegisterCommerceScreen}
                                 options={{ headerShown: false }}
                             />
-
+                            {/* 
                             <Stack.Screen
                                 name="DatePhone"
                                 component={DatePhone}
                                 options={{ headerShown: false }}
-                            />
+                            /> */}
                         </>
                     )}
                 </Stack.Navigator>

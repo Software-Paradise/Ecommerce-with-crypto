@@ -36,7 +36,7 @@ const CadProfile = () => {
             const { global: newGlobal } = store.getState()
             setData(newGlobal.info)
         })
-    }, [])
+    }, [data])
 
     /* useEffect(() => {
     read()

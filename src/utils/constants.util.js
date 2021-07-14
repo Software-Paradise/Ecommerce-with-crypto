@@ -309,20 +309,22 @@ export const showNotification = (
 
 const PORT = "3085"
 
-// export const serverAddress =
-//     Platform.OS === "ios"
-//         ? `http://localhost:${PORT}`
-//         : `http://192.168.0.151:${PORT}`
+export const serverAddress =
+    Platform.OS === "ios"
+        ? `http://localhost:${PORT}`
+        : `http://192.168.0.104:${PORT}`
 
 /**
  * Servidor de Produccion
  */
 // export const serverAddress = "https://alypay.uc.r.appspot.com"
+// export const serverAddress = "http://6ea64ded7ff9.ngrok.io"
 export const serverSpeedtradingsURL = "https://ardent-medley-272823.appspot.com"
 export const socketAddress = serverAddress
 
 // Server de test
-export const serverAddress = "http://staging.root-anvil-299019.appspot.com"
+// export const serverAddress = "http://397ae877f37c.ngrok.io"
+// export const serverAddress = "http://staging.root-anvil-299019.appspot.com"
 
 // export const socketAddress = serverAddress;
 
