@@ -10,6 +10,7 @@ import RegisterCommerceScreen from "./src/screens/Register Commerce/RegisterComm
 import MainScreen from "./src/screens/Main/index"
 import TransactionScreen from "./src/screens/Transaction/transaction.screen"
 import DatePhone from "./src/components/DatePhone/DatePhone"
+import ListCommece from "./src/screens/ListCommerce/ListCommerce"
 
 // Import functions and constants from utils
 import {
@@ -122,25 +123,24 @@ const App = () => {
             <StatusBar translucent={true} hidden={true} />
 
             <NavigationContainer>
-                <Stack.Navigator
-                    initialRouteName="Login"
-                    screenOptions={{ headerShown: false }}>
+                <Stack.Navigator initialRouteName="Login" headerMode={null}>
                     {logged && (
                         <>
+                            {/* {
+
                             <Stack.Screen
-                                name="Main"
-                                component={MainScreen}
-                                options={{ headerShown: false }}
+                                name="ListCommece"
+                                component={ListCommece}
                             />
+                        } */}
+                            <Stack.Screen name="Main" component={MainScreen} />
                             <Stack.Screen
                                 name="Transaction"
                                 component={TransactionScreen}
-                                options={{ headerShown: false }}
                             />
                             <Stack.Screen
                                 name="Description"
                                 component={Description}
-                                options={{ headerShown: false }}
                             />
                         </>
                     )}

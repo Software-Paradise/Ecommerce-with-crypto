@@ -12,9 +12,12 @@ import tether from "../../assets/img/tether.png"
 // Import redux store
 import store from "../../store"
 
-const CadProfile = () => {
+const CadProfile = (data) => {
     // Estado que almacena la informacion del comercio
-    const [data, setData] = useState({})
+    const [dataInfo, setDataInfo] = useState({})
+    const [Rol, setRol] = useState(0)
+
+    // console.log("DataCard", data, Rol)
 
     // Almacenamos la imagen del comercio
     // const images = data.picture
@@ -35,14 +38,19 @@ const CadProfile = () => {
 
     useEffect(() => {
         const { global } = store.getState()
+        setRol(global.rol)
 
-        setData(global.info)
+        if (Rol === 1) {
+            setDataInfo(data.data)
+        } else {
+            setDataInfo(global.info)
+        }
 
         store.subscribe((_) => {
             const { global: newGlobal } = store.getState()
-            setData(newGlobal.info)
+            setDataInfo(newGlobal.info)
         })
-    }, [data])
+    }, [dataInfo])
 
     /* useEffect(() => {
     read()
@@ -50,17 +58,30 @@ const CadProfile = () => {
 
     return (
         <View style={styles.card}>
-            <Image
-                source={
-                    data?.picture === null ? commerce : { uri: data?.picture }
-                }
-                style={styles.logo}
-            />
+            {Rol === 1 ? (
+                <Image
+                    source={
+                        dataInfo?.profile_picture === null
+                            ? commerce
+                            : { uri: dataInfo?.profile_picture }
+                    }
+                    style={styles.logo}
+                />
+            ) : (
+                <Image
+                    source={
+                        dataInfo?.picture === null
+                            ? commerce
+                            : { uri: dataInfo?.picture }
+                    }
+                    style={styles.logo}
+                />
+            )}
 
             <View style={styles.cardInformation}>
                 <View style={styles.headerTableTitle}>
                     <Text style={styles.textHeaderTableTitle}>
-                        {data?.name}
+                        {Rol === 1 ? dataInfo?.commerce_name : dataInfo?.name}
                     </Text>
                     <Image source={tether} style={styles.icon} />
                 </View>
@@ -77,15 +98,22 @@ const CadProfile = () => {
                             Dirección
                         </Text>
                         <Text style={styles.textRowTable}>
-                            {data?.physical_address}
+                            {dataInfo?.physical_address}
                         </Text>
                     </View>
                     <View style={styles.bodyRowTable}>
                         <Text style={styles.textHeaderTable}>Balance</Text>
                         <Text style={styles.textRowTable}>
-                            {_.floor(data?.amount_wallet, 2)}
+                            {_.floor(
+                                Rol === 1
+                                    ? dataInfo?.amount
+                                    : dataInfo?.amount_wallet,
+                                2,
+                            )}
                             <Text style={{ fontSize: RFValue(9) }}>
-                                {data?.symbol_wallet}
+                                {Rol === 1
+                                    ? dataInfo?.symbol
+                                    : dataInfo?.symbol_wallet}
                             </Text>
                         </Text>
                     </View>

@@ -312,7 +312,7 @@ const PORT = "3085"
 export const serverAddress =
     Platform.OS === "ios"
         ? `http://localhost:${PORT}`
-        : `http://192.168.0.104:${PORT}`
+        : `http://192.168.0.116:${PORT}`
 
 /**
  * Servidor de Produccion

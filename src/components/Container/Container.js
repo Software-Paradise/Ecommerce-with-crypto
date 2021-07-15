@@ -1,15 +1,30 @@
-import React, { useState } from 'react'
+import React, { useState } from "react"
 
-import { SafeAreaView, Image, StyleSheet, ScrollView, View, RefreshControl } from "react-native"
+import {
+    SafeAreaView,
+    Image,
+    StyleSheet,
+    ScrollView,
+    View,
+    RefreshControl,
+} from "react-native"
 // Import constant
-import { GlobalStyles, RFValue } from '../../utils/constants.util'
+import { GlobalStyles, RFValue } from "../../utils/constants.util"
 
 // Import assents
-import logo from '../../assets/img/logo.png'
+import logo from "../../assets/img/logo.png"
 
-import Card from '../CardProfile/CardProfile'
+import Card from "../CardProfile/CardProfile"
 
-const Container = ({ children, showLogo = false, scrollViewStyles = {}, onRefreshEnd = null, showCard = false }) => {
+const Container = ({
+    children,
+    showLogo = false,
+    scrollViewStyles = {},
+    onRefreshEnd = null,
+    showCard = false,
+    walletInfo = {},
+    rol = 1,
+}) => {
     const [refreshing, setRefresh] = useState(false)
 
     /**Metodo para recargar pantalla */
@@ -20,9 +35,7 @@ const Container = ({ children, showLogo = false, scrollViewStyles = {}, onRefres
             await onRefreshEnd()
 
             setRefresh(false)
-        } catch (error) {
-
-        }
+        } catch (error) {}
     }
 
     return (
@@ -30,18 +43,20 @@ const Container = ({ children, showLogo = false, scrollViewStyles = {}, onRefres
             <ScrollView
                 keyboardDismissMode="interactive"
                 keyboardShouldPersistTaps="always"
-                refreshControl={onRefreshEnd !== null && <RefreshControl refreshing={refreshing} onRefresh={refetching} />}
+                refreshControl={
+                    onRefreshEnd !== null && (
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={refetching}
+                        />
+                    )
+                }
                 style={[styles.scroll, scrollViewStyles]}>
-
-                {
-                    showLogo !== false &&
+                {showLogo !== false && (
                     <Image style={styles.logo} source={logo} />
-                }
+                )}
 
-                {
-                    showCard !== false &&
-                    <Card />
-                }
+                {showCard !== false && <Card data={walletInfo} />}
 
                 {children}
 
@@ -62,7 +77,7 @@ const styles = StyleSheet.create({
         resizeMode: "contain",
         height: RFValue(128),
         width: "80%",
-    }
+    },
 })
 
 export default Container

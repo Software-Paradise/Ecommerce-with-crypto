@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity, Image } from "react-native"
 
 // Import Component
 import _ from "lodash"
+import { useNavigation } from "@react-navigation/native"
+import { RFValue } from "../../utils/constants.util"
 
 // Import Hooks
 import useStyles from "../../Hooks/useStyles.hook"
@@ -11,15 +13,24 @@ import useStyles from "../../Hooks/useStyles.hook"
 import { ItemCommerceStyles } from "../../styles/Components/index"
 
 // Import Assets
+import tether from "../../assets/img/tether.png"
 
 const ItemComerce = ({ data = {} }) => {
+    const { navigate } = useNavigation()
     const styles = useStyles(ItemCommerceStyles)
 
-    console.log("DataItem", data)
+    const onInfoCommerce = () => {
+        navigate("Payment", { data: data })
+    }
+
+    // console.log("DataItem", data)
     return (
         <>
-            <TouchableOpacity style={styles.container}>
-                <Image style={styles.logo} source={{ uri: data }} />
+            <TouchableOpacity style={styles.container} onPress={onInfoCommerce}>
+                <Image
+                    style={styles.logo}
+                    source={{ uri: data.item?.profile_picture }}
+                />
 
                 <View style={styles.cardInformation}>
                     <View style={styles.headerTableTitle}>

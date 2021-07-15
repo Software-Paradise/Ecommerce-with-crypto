@@ -30,13 +30,26 @@ import { SETSTORAGE } from "../../store/actionTypes"
 // Import assets
 import Logo from "../../assets/img/aly-system-by.png"
 
-const Payment = () => {
+const Payment = ({ route }) => {
     const { global } = store.getState()
     const navigation = useNavigation()
     const [amount, setAmount] = useState("")
     const [loader, setLoader] = useState(false)
     const [updateCard, setUpdateCard] = useState(false)
 
+    const [InfoRol, setInfoRol] = useState(global.rol)
+    const [dataInfo, setDataInfo] = useState({})
+
+    console.log("Global", global)
+    // const dataInfo = route.params.data.item
+    console.log("DataPayment", route.params.data.item.id)
+
+    const infoWallet = () => {
+        if (InfoRol === 1) {
+            const Info = route.params.data.item
+            setDataInfo(Info)
+        }
+    }
     // console.log("Global", global)
 
     // Funcion que pasa el monto de para efectuar el pago de la transaccion
@@ -46,7 +59,10 @@ const Payment = () => {
             if (amount.trim().length === 0) {
                 throw String("Ingrese un monto a facturar")
             } else {
-                navigation.navigate("Transaction", { amount })
+                navigation.navigate("Transaction", {
+                    amount: amount,
+                    wallet: dataInfo.id,
+                })
             }
         } catch (error) {
             showNotification(error.toString())
@@ -91,6 +107,7 @@ const Payment = () => {
 
     useEffect(() => {
         feesPercentage()
+        infoWallet()
         const onSubscribe = navigation.addListener("focus", () => {
             setAmount("")
             setUpdateCard(!updateCard)
@@ -100,7 +117,12 @@ const Payment = () => {
     }, [])
 
     return (
-        <Container showLogo showCard onRefreshEnd={feesPercentage}>
+        <Container
+            showLogo
+            showCard
+            rol={global.rol}
+            walletInfo={dataInfo}
+            onRefreshEnd={feesPercentage}>
             <Loader isVisible={loader} />
 
             <View style={styles.container}>
