@@ -1,23 +1,29 @@
-import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import React, { useState, useEffect } from "react"
+import { View, Text, StyleSheet, FlatList } from "react-native"
 
 // Import Component
-import Container from '../../components/Container/Container'
-import Loader from '../../components/Loader/Loader'
-import Search from '../../components/Search/Search'
-import HistorElement from '../../components/HistoryElement/HistoryElement'
-import Lottie from 'lottie-react-native'
-import EmptyBox from '../../animations/empty-state.json'
-import { useNavigation } from '@react-navigation/native'
+import Container from "../../components/Container/Container"
+import Loader from "../../components/Loader/Loader"
+import Search from "../../components/Search/Search"
+import HistorElement from "../../components/HistoryElement/HistoryElement"
+import Lottie from "lottie-react-native"
+import EmptyBox from "../../animations/empty-state.json"
+import { useNavigation } from "@react-navigation/native"
 
 // Import Constants and Functions
-import { http, showNotification, RFValue, Colors, getHeaders } from '../../utils/constants.util'
+import {
+    http,
+    showNotification,
+    RFValue,
+    Colors,
+    getHeaders,
+} from "../../utils/constants.util"
 
 // Redux Store
-import store from '../../store'
+import store from "../../store"
 
 const History = () => {
-    const { global } = store.getState()
+    const { global, walletInfo } = store.getState()
     const { navigate } = useNavigation()
 
     const [loader, setLoader] = useState(false)
@@ -29,12 +35,16 @@ const History = () => {
         try {
             setLoader(true)
             // Consumimos la api
-            const { data } = await http.get(`/api/ecommerce/wallet/details/${global.wallet_commerce}`, getHeaders())
+            const { data } = await http.get(
+                `/api/ecommerce/wallet/details/${
+                    global.rol === 1 ? walletInfo.id : global.wallet_commerce
+                }`,
+                getHeaders(),
+            )
 
             if (data.history) {
                 setTransaction(data.history)
             }
-
         } catch (error) {
             showNotification(error.toString())
         } finally {
@@ -52,24 +62,37 @@ const History = () => {
                 <View style={styles.container}>
                     <Loader isVisible={loader} />
                     <View style={styles.containerTitle}>
-                        <Text style={styles.legendTitle}>Historial de transacciones</Text>
+                        <Text style={styles.legendTitle}>
+                            Historial de transacciones
+                        </Text>
                     </View>
                     <Search />
 
-                    {
-                        (transaction.length > 0)
-                            ?
-                            <FlatList
-                                keyExtractor={(_, key) => (key = key.toString())}
-                                data={transaction}
-                                renderItem={({ item, index }) => <HistorElement navigate={navigate} item={item} index={index} />}
+                    {transaction.length > 0 ? (
+                        <FlatList
+                            keyExtractor={(_, key) => (key = key.toString())}
+                            data={transaction}
+                            renderItem={({ item, index }) => (
+                                <HistorElement
+                                    navigate={navigate}
+                                    item={item}
+                                    index={index}
+                                />
+                            )}
+                        />
+                    ) : (
+                        <View>
+                            <Lottie
+                                source={EmptyBox}
+                                autoPlay
+                                loop={false}
+                                style={styles.empty}
                             />
-                            :
-                            <View>
-                                <Lottie source={EmptyBox} autoPlay loop={false} style={styles.empty} />
-                                <Text style={styles.titleText}>No hay transacciones realizadas</Text>
-                            </View>
-                    }
+                            <Text style={styles.titleText}>
+                                No hay transacciones realizadas
+                            </Text>
+                        </View>
+                    )}
                 </View>
             </Container>
         </>
@@ -83,18 +106,18 @@ const styles = StyleSheet.create({
     },
     containerTitle: {
         flexDirection: "row",
-        justifyContent: "center"
+        justifyContent: "center",
     },
     legendTitle: {
         color: Colors.$colorYellow,
         fontSize: RFValue(20),
-        textTransform: 'uppercase',
-        marginBottom: 10
+        textTransform: "uppercase",
+        marginBottom: 10,
     },
     row: {
         flexDirection: "row",
         justifyContent: "space-between",
-        marginVertical: RFValue(10)
+        marginVertical: RFValue(10),
     },
     col: {
         flex: 1,
@@ -105,7 +128,7 @@ const styles = StyleSheet.create({
         borderColor: Colors.$colorYellow,
         borderRadius: 10,
         borderWidth: 2,
-        color: '#FFF',
+        color: "#FFF",
         elevation: 5,
         padding: RFValue(10),
     },
@@ -117,9 +140,9 @@ const styles = StyleSheet.create({
     },
     titleText: {
         fontSize: RFValue(20),
-        textAlign: 'center',
-        color: Colors.$colorYellow
-    }
+        textAlign: "center",
+        color: Colors.$colorYellow,
+    },
 })
 
 export default History

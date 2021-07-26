@@ -126,13 +126,6 @@ const App = () => {
                 <Stack.Navigator initialRouteName="Login" headerMode={null}>
                     {logged && (
                         <>
-                            {/* {
-
-                            <Stack.Screen
-                                name="ListCommece"
-                                component={ListCommece}
-                            />
-                        } */}
                             <Stack.Screen name="Main" component={MainScreen} />
                             <Stack.Screen
                                 name="Transaction"
@@ -142,6 +135,12 @@ const App = () => {
                                 name="Description"
                                 component={Description}
                             />
+                            {/* {
+                                <Stack.Screen
+                                    name="ListCommece"
+                                    component={ListCommece}
+                                />
+                            } */}
                         </>
                     )}
 

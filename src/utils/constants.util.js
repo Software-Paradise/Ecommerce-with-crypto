@@ -309,16 +309,16 @@ export const showNotification = (
 
 const PORT = "3085"
 
-export const serverAddress =
-    Platform.OS === "ios"
-        ? `http://localhost:${PORT}`
-        : `http://192.168.0.116:${PORT}`
+// export const serverAddress =
+//     Platform.OS === "ios"
+//         ? `http://localhost:${PORT}`
+//         : `http://192.168.0.151:${PORT}`
 
 /**
  * Servidor de Produccion
  */
 // export const serverAddress = "https://alypay.uc.r.appspot.com"
-// export const serverAddress = "http://6ea64ded7ff9.ngrok.io"
+export const serverAddress = "https://596cd008d7e4.ngrok.io"
 export const serverSpeedtradingsURL = "https://ardent-medley-272823.appspot.com"
 export const socketAddress = serverAddress
 
@@ -382,7 +382,7 @@ const http = axios.create({
     baseURL: serverAddress,
     validateStatus: (status) => {
         if (status === 401) {
-            Alert.alert("AlyPay", "Tu sesion ha caducado", [
+            Alert.alert("AlyPay-Ecommerce", "Tu sesion ha caducado", [
                 {
                     text: "OK",
                     // onPress: () => { }

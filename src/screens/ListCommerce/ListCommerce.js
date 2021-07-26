@@ -6,62 +6,75 @@ import Container from "../../components/Container/Container"
 import ItemComerce from "../../components/ItemCommerce/ItemCommerce.component"
 import Loader from "../../components/Loader/Loader"
 
+// Import Constanst
+import { errorMessage, http, getHeaders } from "../../utils/constants.util"
+
 // Import Seriveces
 
 // Import Hooks
 import useStyles from "../../Hooks/useStyles.hook"
+import useListCommerce from "../../Hooks/ListCommerce/useListCommerce"
 
 // Import Styles
 import { ListCommerceStyle } from "../../styles/Views/index"
 
 // Import Stort
 import store from "../../store/index"
-import { SETSTORAGE } from "../../store/actionTypes"
+import { SETSTORAGE, SETFUNCTION } from "../../store/actionTypes"
 
 const ListCommerce = () => {
     const classes = useStyles(ListCommerceStyle)
-
+    const [Info, setInfo] = useState({})
     const [loader, setLoader] = useState(false)
 
-    const { global } = store.getState()
+    const configureComponent = async () => {
+        try {
+            setLoader(true)
+            const { data } = await http.get("/wallets/commerces", getHeaders())
 
-    // console.log("GlobalList", global)
+            if (data.error) {
+                throw String(data.message)
+            }
+            setInfo(data)
 
-    // const info = () => {
-    //     try {
-    //         setLoader(true)
+            const dataStorage = {
+                ...globalStorage,
+                wallets: data,
+            }
 
-    //         const dataStorage = {
-    //             ...global,
-    //             walletsCommerce: global.wallets,
-    //         }
+            store.dispatch({ type: SETSTORAGE, payload: dataStorage })
+        } catch (error) {
+            errorMessage(error.toSting())
+        } finally {
+            setLoader(false)
+        }
+    }
 
-    //         console.log("GlobalList", dataStorage)
+    // const { configureComponent, Info } = useListCommerce()
 
-    //         store.dispatch({ type: SETSTORAGE, payload: dataStorage })
-    //     } catch (error) {
-    //         console.log(error)
-    //     } finally {
-    //         setLoader(false)
-    //     }
-    // }
+    useEffect(() => {
+        configureComponent()
 
-    // useEffect(() => {
-    //     info()
-    // }, [])
+        store.dispatch({
+            type: SETFUNCTION,
+            payload: {
+                reloadInfoWallets: configureComponent,
+            },
+        })
+    }, [])
     // console.log("Global", global.wallets)
 
     return (
         // <View style={classes.main}>
-        <Container showLogo>
-            {/* <Loader isVisible={loader} /> */}
+        <Container showLogo onRefreshEnd={configureComponent}>
+            <Loader isVisible={loader} />
             <View style={classes.containerTitle}>
                 <Text style={classes.title}>Listado de comercios</Text>
             </View>
 
             <View style={classes.contentList}>
                 <FlatList
-                    data={global.wallets}
+                    data={Info}
                     keyExtractor={(_, i) => i}
                     renderItem={(item) => <ItemComerce data={item} />}
                 />

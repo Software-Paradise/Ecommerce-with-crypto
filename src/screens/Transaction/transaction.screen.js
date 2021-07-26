@@ -38,10 +38,8 @@ import errorAnimation from "../../animations/error.json"
 
 /**Vista de transaccion (Esperando pago) */
 const TransactionScreen = ({ navigation, route }) => {
-    // const route = useRoute()
-    console.log("Route", route)
     // obtenemos el estado global de redux
-    const { global } = store.getState()
+    const { global, walletInfo, functions } = store.getState()
 
     const [keySecret, setKeySecret] = useState("")
     // estado que guarda el numero de orden
@@ -72,7 +70,7 @@ const TransactionScreen = ({ navigation, route }) => {
             id: roomId,
             orderId: transaction,
             wallet_commerce:
-                global.rol === 1 ? route.params.wallet : global.wallet_commerce,
+                global.rol === 1 ? walletInfo.id : global.wallet_commerce,
             description: global.description,
             amount: route.params.amount,
         }),
@@ -82,6 +80,10 @@ const TransactionScreen = ({ navigation, route }) => {
     // ???
     const handleSuccess = () => {
         setShowModal(!showModal)
+
+        if (global.rol === 1) {
+            functions?.reloadInfoWallets()
+        }
 
         // vamos a una vista anterior
         navigation.goBack()
@@ -123,7 +125,7 @@ const TransactionScreen = ({ navigation, route }) => {
                     orderId: transaction,
                     wallet:
                         global.rol === 1
-                            ? route.params.wallet
+                            ? walletInfo.id
                             : global.wallet_commerce,
                     description: global.description,
                     amount: Number(route.params.amount),

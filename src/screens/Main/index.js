@@ -39,15 +39,21 @@ const index = ({ navigation }) => {
                     <Stack.Screen name="ListCommece" component={ListCommerce} />
                 </Stack.Navigator>
             ) : (
-                <Stack.Navigator initialRouteName="Payment" headerMode={null}>
-                    <Stack.Screen name="Payment" component={Payment} />
-                    <Stack.Screen name="Send" component={Send} />
-                    <Stack.Screen name="History" component={History} />
-                    <Stack.Screen name="Retirements" component={Retirement} />
-                    <Stack.Screen name="ListCommece" component={ListCommerce} />
-                </Stack.Navigator>
+                <>
+                    <Stack.Navigator
+                        initialRouteName="Payment"
+                        headerMode={null}>
+                        <Stack.Screen name="Payment" component={Payment} />
+                        <Stack.Screen name="Send" component={Send} />
+                        <Stack.Screen name="History" component={History} />
+                        <Stack.Screen
+                            name="Retirements"
+                            component={Retirement}
+                        />
+                    </Stack.Navigator>
+                    {/* <Navbar /> */}
+                </>
             )}
-
             <Navbar />
         </>
     )

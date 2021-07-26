@@ -55,11 +55,14 @@ const reducer = (state, action) => {
 }
 
 const sentComponent = () => {
-    const { global } = store.getState()
+    const { global, walletInfo, functions } = store.getState()
     const { navigate } = useNavigation()
     const [state, dispatch] = useReducer(reducer, initialState)
     const [loader, setLoader] = useState(false)
     const [showScanner, setShowScanner] = useState(false)
+
+    // console.log("Global", functions.reloadInfoWallets)
+    // console.log("WalletInfo", walletInfo)
 
     // Hacemos la peticion al server
     const submit = async () => {
@@ -73,9 +76,11 @@ const sentComponent = () => {
             const dataSent = {
                 amount: parseFloat(state.amountFraction),
                 wallet: state.walletAdress,
-                id: global.wallet_commerce,
+                id: global.rol === 1 ? walletInfo.id : global.wallet_commerce,
                 idCommerce: global.id_commerce,
             }
+
+            // console.log("Sent", dataSent)
 
             const { data } = await http.post(
                 "ecommerce/transaction",
@@ -100,10 +105,10 @@ const sentComponent = () => {
 
                 // limpiamos el fee
                 dispatch({ type: "fee", payload: "0" })
-            } else {
-                throw String(
-                    "Tu transacción no se ha completado, contacte a soporte",
-                )
+
+                if (global.rol === 1) {
+                    functions?.reloadInfoWallets()
+                }
             }
         } catch (error) {
             errorMessage(error.toString())
@@ -264,21 +269,38 @@ const sentComponent = () => {
 
                 {!state.walletAccepted && (
                     <View style={styles.retirementContainer}>
-                        <TouchableOpacity onPress={onRetirement}>
-                            <Text style={styles.retirementText}>
-                                Retirar fondos
-                            </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={onComprobateWallet}
-                            style={[
-                                GlobalStyles.buttonPrimary,
-                                { flex: 1, marginLeft: 25 },
-                            ]}>
-                            <Text style={GlobalStyles.textButton}>
-                                siguiente
-                            </Text>
-                        </TouchableOpacity>
+                        {global.rol === 1 ? (
+                            <>
+                                <TouchableOpacity onPress={onRetirement}>
+                                    <Text style={styles.retirementText}>
+                                        Retirar fondos
+                                    </Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={onComprobateWallet}
+                                    style={[
+                                        GlobalStyles.buttonPrimary,
+                                        { flex: 1, marginLeft: 25 },
+                                    ]}>
+                                    <Text style={GlobalStyles.textButton}>
+                                        siguiente
+                                    </Text>
+                                </TouchableOpacity>
+                            </>
+                        ) : (
+                            <>
+                                <TouchableOpacity
+                                    onPress={onComprobateWallet}
+                                    style={[
+                                        GlobalStyles.buttonPrimary,
+                                        { flex: 1 },
+                                    ]}>
+                                    <Text style={GlobalStyles.textButton}>
+                                        siguiente
+                                    </Text>
+                                </TouchableOpacity>
+                            </>
+                        )}
                     </View>
                 )}
 
@@ -379,6 +401,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         /* justifyContent: "space-evenly", */
         flexDirection: "row",
+        padding: RFValue(10),
         marginHorizontal: RFValue(10),
     },
     cardInfo: {

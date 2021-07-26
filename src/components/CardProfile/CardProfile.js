@@ -12,36 +12,25 @@ import tether from "../../assets/img/tether.png"
 // Import redux store
 import store from "../../store"
 
-const CadProfile = (data) => {
+const CadProfile = () => {
     // Estado que almacena la informacion del comercio
     const [dataInfo, setDataInfo] = useState({})
     const [Rol, setRol] = useState(0)
 
-    // console.log("DataCard", data, Rol)
-
-    // Almacenamos la imagen del comercio
-    // const images = data.picture
-
-    // Reemplazamos la extencion de la imagen para poder visualizarla
-    // const parsedImage = images.replace("http:", "https:")
-
-    /* // Funcion que permite extraer la imagen para visualizarla
-  const read = async () => {
-    const blog = data?.profile_picture
-
-    // verificamos si hay foto
-    if (blog) {
-      const file = await readFile(blog)
-      setSource(file)
-    }
-  } */
-
     useEffect(() => {
-        const { global } = store.getState()
+        const { walletInfo, global } = store.getState()
+        // console.log("Store", store.getState())
         setRol(global.rol)
 
+        /**
+         * Identificamos que usuario es el que inicio seccion en base a su rol
+         * Rol = ( 1) Dueño de comercio
+         * Rol = ( 2) Administrador de comercio
+         * Rol = ( 3) Cajero
+         *
+         */
         if (Rol === 1) {
-            setDataInfo(data.data)
+            setDataInfo(walletInfo)
         } else {
             setDataInfo(global.info)
         }
@@ -51,10 +40,6 @@ const CadProfile = (data) => {
             setDataInfo(newGlobal.info)
         })
     }, [dataInfo])
-
-    /* useEffect(() => {
-    read()
-  }, [data]) */
 
     return (
         <View style={styles.card}>

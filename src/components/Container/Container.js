@@ -22,8 +22,6 @@ const Container = ({
     scrollViewStyles = {},
     onRefreshEnd = null,
     showCard = false,
-    walletInfo = {},
-    rol = 1,
 }) => {
     const [refreshing, setRefresh] = useState(false)
 
@@ -56,7 +54,7 @@ const Container = ({
                     <Image style={styles.logo} source={logo} />
                 )}
 
-                {showCard !== false && <Card data={walletInfo} />}
+                {showCard !== false && <Card />}
 
                 {children}
 

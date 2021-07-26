@@ -40,13 +40,13 @@ const Payment = ({ route }) => {
     const [InfoRol, setInfoRol] = useState(global.rol)
     const [dataInfo, setDataInfo] = useState({})
 
-    console.log("Global", global)
-    // const dataInfo = route.params.data.item
-    console.log("DataPayment", route.params.data.item.id)
+    const { params } = route
+    console.log("Params", params.data.id)
 
     const infoWallet = () => {
         if (InfoRol === 1) {
-            const Info = route.params.data.item
+            const Info = params.data.id
+            console.log("Info", Info)
             setDataInfo(Info)
         }
     }
@@ -117,12 +117,7 @@ const Payment = ({ route }) => {
     }, [])
 
     return (
-        <Container
-            showLogo
-            showCard
-            rol={global.rol}
-            walletInfo={dataInfo}
-            onRefreshEnd={feesPercentage}>
+        <Container showLogo showCard onRefreshEnd={feesPercentage}>
             <Loader isVisible={loader} />
 
             <View style={styles.container}>

@@ -59,7 +59,7 @@ export default {
         height: RFValue(30),
     },
     logo: {
-        borderRadius: 10,
+        borderRadius: RFValue(10),
         height: RFValue(80),
         resizeMode: "cover",
         overflow: "hidden",

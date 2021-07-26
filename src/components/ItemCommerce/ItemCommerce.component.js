@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { View, Text, TouchableOpacity, Image } from "react-native"
 
 // Import Component
@@ -15,15 +15,19 @@ import { ItemCommerceStyles } from "../../styles/Components/index"
 // Import Assets
 import tether from "../../assets/img/tether.png"
 
+// Import Store
+import store from "../../store/index"
+import { SETWALLETINFO } from "../../store/actionTypes"
+
 const ItemComerce = ({ data = {} }) => {
     const { navigate } = useNavigation()
     const styles = useStyles(ItemCommerceStyles)
 
     const onInfoCommerce = () => {
-        navigate("Payment", { data: data })
+        store.dispatch({ type: SETWALLETINFO, payload: data.item })
+        navigate("Payment", { data: data.item })
     }
 
-    // console.log("DataItem", data)
     return (
         <>
             <TouchableOpacity style={styles.container} onPress={onInfoCommerce}>
