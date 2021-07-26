@@ -1,14 +1,25 @@
-import React, { useState, useEffect } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native'
+import React, { useState, useEffect } from "react"
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    StyleSheet,
+    TextInput,
+} from "react-native"
 
 // Import Constants and functions
-import { Colors, RFValue, showNotification, GlobalStyles } from '../../utils/constants.util'
-import { useNavigation } from '@react-navigation/native'
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import {
+    Colors,
+    RFValue,
+    showNotification,
+    GlobalStyles,
+} from "../../utils/constants.util"
+import { useNavigation } from "@react-navigation/native"
+import Icon from "react-native-vector-icons/MaterialIcons"
 
 const Search = () => {
     const [searchText, setSearchText] = useState("")
-    const { navigate, } = useNavigation()
+    const { navigate } = useNavigation()
 
     // Funcion que pasa por parametro el hash para el detalle de la transaccion
     const goToSearch = () => {
@@ -18,18 +29,16 @@ const Search = () => {
                 throw String("Ingrese un hash de formato correcto")
             } else {
                 navigate("Description", { hash: searchText })
-                setSearchText('')
+                setSearchText("")
             }
         } catch (error) {
             showNotification(error.toString())
         }
-
     }
     return (
         <View style={styles.container}>
             <View style={styles.row}>
                 <View style={styles.col}>
-
                     <View style={styles.rowInput}>
                         <TextInput
                             style={[GlobalStyles.textInput, { flex: 1 }]}
@@ -39,8 +48,10 @@ const Search = () => {
                             placeholderTextColor={Colors.$colorGray}
                         />
 
-                        <TouchableOpacity onPress={goToSearch} style={styles.buttonSearch}>
-                            <Icon name='search' size={40} />
+                        <TouchableOpacity
+                            onPress={goToSearch}
+                            style={styles.buttonSearch}>
+                            <Icon name="search" size={RFValue(40)} />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -49,11 +60,10 @@ const Search = () => {
     )
 }
 
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        margin: RFValue(10)
+        margin: RFValue(10),
     },
 
     textInput: {
@@ -61,7 +71,7 @@ const styles = StyleSheet.create({
         borderColor: Colors.$colorYellow,
         borderRadius: 5,
         borderWidth: 1.5,
-        color: '#FFF',
+        color: "#FFF",
         padding: RFValue(5),
     },
     col: {
@@ -75,7 +85,7 @@ const styles = StyleSheet.create({
     },
     rowInput: {
         alignItems: "center",
-        flexDirection: "row"
+        flexDirection: "row",
     },
     buttonSearch: {
         backgroundColor: Colors.$colorYellow,
@@ -89,7 +99,6 @@ const styles = StyleSheet.create({
         height: RFValue(40),
         width: RFValue(40),
     },
-
 })
 
 export default Search

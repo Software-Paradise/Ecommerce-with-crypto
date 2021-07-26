@@ -29,7 +29,7 @@ import { useNavigation, StackActions } from "@react-navigation/native"
 import Facturar from "../../assets/img/facturar.png"
 import Enviar from "../../assets/img/enviar.png"
 import Historial from "../../assets/img/history.png"
-import whatsapp from "../../animations/whatsapp.animation.json"
+import whatsapp from "../../animations/Whatsapp.json"
 import Exit from "../../animations/logout.json"
 import Transaction from "../../assets/img/transacction.png"
 
@@ -39,6 +39,9 @@ import store from "../../store/index"
 iconSize = RFValue(32)
 
 const Navbar = () => {
+    const { global } = store.getState()
+    // console.log("Global", global.rol)
+
     const [hidden, setHidden] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const { navigate } = useNavigation()
@@ -121,15 +124,17 @@ const Navbar = () => {
                                 <Text style={styles.text}>Facturar</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity
-                                onPress={onSend}
-                                style={styles.button}>
-                                <Image
-                                    source={Enviar}
-                                    style={styles.imageProfile}
-                                />
-                                <Text style={styles.text}>Enviar</Text>
-                            </TouchableOpacity>
+                            {global.rol === 1 || global.rol === 2 ? (
+                                <TouchableOpacity
+                                    onPress={onSend}
+                                    style={styles.button}>
+                                    <Image
+                                        source={Enviar}
+                                        style={styles.imageProfile}
+                                    />
+                                    <Text style={styles.text}>Enviar</Text>
+                                </TouchableOpacity>
+                            ) : null}
 
                             <TouchableOpacity
                                 onPress={onHistory}
@@ -160,6 +165,7 @@ const Navbar = () => {
 
                 <Modal
                     isVisible={showModal}
+                    animationIn="fadeInUp"
                     animationOut="fadeOutDown"
                     backdropOpacity={0}
                     style={{
@@ -170,13 +176,13 @@ const Navbar = () => {
                     onBackdropPress={(_) => setShowModal(false)}
                     onBackButtonPress={(_) => setShowModal(false)}>
                     <View style={styles.containerModal}>
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                             onPress={OpenSupport}
                             style={styles.selectionMenu}>
                             <Text style={styles.textSelection}>
                                 Transacciónes
                             </Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
 
                         <TouchableOpacity
                             onPress={OpenSupport}
@@ -271,6 +277,8 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         // alignItems: "center",
         borderRadius: 10,
+        borderWidth: 1,
+        borderColor: Colors.$colorYellow,
         width: "45%",
     },
     selectionMenu: {

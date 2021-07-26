@@ -51,7 +51,6 @@ const index = ({ navigation }) => {
                             component={Retirement}
                         />
                     </Stack.Navigator>
-                    {/* <Navbar /> */}
                 </>
             )}
             <Navbar />

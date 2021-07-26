@@ -27,6 +27,9 @@ const ListCommerce = () => {
     const [Info, setInfo] = useState({})
     const [loader, setLoader] = useState(false)
 
+    /**
+     * Funcion que hace el llamado a la lista de los comercios por cada compañia
+     */
     const configureComponent = async () => {
         try {
             setLoader(true)

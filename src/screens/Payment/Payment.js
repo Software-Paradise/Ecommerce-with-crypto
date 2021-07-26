@@ -41,12 +41,12 @@ const Payment = ({ route }) => {
     const [dataInfo, setDataInfo] = useState({})
 
     const { params } = route
-    console.log("Params", params.data.id)
+    // console.log("Params", params)
 
     const infoWallet = () => {
         if (InfoRol === 1) {
             const Info = params.data.id
-            console.log("Info", Info)
+            // console.log("Info", Info)
             setDataInfo(Info)
         }
     }
