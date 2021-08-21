@@ -54,7 +54,7 @@ const reducer = (state, action) => {
     }
 }
 
-const sentComponent = () => {
+const sentComponent = ({ dataInfo = {}, onCompleteTransaction = () => {} }) => {
     const { global, walletInfo, functions } = store.getState()
     const { navigate } = useNavigation()
     const [state, dispatch] = useReducer(reducer, initialState)
@@ -62,7 +62,7 @@ const sentComponent = () => {
     const [showScanner, setShowScanner] = useState(false)
 
     // console.log("Global", functions.reloadInfoWallets)
-    // console.log("WalletInfo", walletInfo)
+    // console.log("DataInfo", dataInfo)
 
     // Hacemos la peticion al server
     const submit = async () => {
@@ -76,7 +76,7 @@ const sentComponent = () => {
             const dataSent = {
                 amount: parseFloat(state.amountFraction),
                 wallet: state.walletAdress,
-                id: global.rol === 1 ? walletInfo.id : global.wallet_commerce,
+                id: global.rol === 1 ? dataInfo.id : global.wallet_commerce,
                 idCommerce: global.id_commerce,
             }
 
@@ -107,7 +107,9 @@ const sentComponent = () => {
                 dispatch({ type: "fee", payload: "0" })
 
                 if (global.rol === 1) {
-                    functions?.reloadInfoWallets()
+                    console.log("Se ejecuta")
+                    functions?.reloadWallets()
+                    onCompleteTransaction()
                 }
             }
         } catch (error) {
@@ -150,7 +152,7 @@ const sentComponent = () => {
 
     // Nos movemos a la vista de retiro
     const onRetirement = () => {
-        navigate("Retirements", { wallet: global.wallet_commerce })
+        navigate("Retirements", dataInfo)
     }
 
     // Funcion que nos permite scannear el codigo QR
@@ -171,163 +173,382 @@ const sentComponent = () => {
     const toggleScan = () => setShowScanner(!showScanner)
 
     return (
-        <Container showLogo showCard>
-            <Loader isVisible={loader} />
-
-            <View style={styles.container}>
-                <View style={styles.containerTitle}>
-                    <Text style={styles.legendTitle}>Enviar fondos</Text>
-                </View>
-
-                <View style={styles.row}>
-                    <View style={styles.col}>
-                        <Text style={styles.legend}>
-                            Dirección de billetera
-                        </Text>
-
-                        <View style={styles.rowInput}>
-                            <TextInput
-                                style={[GlobalStyles.textInput, { flex: 1 }]}
-                                value={state.walletAdress}
-                                returnKeyType="done"
-                                onChangeText={(payload) =>
-                                    dispatch({ type: "walletAdress", payload })
-                                }
-                            />
-
-                            <TouchableOpacity
-                                onPress={toggleScan}
-                                style={styles.buttonScan}>
-                                <Lottie
-                                    source={QR}
-                                    style={styles.lottieQRAnimation}
-                                    autoPlay
-                                    loop
-                                />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-
-                <View style={styles.row}>
-                    <View style={styles.col}>
-                        <Text style={styles.legend}>Monto (USD)</Text>
-
-                        <View style={styles.rowInput}>
-                            <TextInput
-                                style={[GlobalStyles.textInput, { flex: 1 }]}
-                                value={state.amountFraction}
-                                onChangeText={onChangeAmount}
-                                keyboardType="numeric"
-                                returnKeyType="done"
-                            />
-                        </View>
-                    </View>
-                    <View style={[styles.col, { justifyContent: "center" }]}>
-                        <View style={styles.rowInput}>
-                            <Text style={styles.legend}>Fee</Text>
-                        </View>
-                        <View style={styles.rowInput}>
-                            <Text
-                                style={{
-                                    color: "#FFF",
-                                    fontSize: RFValue(24),
-                                }}>
-                                {_.floor(state.fee, 2)} USD
+        <>
+            {global.rol === 1 ? (
+                <>
+                    <View style={styles.container}>
+                        <View style={styles.containerTitle}>
+                            <Text style={styles.legendTitle}>
+                                Enviar fondos
                             </Text>
                         </View>
-                    </View>
-                </View>
 
-                <View style={{ height: RFValue(5) }} />
-
-                {state.walletAccepted && state.dataWallet !== null && (
-                    <ViewAnimation animation="fadeIn" style={styles.cardInfo}>
-                        <View style={styles.subCard}>
-                            <Image
-                                style={styles.avatar}
-                                source={defaultAvatar}
-                            />
-
-                            <View>
-                                <Text style={styles.usernameCard}>
-                                    @{state.dataWallet.username}
+                        <View style={styles.row}>
+                            <View style={styles.col}>
+                                <Text style={styles.legend}>
+                                    Dirección de billetera
                                 </Text>
-                                <Text style={styles.textFromCard}>
-                                    {state.dataWallet.city}
-                                </Text>
+
+                                <View style={styles.rowInput}>
+                                    <TextInput
+                                        style={[
+                                            GlobalStyles.textInput,
+                                            { flex: 1 },
+                                        ]}
+                                        value={state.walletAdress}
+                                        returnKeyType="done"
+                                        onChangeText={(payload) =>
+                                            dispatch({
+                                                type: "walletAdress",
+                                                payload,
+                                            })
+                                        }
+                                    />
+
+                                    <TouchableOpacity
+                                        onPress={toggleScan}
+                                        style={styles.buttonScan}>
+                                        <Lottie
+                                            source={QR}
+                                            style={styles.lottieQRAnimation}
+                                            autoPlay
+                                            loop
+                                        />
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                         </View>
 
-                        <Lottie
-                            source={profileVerifedAnimation}
-                            style={styles.lottieVerifed}
-                            autoPlay
-                        />
-                    </ViewAnimation>
-                )}
+                        <View style={styles.row}>
+                            <View style={styles.col}>
+                                <Text style={styles.legend}>Monto (USD)</Text>
 
-                {!state.walletAccepted && (
-                    <View style={styles.retirementContainer}>
-                        {global.rol === 1 ? (
-                            <>
-                                <TouchableOpacity onPress={onRetirement}>
-                                    <Text style={styles.retirementText}>
-                                        Retirar fondos
+                                <View style={styles.rowInput}>
+                                    <TextInput
+                                        style={[
+                                            GlobalStyles.textInput,
+                                            { flex: 1 },
+                                        ]}
+                                        value={state.amountFraction}
+                                        onChangeText={onChangeAmount}
+                                        keyboardType="numeric"
+                                        returnKeyType="done"
+                                    />
+                                </View>
+                            </View>
+                            <View
+                                style={[
+                                    styles.col,
+                                    { justifyContent: "center" },
+                                ]}>
+                                <View style={styles.rowInput}>
+                                    <Text style={styles.legend}>Fee</Text>
+                                </View>
+                                <View style={styles.rowInput}>
+                                    <Text
+                                        style={{
+                                            color: "#FFF",
+                                            fontSize: RFValue(24),
+                                        }}>
+                                        {_.floor(state.fee, 2)} USD
                                     </Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    onPress={onComprobateWallet}
-                                    style={[
-                                        GlobalStyles.buttonPrimary,
-                                        { flex: 1, marginLeft: 25 },
-                                    ]}>
-                                    <Text style={GlobalStyles.textButton}>
-                                        siguiente
-                                    </Text>
-                                </TouchableOpacity>
-                            </>
-                        ) : (
-                            <>
-                                <TouchableOpacity
-                                    onPress={onComprobateWallet}
-                                    style={[
-                                        GlobalStyles.buttonPrimary,
-                                        { flex: 1 },
-                                    ]}>
-                                    <Text style={GlobalStyles.textButton}>
-                                        siguiente
-                                    </Text>
-                                </TouchableOpacity>
-                            </>
+                                </View>
+                            </View>
+                        </View>
+
+                        <View style={{ height: RFValue(5) }} />
+
+                        {state.walletAccepted && state.dataWallet !== null && (
+                            <ViewAnimation
+                                animation="fadeIn"
+                                style={styles.cardInfo}>
+                                <View style={styles.subCard}>
+                                    <Image
+                                        style={styles.avatar}
+                                        source={defaultAvatar}
+                                    />
+
+                                    <View>
+                                        <Text style={styles.usernameCard}>
+                                            @{state.dataWallet.username}
+                                        </Text>
+                                        <Text style={styles.textFromCard}>
+                                            {state.dataWallet.city}
+                                        </Text>
+                                    </View>
+                                </View>
+
+                                <Lottie
+                                    source={profileVerifedAnimation}
+                                    style={styles.lottieVerifed}
+                                    autoPlay
+                                />
+                            </ViewAnimation>
                         )}
-                    </View>
-                )}
 
-                {state.walletAccepted && (
-                    <TouchableOpacity
-                        onPress={submit}
-                        style={GlobalStyles.buttonPrimary}>
-                        <Text style={GlobalStyles.textButton}>Enviar</Text>
-                    </TouchableOpacity>
-                )}
+                        {!state.walletAccepted && (
+                            <View style={styles.retirementContainer}>
+                                {global.rol === 1 ? (
+                                    <>
+                                        <TouchableOpacity
+                                            onPress={onRetirement}>
+                                            <Text style={styles.retirementText}>
+                                                Retirar fondos
+                                            </Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            onPress={onComprobateWallet}
+                                            style={[
+                                                GlobalStyles.buttonPrimary,
+                                                { flex: 1, marginLeft: 25 },
+                                            ]}>
+                                            <Text
+                                                style={GlobalStyles.textButton}>
+                                                siguiente
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </>
+                                ) : (
+                                    <>
+                                        <TouchableOpacity
+                                            onPress={onComprobateWallet}
+                                            style={[
+                                                GlobalStyles.buttonPrimary,
+                                                { flex: 1 },
+                                            ]}>
+                                            <Text
+                                                style={GlobalStyles.textButton}>
+                                                siguiente
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </>
+                                )}
+                            </View>
+                        )}
 
-                <Modal
-                    backdropOpacity={0.9}
-                    animationIn="fadeIn"
-                    onBackButtonPress={toggleScan}
-                    onBackdropPress={toggleScan}
-                    animationOut="fadeOut"
-                    isVisible={showScanner}>
-                    <View style={styles.constainerQR}>
-                        <QRCodeScanner
-                            onRead={onReadCodeQR}
-                            flashMode={RNCamera.Constants.FlashMode.auto}
-                        />
+                        {state.walletAccepted && (
+                            <TouchableOpacity
+                                onPress={submit}
+                                style={GlobalStyles.buttonPrimary}>
+                                <Text style={GlobalStyles.textButton}>
+                                    Enviar
+                                </Text>
+                            </TouchableOpacity>
+                        )}
+
+                        <Modal
+                            backdropOpacity={0.9}
+                            animationIn="fadeIn"
+                            onBackButtonPress={toggleScan}
+                            onBackdropPress={toggleScan}
+                            animationOut="fadeOut"
+                            isVisible={showScanner}>
+                            <View style={styles.constainerQR}>
+                                <QRCodeScanner
+                                    onRead={onReadCodeQR}
+                                    flashMode={
+                                        RNCamera.Constants.FlashMode.auto
+                                    }
+                                />
+                            </View>
+                        </Modal>
                     </View>
-                </Modal>
-            </View>
-        </Container>
+                </>
+            ) : (
+                <>
+                    <Container showLogo showCard>
+                        <Loader isVisible={loader} />
+
+                        <View style={styles.container}>
+                            <View style={styles.containerTitle}>
+                                <Text style={styles.legendTitle}>
+                                    Enviar fondos
+                                </Text>
+                            </View>
+
+                            <View style={styles.row}>
+                                <View style={styles.col}>
+                                    <Text style={styles.legend}>
+                                        Dirección de billetera
+                                    </Text>
+
+                                    <View style={styles.rowInput}>
+                                        <TextInput
+                                            style={[
+                                                GlobalStyles.textInput,
+                                                { flex: 1 },
+                                            ]}
+                                            value={state.walletAdress}
+                                            returnKeyType="done"
+                                            onChangeText={(payload) =>
+                                                dispatch({
+                                                    type: "walletAdress",
+                                                    payload,
+                                                })
+                                            }
+                                        />
+
+                                        <TouchableOpacity
+                                            onPress={toggleScan}
+                                            style={styles.buttonScan}>
+                                            <Lottie
+                                                source={QR}
+                                                style={styles.lottieQRAnimation}
+                                                autoPlay
+                                                loop
+                                            />
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
+
+                            <View style={styles.row}>
+                                <View style={styles.col}>
+                                    <Text style={styles.legend}>
+                                        Monto (USD)
+                                    </Text>
+
+                                    <View style={styles.rowInput}>
+                                        <TextInput
+                                            style={[
+                                                GlobalStyles.textInput,
+                                                { flex: 1 },
+                                            ]}
+                                            value={state.amountFraction}
+                                            onChangeText={onChangeAmount}
+                                            keyboardType="numeric"
+                                            returnKeyType="done"
+                                        />
+                                    </View>
+                                </View>
+                                <View
+                                    style={[
+                                        styles.col,
+                                        { justifyContent: "center" },
+                                    ]}>
+                                    <View style={styles.rowInput}>
+                                        <Text style={styles.legend}>Fee</Text>
+                                    </View>
+                                    <View style={styles.rowInput}>
+                                        <Text
+                                            style={{
+                                                color: "#FFF",
+                                                fontSize: RFValue(24),
+                                            }}>
+                                            {_.floor(state.fee, 2)} USD
+                                        </Text>
+                                    </View>
+                                </View>
+                            </View>
+
+                            <View style={{ height: RFValue(5) }} />
+
+                            {state.walletAccepted && state.dataWallet !== null && (
+                                <ViewAnimation
+                                    animation="fadeIn"
+                                    style={styles.cardInfo}>
+                                    <View style={styles.subCard}>
+                                        <Image
+                                            style={styles.avatar}
+                                            source={defaultAvatar}
+                                        />
+
+                                        <View>
+                                            <Text style={styles.usernameCard}>
+                                                @{state.dataWallet.username}
+                                            </Text>
+                                            <Text style={styles.textFromCard}>
+                                                {state.dataWallet.city}
+                                            </Text>
+                                        </View>
+                                    </View>
+
+                                    <Lottie
+                                        source={profileVerifedAnimation}
+                                        style={styles.lottieVerifed}
+                                        autoPlay
+                                    />
+                                </ViewAnimation>
+                            )}
+
+                            {!state.walletAccepted && (
+                                <View style={styles.retirementContainer}>
+                                    {global.rol === 1 ? (
+                                        <>
+                                            <TouchableOpacity
+                                                onPress={onRetirement}>
+                                                <Text
+                                                    style={
+                                                        styles.retirementText
+                                                    }>
+                                                    Retirar fondos
+                                                </Text>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity
+                                                onPress={onComprobateWallet}
+                                                style={[
+                                                    GlobalStyles.buttonPrimary,
+                                                    { flex: 1, marginLeft: 25 },
+                                                ]}>
+                                                <Text
+                                                    style={
+                                                        GlobalStyles.textButton
+                                                    }>
+                                                    siguiente
+                                                </Text>
+                                            </TouchableOpacity>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <TouchableOpacity
+                                                onPress={onComprobateWallet}
+                                                style={[
+                                                    GlobalStyles.buttonPrimary,
+                                                    { flex: 1 },
+                                                ]}>
+                                                <Text
+                                                    style={
+                                                        GlobalStyles.textButton
+                                                    }>
+                                                    siguiente
+                                                </Text>
+                                            </TouchableOpacity>
+                                        </>
+                                    )}
+                                </View>
+                            )}
+
+                            {state.walletAccepted && (
+                                <TouchableOpacity
+                                    onPress={submit}
+                                    style={GlobalStyles.buttonPrimary}>
+                                    <Text style={GlobalStyles.textButton}>
+                                        Enviar
+                                    </Text>
+                                </TouchableOpacity>
+                            )}
+
+                            <Modal
+                                backdropOpacity={0.9}
+                                animationIn="fadeIn"
+                                onBackButtonPress={toggleScan}
+                                onBackdropPress={toggleScan}
+                                animationOut="fadeOut"
+                                isVisible={showScanner}>
+                                <View style={styles.constainerQR}>
+                                    <QRCodeScanner
+                                        onRead={onReadCodeQR}
+                                        flashMode={
+                                            RNCamera.Constants.FlashMode.auto
+                                        }
+                                    />
+                                </View>
+                            </Modal>
+                        </View>
+                    </Container>
+                </>
+            )}
+        </>
     )
 }
 

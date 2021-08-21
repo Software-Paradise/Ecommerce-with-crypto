@@ -5,10 +5,11 @@ import Payment from "../Payment/Payment"
 import Send from "../Send/Send"
 import History from "../History/History"
 import Retirement from "../Retirement/Retirement"
-import ListCommerce from "../ListCommerce/ListCommerce"
+import Main from "../Main/Main"
 
 // Import components
 import Navbar from "../../components/Navbar/Navbar"
+import NavBarCommerce from "../../components/NavbarCommerce/NavbarCommerce"
 import { createStackNavigator } from "@react-navigation/stack"
 
 // Import sotre from redux
@@ -29,15 +30,16 @@ const index = ({ navigation }) => {
         <>
             {global.state === 2 ? <ModalVerification /> : null}
             {global.rol === 1 ? (
-                <Stack.Navigator
-                    initialRouteName="ListCommece"
-                    headerMode={null}>
-                    <Stack.Screen name="Payment" component={Payment} />
-                    <Stack.Screen name="Send" component={Send} />
-                    <Stack.Screen name="History" component={History} />
-                    <Stack.Screen name="Retirements" component={Retirement} />
-                    <Stack.Screen name="ListCommece" component={ListCommerce} />
-                </Stack.Navigator>
+                <>
+                    <Stack.Navigator initialRouteName="Main" headerMode={null}>
+                        <Stack.Screen name="Main" component={Main} />
+                        <Stack.Screen name="Payment" component={Payment} />
+                        <Stack.Screen name="Send" component={Send} />
+                        <Stack.Screen name="History" component={History} />
+                        {/* <Stack.Screen name="Retirements" component={Retirement} /> */}
+                    </Stack.Navigator>
+                    <NavBarCommerce />
+                </>
             ) : (
                 <>
                     <Stack.Navigator
@@ -51,9 +53,9 @@ const index = ({ navigation }) => {
                             component={Retirement}
                         />
                     </Stack.Navigator>
+                    <Navbar />
                 </>
             )}
-            <Navbar />
         </>
     )
 }

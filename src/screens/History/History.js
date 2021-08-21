@@ -22,10 +22,11 @@ import {
 // Redux Store
 import store from "../../store"
 
-const History = () => {
-    const { global, walletInfo } = store.getState()
+const History = ({ data = [] }) => {
+    const { global } = store.getState()
     const { navigate } = useNavigation()
 
+    console.log("DataHistory", data)
     const [loader, setLoader] = useState(false)
 
     // Estado que almacena los datos de la api
@@ -36,9 +37,7 @@ const History = () => {
             setLoader(true)
             // Consumimos la api
             const { data } = await http.get(
-                `/api/ecommerce/wallet/details/${
-                    global.rol === 1 ? walletInfo.id : global.wallet_commerce
-                }`,
+                `/api/ecommerce/wallet/details/${global.wallet_commerce}`,
                 getHeaders(),
             )
 
@@ -58,43 +57,88 @@ const History = () => {
 
     return (
         <>
-            <Container showLogo onRefreshEnd={getAllData}>
-                <View style={styles.container}>
-                    <Loader isVisible={loader} />
-                    <View style={styles.containerTitle}>
-                        <Text style={styles.legendTitle}>
-                            Historial de transacciones
-                        </Text>
-                    </View>
-                    <Search />
-
-                    {transaction.length > 0 ? (
-                        <FlatList
-                            keyExtractor={(_, key) => (key = key.toString())}
-                            data={transaction}
-                            renderItem={({ item, index }) => (
-                                <HistorElement
-                                    navigate={navigate}
-                                    item={item}
-                                    index={index}
-                                />
-                            )}
-                        />
-                    ) : (
-                        <View>
-                            <Lottie
-                                source={EmptyBox}
-                                autoPlay
-                                loop={false}
-                                style={styles.empty}
-                            />
-                            <Text style={styles.titleText}>
-                                No hay transacciones realizadas
+            {global.rol === 1 ? (
+                <>
+                    <View style={styles.container}>
+                        <View style={styles.containerTitle}>
+                            <Text style={styles.legendTitle}>
+                                Historial de transacciones
                             </Text>
                         </View>
-                    )}
-                </View>
-            </Container>
+                        <Search />
+
+                        {data.length > 0 ? (
+                            <FlatList
+                                keyExtractor={(_, key) =>
+                                    (key = key.toString())
+                                }
+                                data={data}
+                                renderItem={({ item, index }) => (
+                                    <HistorElement
+                                        navigate={navigate}
+                                        item={item}
+                                        index={index}
+                                    />
+                                )}
+                            />
+                        ) : (
+                            <View>
+                                <Lottie
+                                    source={EmptyBox}
+                                    autoPlay
+                                    loop={false}
+                                    style={styles.empty}
+                                />
+                                <Text style={styles.titleText}>
+                                    No hay transacciones realizadas
+                                </Text>
+                            </View>
+                        )}
+                    </View>
+                </>
+            ) : (
+                <>
+                    <Container showLogo onRefreshEnd={getAllData}>
+                        <View style={styles.container}>
+                            <Loader isVisible={loader} />
+                            <View style={styles.containerTitle}>
+                                <Text style={styles.legendTitle}>
+                                    Historial de transacciones
+                                </Text>
+                            </View>
+                            <Search />
+
+                            {transaction.length > 0 ? (
+                                <FlatList
+                                    keyExtractor={(_, key) =>
+                                        (key = key.toString())
+                                    }
+                                    data={transaction}
+                                    renderItem={({ item, index }) => (
+                                        <HistorElement
+                                            navigate={navigate}
+                                            item={item}
+                                            index={index}
+                                        />
+                                    )}
+                                />
+                            ) : (
+                                <View>
+                                    <Lottie
+                                        source={EmptyBox}
+                                        autoPlay
+                                        loop={false}
+                                        style={styles.empty}
+                                    />
+                                    <Text style={styles.titleText}>
+                                        No hay transacciones realizadas
+                                    </Text>
+                                </View>
+                            )}
+                        </View>
+                    </Container>
+                </>
+            )}
         </>
     )
 }
