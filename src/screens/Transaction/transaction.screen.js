@@ -82,7 +82,7 @@ const TransactionScreen = ({ navigation, route }) => {
         setShowModal(!showModal)
 
         if (global.rol === 1) {
-            functions?.reloadInfoWallets()
+            functions?.reloadWallets()
         }
 
         // vamos a una vista anterior

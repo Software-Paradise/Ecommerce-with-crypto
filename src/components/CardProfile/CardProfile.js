@@ -19,7 +19,6 @@ const CadProfile = () => {
 
     useEffect(() => {
         const { walletInfo, global } = store.getState()
-        // console.log("Store", store.getState())
         setRol(global.rol)
 
         /**

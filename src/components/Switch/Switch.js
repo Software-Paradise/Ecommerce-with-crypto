@@ -1,18 +1,17 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { StyleSheet, TouchableOpacity, Text, View } from 'react-native'
+import React, { useState, useEffect, useCallback } from "react"
+import { StyleSheet, TouchableOpacity, Text, View } from "react-native"
 
 // Import Constants
-import { Colors, RFValue } from '../../utils/constants.util'
+import { Colors, RFValue } from "../../utils/constants.util"
 
-
-const Switch = ({ onSwitch = () => { }, items = [] }) => {
+const Switch = ({ onSwitch = () => {}, items = [] }) => {
     const [state, setState] = useState(items[0].state)
 
     // Esperamos que el estado cambie para saber cuando el usuario cambia de estado
     const changeState = useCallback(() => onSwitch(state), [state])
 
     /**Constante que define el ancho de cada item */
-    const itemWidth = 100 / items.length;
+    const itemWidth = 100 / items.length
 
     useEffect(() => {
         changeState()
@@ -20,17 +19,17 @@ const Switch = ({ onSwitch = () => { }, items = [] }) => {
 
     const styles = StyleSheet.create({
         container: {
-            alignItems: 'center',
+            alignItems: "center",
             borderColor: Colors.$colorYellow,
-            borderWidth: 1.5,
+            borderWidth: 1,
             borderRadius: RFValue(50),
-            padding: RFValue(0),
-            margin: RFValue(15),
-            flexDirection: 'row',
-            justifyContent: 'space-between',
+            padding: RFValue(2),
+            margin: RFValue(20),
+            flexDirection: "row",
+            justifyContent: "space-between",
         },
         buttons: {
-            alignItems: 'center',
+            alignItems: "center",
             padding: RFValue(10),
             borderRadius: RFValue(50),
             width: `${itemWidth}%`,
@@ -39,38 +38,45 @@ const Switch = ({ onSwitch = () => { }, items = [] }) => {
             backgroundColor: Colors.$colorYellow,
         },
         textButton: {
-            fontSize: RFValue(itemWidth / 2 * .8),
-            textTransform: 'uppercase',
+            fontSize: RFValue(itemWidth / 3),
+            textTransform: "uppercase",
         },
         textButtonActive: {
             color: Colors.$colorMain,
         },
         buttonDisactive: {
-            backgroundColor: 'transparent',
+            backgroundColor: "transparent",
         },
         textButtonDisactive: {
             color: Colors.$colorYellow,
         },
-    });
+    })
 
     const ItemComponent = (item, key) => {
         return (
-            <TouchableOpacity onPress={_ => setState(item.state)} key={key} style={[state === item.state ? styles.buttonActive : styles.buttonDisactive, styles.buttons]}>
-                <Text style={[state === item.state ? styles.textButtonActive : styles.textButtonDisactive, styles.textButton]}>
+            <TouchableOpacity
+                onPress={(_) => setState(item.state)}
+                key={key}
+                style={[
+                    state === item.state
+                        ? styles.buttonActive
+                        : styles.buttonDisactive,
+                    styles.buttons,
+                ]}>
+                <Text
+                    style={[
+                        state === item.state
+                            ? styles.textButtonActive
+                            : styles.textButtonDisactive,
+                        styles.textButton,
+                    ]}>
                     {item.text}
                 </Text>
             </TouchableOpacity>
         )
     }
 
-    return (
-        <View style={styles.container}>
-            {
-                items.map(ItemComponent)
-            }
-        </View>
-    )
+    return <View style={styles.container}>{items.map(ItemComponent)}</View>
 }
-
 
 export default Switch

@@ -21,10 +21,14 @@ import {
 import { SETSTORAGE, DELETESTORAGE } from "./src/store/actionTypes"
 import reduxStore from "./src/store/index"
 import FlashMessage from "react-native-flash-message"
+import socketIO, { Socket } from "socket.io-client"
 
 // Import Componets
+import WalletCommerce from "./src/screens/WalletCommerce/WalletCommerce"
 import Description from "./src/components/Description/Description"
-import socketIO, { Socket } from "socket.io-client"
+import Retirement from "./src/screens/Retirement/Retirement"
+
+// Import Store
 import store from "./src/store/index"
 
 const Stack = createStackNavigator()
@@ -123,7 +127,7 @@ const App = () => {
             <StatusBar translucent={true} hidden={true} />
 
             <NavigationContainer>
-                <Stack.Navigator initialRouteName="Login" headerMode={null}>
+                <Stack.Navigator initialRouteName="Main" headerMode={null}>
                     {logged && (
                         <>
                             <Stack.Screen name="Main" component={MainScreen} />
@@ -135,12 +139,15 @@ const App = () => {
                                 name="Description"
                                 component={Description}
                             />
-                            {/* {
-                                <Stack.Screen
-                                    name="ListCommece"
-                                    component={ListCommece}
-                                />
-                            } */}
+
+                            <Stack.Screen
+                                name="WalletCommerce"
+                                component={WalletCommerce}
+                            />
+                            <Stack.Screen
+                                name="Retirements"
+                                component={Retirement}
+                            />
                         </>
                     )}
 

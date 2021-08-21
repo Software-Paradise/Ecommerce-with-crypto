@@ -317,8 +317,8 @@ const PORT = "3085"
 /**
  * Servidor de Produccion
  */
-// export const serverAddress = "https://alypay.uc.r.appspot.com"
-export const serverAddress = "https://e55203803aeb.ngrok.io"
+export const serverAddress = "https://alypay.uc.r.appspot.com"
+// export const serverAddress = "http://f6e6bd47266f.ngrok.io"
 export const serverSpeedtradingsURL = "https://ardent-medley-272823.appspot.com"
 export const socketAddress = serverAddress
 
@@ -350,13 +350,15 @@ export const readFile = (fileId) =>
 /**
  * Obtiene el porcentaje del fee según el monto ingresado y el tipo de fee a verificar
  * @param {Number} amount - Monto actual
- * @param {Number} feeType - tipo de fee (1=transacción, 2=retiro, 3=exchange)
+ * @param {Number} feeType - tipo de fee (1=transacción, 2=retiro, 3=Pago a comercio , 4= exchange, 5=Retiro Commercio)
  */
 export const getFeePercentage = (amount, feeType, fees) => {
     const enableFees = {
-        1: "transaction",
-        2: "retirement",
-        3: "exchange",
+        1: "transactionsFee",
+        2: "userWithdrawalsFee",
+        3: "commercePaymentFee",
+        4: "exchangeFee",
+        5: "commerceWithdrawalsFee",
     }
 
     const currentFeeType = enableFees[feeType]

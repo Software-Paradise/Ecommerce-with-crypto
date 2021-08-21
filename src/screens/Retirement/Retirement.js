@@ -28,6 +28,7 @@ import { Picker } from "@react-native-community/picker"
 import { View as ViewAnimation } from "react-native-animatable"
 import Container from "../../components/Container/Container"
 import Loader from "../../components/Loader/Loader"
+import ItemComerce from "../../components/ItemCommerce/ItemCommerce.component"
 
 // import constanst and functions
 import { RNCamera } from "react-native-camera"
@@ -39,9 +40,13 @@ import QR from "../../animations/scan-qr.json"
 // Import redux store
 import store from "../../store"
 
-const Retirements = ({ navigation }) => {
+const Retirements = ({ navigation, route }) => {
     const { global, walletInfo, functions } = store.getState()
 
+    // console.log("Data", route)
+    const wallet = route.params
+
+    console.log("Wallet", wallet)
     // Estados que guardan los montos de las monedas y el fee
     const [amount, setAmount] = useState("")
     const [amountSatochi, setTotalAmountSatochi] = useState(0)
@@ -82,7 +87,7 @@ const Retirements = ({ navigation }) => {
             const dataSent = {
                 wallet: walletAddress,
                 id_wallet:
-                    global.rol === 1 ? walletInfo.id : global.wallet_commerce,
+                    global.rol === 1 ? wallet.id : global.wallet_commerce,
                 amount: amountSatochi,
                 amountOriginal: parseFloat(amount),
                 symbol: coinList[coinIndexSelected].symbol,
@@ -108,7 +113,7 @@ const Retirements = ({ navigation }) => {
                 )
             }
 
-            functions?.reloadInfoWallets()
+            functions?.reloadWallets()
             // retornamos a la vista anterios
             navigation.pop()
         } catch (error) {
@@ -143,7 +148,7 @@ const Retirements = ({ navigation }) => {
 
         setAmount(value)
 
-        const { fee, fee_aly } = getFeePercentage(amount, 2, global.fees)
+        const { fee, fee_aly } = getFeePercentage(amount, 5, global.fees)
 
         let _amountFeeUSD = 0
 
@@ -194,7 +199,7 @@ const Retirements = ({ navigation }) => {
     }, [amount, coinIndexSelected])
 
     return (
-        <Container showLogo showCard>
+        <Container showLogo>
             <ViewAnimation style={styles.container} animation="fadeIn">
                 <Loader isVisible={loader} />
 
